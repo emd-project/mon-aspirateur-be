@@ -247,20 +247,30 @@ body::after {
 .prose-article table {
   width: 100%;
   border-collapse: collapse;
-  font-size: .925rem;
-  margin: 1.5rem 0;
+  font-size: .875rem;
+  margin: 1.75rem 0;
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  overflow: hidden;
 }
 .prose-article th {
   background: var(--bg-raised);
-  font-weight: 600;
+  font-weight: 700;
   text-align: left;
-  padding: .6rem 1rem;
+  padding: .65rem 1rem;
   border-bottom: 2px solid var(--border-medium);
+  color: var(--text-primary);
+  font-size: .8rem;
+  letter-spacing: .02em;
+  text-transform: uppercase;
 }
 .prose-article td {
-  padding: .6rem 1rem;
+  padding: .7rem 1rem;
   border-bottom: 1px solid var(--border-light);
+  color: var(--text-secondary);
 }
+.prose-article tr:last-child td { border-bottom: none; }
+.prose-article td strong { color: var(--text-primary); font-weight: 700; }
 
 /* ─── CARDS ─────────────────────────────────────────────────── */
 .card {

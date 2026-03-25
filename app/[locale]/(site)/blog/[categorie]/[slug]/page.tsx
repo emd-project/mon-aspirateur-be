@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { MDXRemote } from 'next-mdx-remote/rsc'
+import remarkGfm from 'remark-gfm'
 import { getArticleMdx, getAllArticleParams } from '@/lib/content/articles'
 import { getAuthor } from '@/lib/data/mock/authors'
 import AuthorByline from '@/components/ui/AuthorByline'
@@ -16,13 +17,16 @@ import PullQuote from '@/components/mdx/PullQuote'
 import StatCard from '@/components/mdx/StatCard'
 import ProConTable from '@/components/mdx/ProConTable'
 import AISummarize from '@/components/mdx/AISummarize'
+import TLDRBox from '@/components/mdx/TLDRBox'
 import type { FaqItem } from '@/lib/data/types'
 
 export const revalidate = 1800
 
 type PageProps = { params: Promise<{ locale: string; categorie: string; slug: string }> }
 
-const MDX_COMPONENTS = { Tip, Warning, Verdict, PullQuote, StatCard, ProConTable, AISummarize }
+const MDX_COMPONENTS = { Tip, Warning, Verdict, PullQuote, StatCard, ProConTable, AISummarize, TLDRBox }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const MDX_OPTIONS = { mdxOptions: { remarkPlugins: [remarkGfm] as any } }
 
 export async function generateStaticParams() {
   return getAllArticleParams()
@@ -169,7 +173,7 @@ export default async function ArticlePage({ params }: PageProps) {
       {/* ── ARTICLE BODY ─────────────────────────────────────────── */}
       <div style={{ maxWidth: 740, margin: '0 auto', padding: '3rem 1.5rem' }}>
         <article className="prose-article">
-          <MDXRemote source={article.content} components={MDX_COMPONENTS} />
+          <MDXRemote source={article.content} components={MDX_COMPONENTS} options={MDX_OPTIONS} />
         </article>
 
         {/* FAQ */}
