@@ -119,9 +119,9 @@ export default async function ComparerCategoriePage({ params }: PageProps) {
         </header>
 
         {/* Products table */}
-        <section aria-label={locale === 'fr' ? 'Tableau comparatif' : 'Comparison table'} style={{ marginBottom: 'var(--space-14)' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-            {products.map((product) => {
+        <section aria-label={locale === 'fr' ? 'Tableau comparatif' : 'Comparison table'} style={{ marginBottom: '3rem' }}>
+          <div style={{ border: '1px solid var(--border-light)', borderRadius: '6px', overflow: 'hidden' }}>
+            {products.map((product, idx) => {
               const rawVal = product.specs[primaryKey]
               const numVal = typeof rawVal === 'number' ? rawVal : 0
               const displayVal = typeof rawVal === 'boolean'
@@ -131,28 +131,26 @@ export default async function ComparerCategoriePage({ params }: PageProps) {
               return (
                 <article
                   key={product.productId}
-                  className="card"
-                  style={{ padding: 'var(--space-5)', display: 'grid', gridTemplateColumns: '1fr auto auto auto', alignItems: 'center', gap: 'var(--space-4)', flexWrap: 'wrap' }}
+                  style={{
+                    padding: '1rem 1.25rem',
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 5rem 7rem',
+                    alignItems: 'center',
+                    gap: '1rem',
+                    borderTop: idx > 0 ? '1px solid var(--border-light)' : 'none',
+                    background: 'var(--bg-surface)',
+                  }}
                 >
-                  {/* Model + brand */}
+                  {/* Model + brand + bar */}
                   <div>
-                    <p style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.2rem' }}>
+                    <p style={{ fontSize: '.7rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--text-muted)', margin: '0 0 .2rem' }}>
                       {product.brandSlug}
                     </p>
-                    <h2
-                      style={{
-                        fontFamily: 'var(--font-display)',
-                        fontWeight: 700,
-                        fontSize: '1rem',
-                        color: 'var(--text-primary)',
-                        margin: 0,
-                        lineHeight: 1.3,
-                      }}
-                    >
+                    <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '.95rem', color: 'var(--text-primary)', margin: '0 0 .5rem', lineHeight: 1.3 }}>
                       {product.modelName}
                     </h2>
                     {primarySpecDef && (
-                      <div style={{ marginTop: 'var(--space-3)', maxWidth: 280 }}>
+                      <div style={{ maxWidth: 260 }}>
                         <CompareBar
                           label={locale === 'en' ? primarySpecDef.labelEn : primarySpecDef.label}
                           value={numVal}
@@ -165,43 +163,35 @@ export default async function ComparerCategoriePage({ params }: PageProps) {
                     )}
                   </div>
 
-                  {/* Score badge */}
-                  <div style={{ textAlign: 'center' }}>
-                    <span
-                      className="typo-score"
-                      style={{
-                        display: 'inline-block',
-                        fontSize: '1.6rem',
-                        fontWeight: 900,
-                        color: meta.color,
-                        lineHeight: 1,
-                      }}
-                    >
-                      {product.score}
-                    </span>
-                    <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.1rem' }}>/10</span>
-                  </div>
-
-                  {/* Price */}
+                  {/* Score + Price stacked */}
                   <div style={{ textAlign: 'right' }}>
-                    <span
-                      className="typo-price"
-                      style={{ fontSize: '1.5rem', color: 'var(--accent-1)' }}
-                    >
+                    <div style={{ fontSize: '.8rem', fontWeight: 700, color: meta.color, fontVariantNumeric: 'tabular-nums' }}>
+                      {product.score}<span style={{ fontSize: '.65rem', color: 'var(--text-muted)', fontWeight: 400 }}> /10</span>
+                    </div>
+                    <div style={{ fontSize: '.95rem', fontWeight: 700, color: 'var(--accent-1)', fontVariantNumeric: 'tabular-nums', marginTop: '.15rem' }}>
                       {product.priceEur}&nbsp;€
-                    </span>
+                    </div>
                   </div>
 
                   {/* CTA */}
-                  <div>
+                  <div style={{ textAlign: 'right' }}>
                     <a
                       href={product.affiliateUrl}
                       target="_blank"
                       rel="noopener noreferrer sponsored"
-                      className="btn btn-primary"
-                      style={{ fontSize: '0.85rem' }}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '.3rem',
+                        fontSize: '.8rem',
+                        fontWeight: 600,
+                        color: 'var(--accent-1)',
+                        textDecoration: 'none',
+                        borderBottom: '1px solid var(--accent-1)',
+                        paddingBottom: '1px',
+                      }}
                     >
-                      {locale === 'fr' ? 'Voir' : 'View'}
+                      {locale === 'fr' ? 'Voir' : 'View'} →
                     </a>
                   </div>
                 </article>
@@ -212,8 +202,8 @@ export default async function ComparerCategoriePage({ params }: PageProps) {
 
         {/* Top 3 picks */}
         {topPicks.length > 0 && (
-          <section aria-label={locale === 'fr' ? 'Notre sélection' : 'Our top picks'}>
-            <h2 className="typo-h2" style={{ marginBottom: 'var(--space-6)' }}>
+          <section aria-label={locale === 'fr' ? 'Notre sélection' : 'Our top picks'} style={{ paddingTop: '2rem', borderTop: '1px solid var(--border-light)' }}>
+            <h2 className="typo-h2" style={{ marginBottom: '1.5rem' }}>
               {locale === 'fr' ? 'Notre sélection top 3' : 'Our top 3 picks'}
             </h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 'var(--space-6)' }}>

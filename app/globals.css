@@ -266,7 +266,7 @@ body::after {
 .card {
   background: var(--bg-surface);
   border: 1px solid var(--border-light);
-  border-radius: var(--radius-lg);
+  border-radius: 6px;
   box-shadow: var(--shadow-sm);
   transition: box-shadow .2s var(--ease-out), transform .2s var(--ease-out);
 }
@@ -281,10 +281,10 @@ body::after {
   display: inline-flex;
   align-items: center;
   gap: .5rem;
-  padding: .65rem 1.4rem;
-  border-radius: var(--radius-pill);
+  padding: .55rem 1.1rem;
+  border-radius: 4px;
   font-weight: 600;
-  font-size: .9rem;
+  font-size: .875rem;
   cursor: pointer;
   transition: all .18s var(--ease-out);
   border: none;
@@ -374,7 +374,7 @@ body::after {
 }
 
 .tip-box, .warning-box {
-  border-radius: var(--radius-md);
+  border-radius: 4px;
   padding: 1rem 1.25rem;
   display: flex;
   gap: .75rem;

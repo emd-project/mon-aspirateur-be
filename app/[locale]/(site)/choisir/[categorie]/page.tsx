@@ -83,9 +83,9 @@ export default async function ChoisirCategoriePage({ params }: PageProps) {
   const tip = honestTips[category] ?? ''
 
   return (
-    <main style={{ maxWidth: 860, margin: '0 auto', padding: 'var(--space-10)' }}>
+    <main style={{ maxWidth: 860, margin: '0 auto', padding: '3rem 1.5rem' }}>
       {/* Header */}
-      <header style={{ marginBottom: 'var(--space-10)' }}>
+      <header style={{ marginBottom: '2rem' }}>
         <p className="typo-overline" style={{ marginBottom: 'var(--space-2)' }}>
           {locale === 'fr' ? 'Guide d\'achat' : 'Buying guide'}
         </p>
@@ -101,7 +101,7 @@ export default async function ChoisirCategoriePage({ params }: PageProps) {
       </header>
 
       {/* Section 1: Pour qui ? */}
-      <section aria-labelledby="pour-qui" style={{ marginBottom: 'var(--space-10)' }}>
+      <section aria-labelledby="pour-qui" style={{ marginBottom: '2rem' }}>
         <h2 id="pour-qui" className="typo-h2" style={{ marginBottom: 'var(--space-4)' }}>
           {locale === 'fr' ? 'Pour qui ?' : 'Who is it for?'}
         </h2>
@@ -115,11 +115,11 @@ export default async function ChoisirCategoriePage({ params }: PageProps) {
       </section>
 
       {/* Section 2: Notre top 3 */}
-      <section aria-labelledby="top3" style={{ marginBottom: 'var(--space-10)' }}>
-        <h2 id="top3" className="typo-h2" style={{ marginBottom: 'var(--space-6)' }}>
+      <section aria-labelledby="top3" style={{ marginBottom: '3rem', paddingTop: '2rem', borderTop: '1px solid var(--border-light)' }}>
+        <h2 id="top3" className="typo-h2" style={{ marginBottom: '1.25rem' }}>
           {locale === 'fr' ? 'Notre top 3' : 'Our top 3'}
         </h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 'var(--space-5)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1rem' }}>
           {topPicks.map((pick) => (
             <ProductCTA
               key={pick.name}

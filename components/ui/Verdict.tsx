@@ -10,8 +10,7 @@ export default function Verdict({ children, title = 'Notre verdict' }: VerdictPr
     borderTop: '2px solid var(--accent-1)',
     borderBottom: '2px solid var(--accent-1)',
     backgroundColor: 'var(--accent-1-soft)',
-    padding: '1.5rem 1.75rem',
-    borderRadius: 'var(--radius-md)',
+    padding: '1.25rem 1.5rem',
     margin: '2rem 0',
   }
 

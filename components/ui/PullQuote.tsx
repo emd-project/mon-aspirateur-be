@@ -37,7 +37,6 @@ export default function PullQuote({ quote, category }: PullQuoteProps) {
 
   return (
     <blockquote className="pull-quote" style={wrapperStyle}>
-      <span style={markStyle} aria-hidden="true">&ldquo;</span>
       <p style={quoteStyle}>{quote}</p>
     </blockquote>
   )
