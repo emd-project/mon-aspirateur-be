@@ -15,13 +15,14 @@ import Verdict from '@/components/mdx/Verdict'
 import PullQuote from '@/components/mdx/PullQuote'
 import StatCard from '@/components/mdx/StatCard'
 import ProConTable from '@/components/mdx/ProConTable'
+import AISummarize from '@/components/mdx/AISummarize'
 import type { FaqItem } from '@/lib/data/types'
 
 export const revalidate = 1800
 
 type PageProps = { params: Promise<{ locale: string; categorie: string; slug: string }> }
 
-const MDX_COMPONENTS = { Tip, Warning, Verdict, PullQuote, StatCard, ProConTable }
+const MDX_COMPONENTS = { Tip, Warning, Verdict, PullQuote, StatCard, ProConTable, AISummarize }
 
 export async function generateStaticParams() {
   return getAllArticleParams()
