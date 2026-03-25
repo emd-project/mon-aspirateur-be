@@ -13,10 +13,7 @@ type Props = { params: Promise<{ locale: string }> }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'home.meta' })
-  return {
-    title: t('title'),
-    description: t('description'),
-  }
+  return { title: t('title'), description: t('description') }
 }
 
 const jsonLd = {
@@ -25,31 +22,32 @@ const jsonLd = {
   name: 'Mon Aspirateur',
   description: 'Le guide aspirateur honnête — comparatifs, guides et outils pour choisir sans se tromper.',
   url: 'https://monaspirateur.fr',
-  publisher: {
-    '@type': 'Organization',
-    name: 'Mon Aspirateur',
-  },
+  publisher: { '@type': 'Organization', name: 'Mon Aspirateur' },
 }
 
-const categoryIcons: Record<string, string> = {
-  balai:       '🧹',
-  robot:       '🤖',
-  traineau:    '🏠',
-  laveur:      '💧',
-  accessoires: '🔧',
-}
+// ── Styles partagés ─────────────────────────────────────────────
+const sectionStyle = {
+  padding: '4rem 0',
+} as const
+
+const sectionHeaderStyle = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'baseline',
+  gap: '1rem',
+  marginBottom: '2rem',
+  borderBottom: '1px solid var(--border-light)',
+  paddingBottom: '.75rem',
+} as const
 
 export default async function HomePage({ params }: Props) {
   const { locale } = await params
   const t    = await getTranslations({ locale, namespace: 'home' })
   const base = `/${locale}`
 
-  // Top picks balai + robot pour la section coups de cœur
   const topBalai = getTopPicksByCategory('balai').slice(0, 2)
   const topRobot = getTopPicksByCategory('robot').slice(0, 2)
   const topPicks = [...topBalai, ...topRobot]
-
-  // Top 6 marques
   const topBrands = brands.slice(0, 6)
 
   return (
@@ -59,107 +57,140 @@ export default async function HomePage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* ── HERO ──────────────────────────────────────────────── */}
+      {/* ── HERO ────────────────────────────────────────────────── */}
       <section
         style={{
-          background: 'var(--bg-primary)',
-          padding: 'clamp(3rem, 8vw, 6rem) 1.5rem',
+          padding: 'clamp(4rem, 10vw, 7rem) 1.5rem clamp(3rem, 6vw, 5rem)',
           textAlign: 'center',
-          position: 'relative',
-          overflow: 'hidden',
+          borderBottom: '1px solid var(--border-light)',
         }}
       >
-        {/* Cercle décoratif fond */}
-        <div
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            top: '-120px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: '600px',
-            height: '600px',
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, var(--accent-1-soft) 0%, transparent 70%)',
-            opacity: .6,
-            pointerEvents: 'none',
-          }}
-        />
-
-        <div
-          style={{ maxWidth: '720px', margin: '0 auto', position: 'relative' }}
-          className="animate-fade-up"
-        >
-          <div
-            className="typo-overline"
-            style={{ marginBottom: '1rem', color: 'var(--accent-1)' }}
-          >
+        <div style={{ maxWidth: '680px', margin: '0 auto' }} className="animate-fade-up">
+          <p style={{
+            fontSize: '.8rem',
+            fontWeight: 600,
+            letterSpacing: '.12em',
+            textTransform: 'uppercase',
+            color: 'var(--accent-1)',
+            marginBottom: '1.25rem',
+          }}>
             Le guide aspirateur honnête
-          </div>
+          </p>
 
-          <h1 className="typo-h1-home" style={{ marginBottom: '1.25rem' }}>
+          <h1
+            className="typo-h1-home"
+            style={{ marginBottom: '1.25rem' }}
+          >
             {t('hero.headline')}
           </h1>
 
-          <p className="typo-lead" style={{ marginBottom: '2rem' }}>
+          <p
+            className="typo-lead"
+            style={{ marginBottom: '2.5rem', maxWidth: '560px', margin: '0 auto 2.5rem' }}
+          >
             {t('hero.subheadline')}
           </p>
 
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href={`${base}/comparer/balai`} className="btn btn-primary" style={{ fontSize: '1rem', padding: '.75rem 1.75rem' }}>
+            <Link
+              href={`${base}/comparer/balai`}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '.4rem',
+                padding: '.75rem 1.75rem',
+                background: 'var(--accent-1)',
+                color: '#fff',
+                borderRadius: '4px',
+                fontWeight: 600,
+                fontSize: '.95rem',
+                textDecoration: 'none',
+              }}
+            >
               {t('hero.cta')}
             </Link>
-            <Link href={`${base}/quiz`} className="btn btn-ghost" style={{ fontSize: '1rem', padding: '.75rem 1.75rem' }}>
+            <Link
+              href={`${base}/quiz`}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '.4rem',
+                padding: '.75rem 1.75rem',
+                background: 'transparent',
+                color: 'var(--text-primary)',
+                border: '1px solid var(--border-medium)',
+                borderRadius: '4px',
+                fontWeight: 500,
+                fontSize: '.95rem',
+                textDecoration: 'none',
+              }}
+            >
               {t('hero.ctaSecondary')}
             </Link>
           </div>
         </div>
       </section>
 
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1.5rem' }}>
+      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 1.5rem' }}>
 
-        {/* ── CATÉGORIES ────────────────────────────────────────── */}
-        <section style={{ padding: '3rem 0' }}>
-          <h2 className="typo-h2" style={{ marginBottom: '1.5rem' }}>
-            {t('sections.categories')}
-          </h2>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
-            gap: '1rem',
-          }}>
-            {categoryOrder.map(cat => {
-              const meta  = categoryMeta[cat]
-              const color = `var(--color-${cat})`
+        {/* ── CATÉGORIES — liste éditoriale numérotée ────────────── */}
+        <section style={sectionStyle}>
+          <div style={sectionHeaderStyle}>
+            <h2 className="typo-h2" style={{ margin: 0 }}>
+              {t('sections.categories')}
+            </h2>
+          </div>
+
+          <div>
+            {categoryOrder.map((cat, i) => {
+              const meta = categoryMeta[cat]
               return (
                 <Link
                   key={cat}
                   href={`${base}/comparer/${cat}`}
-                  style={{ textDecoration: 'none' }}
+                  style={{ textDecoration: 'none', display: 'block' }}
                 >
-                  <div
-                    className="card card-lift"
-                    style={{
-                      padding: '1.25rem',
-                      borderTop: `3px solid ${color}`,
-                      cursor: 'pointer',
-                    }}
-                  >
-                    <div style={{ fontSize: '1.75rem', marginBottom: '.5rem' }}>
-                      {categoryIcons[cat] ?? '✦'}
-                    </div>
-                    <div style={{
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: '2.5rem 1fr auto',
+                    alignItems: 'center',
+                    gap: '1rem',
+                    padding: '1rem 0',
+                    borderBottom: '1px solid var(--border-light)',
+                    transition: 'background .12s',
+                  }}>
+                    {/* Numéro watermark */}
+                    <span style={{
                       fontFamily: 'var(--font-playfair), Georgia, serif',
-                      fontWeight: 700,
-                      fontSize: '.95rem',
-                      color: 'var(--text-primary)',
-                      marginBottom: '.25rem',
+                      fontSize: '1.1rem',
+                      fontWeight: 900,
+                      color: 'var(--border-medium)',
+                      lineHeight: 1,
                     }}>
-                      {meta.label}
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+
+                    {/* Label + description */}
+                    <div>
+                      <div style={{
+                        fontFamily: 'var(--font-playfair), Georgia, serif',
+                        fontWeight: 700,
+                        fontSize: '1rem',
+                        color: 'var(--text-primary)',
+                        marginBottom: '.15rem',
+                      }}>
+                        {meta.label}
+                      </div>
+                      <div style={{
+                        fontSize: '.8rem',
+                        color: 'var(--text-muted)',
+                      }}>
+                        {meta.description}
+                      </div>
                     </div>
-                    <div style={{ fontSize: '.8rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>
-                      {meta.description}
-                    </div>
+
+                    {/* Flèche */}
+                    <span style={{ fontSize: '.9rem', color: 'var(--text-muted)' }}>→</span>
                   </div>
                 </Link>
               )
@@ -167,27 +198,28 @@ export default async function HomePage({ params }: Props) {
           </div>
         </section>
 
-        <hr className="section-divider" />
-
-        {/* ── TOP PICKS ─────────────────────────────────────────── */}
-        <section style={{ padding: '3rem 0' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '1.5rem', gap: '1rem', flexWrap: 'wrap' }}>
-            <h2 className="typo-h2">{t('sections.topPicks')}</h2>
-            <Link href={`${base}/comparer/balai`} style={{ fontSize: '.875rem', color: 'var(--accent-1)', textDecoration: 'none' }}>
-              Voir tous les comparatifs →
+        {/* ── TOP PICKS ───────────────────────────────────────────── */}
+        <section style={sectionStyle}>
+          <div style={sectionHeaderStyle}>
+            <h2 className="typo-h2" style={{ margin: 0 }}>{t('sections.topPicks')}</h2>
+            <Link
+              href={`${base}/comparer/balai`}
+              style={{ fontSize: '.875rem', color: 'var(--accent-1)', textDecoration: 'none', whiteSpace: 'nowrap' }}
+            >
+              Voir tous →
             </Link>
           </div>
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-            gap: '1.25rem',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
+            gap: '1rem',
           }}>
             {topPicks.map(p => (
               <ProductCTA
                 key={p.name}
                 name={p.name}
-                brand={p.affiliateUrl}
+                brand={p.brandName}
                 priceEur={p.priceEur}
                 score={p.score}
                 highlight={p.highlight}
@@ -199,21 +231,22 @@ export default async function HomePage({ params }: Props) {
           </div>
         </section>
 
-        <hr className="section-divider" />
-
-        {/* ── MARQUES ───────────────────────────────────────────── */}
-        <section style={{ padding: '3rem 0' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '1.5rem', gap: '1rem', flexWrap: 'wrap' }}>
-            <h2 className="typo-h2">{t('sections.marques')}</h2>
-            <Link href={`${base}/marques`} style={{ fontSize: '.875rem', color: 'var(--accent-1)', textDecoration: 'none' }}>
+        {/* ── MARQUES ─────────────────────────────────────────────── */}
+        <section style={sectionStyle}>
+          <div style={sectionHeaderStyle}>
+            <h2 className="typo-h2" style={{ margin: 0 }}>{t('sections.marques')}</h2>
+            <Link
+              href={`${base}/marques`}
+              style={{ fontSize: '.875rem', color: 'var(--accent-1)', textDecoration: 'none', whiteSpace: 'nowrap' }}
+            >
               Toutes les marques →
             </Link>
           </div>
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-            gap: '1rem',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+            gap: '.75rem',
           }}>
             {topBrands.map(brand => (
               <Link
@@ -221,20 +254,26 @@ export default async function HomePage({ params }: Props) {
                 href={`${base}/marques/${brand.slug}`}
                 style={{ textDecoration: 'none' }}
               >
-                <div className="card card-lift" style={{ padding: '1.25rem' }}>
+                <div style={{
+                  padding: '1rem',
+                  border: '1px solid var(--border-light)',
+                  borderRadius: '6px',
+                  background: 'var(--bg-surface)',
+                  transition: 'border-color .15s, box-shadow .15s',
+                }}>
                   <div style={{
                     fontFamily: 'var(--font-playfair), Georgia, serif',
-                    fontSize: '1.1rem',
-                    fontWeight: 900,
+                    fontWeight: 700,
+                    fontSize: '1rem',
                     color: 'var(--text-primary)',
-                    marginBottom: '.4rem',
+                    marginBottom: '.25rem',
                   }}>
                     {brand.name}
-                    <span style={{ fontSize: '.75rem', fontWeight: 400, color: 'var(--text-muted)', marginLeft: '.4rem', fontFamily: 'var(--font-inter)' }}>
+                    <span style={{ fontSize: '.72rem', fontWeight: 400, color: 'var(--text-muted)', marginLeft: '.4rem' }}>
                       {brand.country}
                     </span>
                   </div>
-                  <p style={{ fontSize: '.8rem', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
+                  <p style={{ fontSize: '.78rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.45 }}>
                     {brand.positioning}
                   </p>
                 </div>
@@ -243,67 +282,49 @@ export default async function HomePage({ params }: Props) {
           </div>
         </section>
 
-        <hr className="section-divider" />
-
-        {/* ── OUTILS ────────────────────────────────────────────── */}
-        <section style={{ padding: '3rem 0' }}>
-          <h2 className="typo-h2" style={{ marginBottom: '1.5rem' }}>
-            {t('sections.comparer')}
-          </h2>
+        {/* ── OUTILS ──────────────────────────────────────────────── */}
+        <section style={{ ...sectionStyle, paddingBottom: '5rem' }}>
+          <div style={sectionHeaderStyle}>
+            <h2 className="typo-h2" style={{ margin: 0 }}>{t('sections.comparer')}</h2>
+          </div>
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-            gap: '1rem',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+            gap: '.75rem',
           }}>
             {[
-              {
-                href: `${base}/quiz`,
-                icon: '🎯',
-                title: 'Quiz aspirateur',
-                desc: '4 questions → votre recommandation personnalisée',
-                cta: 'Faire le quiz',
-                color: 'var(--color-balai)',
-              },
-              {
-                href: `${base}/deals`,
-                icon: '🏷️',
-                title: 'Deals & Promos',
-                desc: 'Sélection des meilleures promos du moment',
-                cta: 'Voir les deals',
-                color: 'var(--color-laveur)',
-              },
-              {
-                href: `${base}/simulateur`,
-                icon: '📅',
-                title: 'Quand acheter ?',
-                desc: 'Cycles de prix Amazon décryptés',
-                cta: 'Voir le calendrier',
-                color: 'var(--color-traineau)',
-              },
+              { href: `${base}/quiz`,       title: 'Quiz aspirateur',   desc: '4 questions → recommandation', cta: 'Faire le quiz' },
+              { href: `${base}/deals`,      title: 'Deals & Promos',    desc: 'Sélection promos du moment',   cta: 'Voir les deals' },
+              { href: `${base}/simulateur`, title: 'Quand acheter ?',   desc: 'Calendrier prix Amazon',       cta: 'Voir le calendrier' },
             ].map(tool => (
-              <Link key={tool.href} href={tool.href} style={{ textDecoration: 'none' }}>
-                <div
-                  className="card card-lift"
-                  style={{ padding: '1.5rem', borderTop: `3px solid ${tool.color}` }}
-                >
-                  <div style={{ fontSize: '2rem', marginBottom: '.75rem' }}>{tool.icon}</div>
-                  <div style={{
-                    fontFamily: 'var(--font-playfair), Georgia, serif',
-                    fontWeight: 700,
-                    fontSize: '1rem',
-                    color: 'var(--text-primary)',
-                    marginBottom: '.4rem',
-                  }}>
-                    {tool.title}
-                  </div>
-                  <p style={{ fontSize: '.875rem', color: 'var(--text-secondary)', margin: '0 0 1rem', lineHeight: 1.5 }}>
-                    {tool.desc}
-                  </p>
-                  <span style={{ fontSize: '.85rem', color: tool.color, fontWeight: 600 }}>
-                    {tool.cta} →
-                  </span>
+              <Link
+                key={tool.href}
+                href={tool.href}
+                style={{
+                  display: 'block',
+                  padding: '1.25rem',
+                  border: '1px solid var(--border-light)',
+                  borderRadius: '6px',
+                  background: 'var(--bg-surface)',
+                  textDecoration: 'none',
+                }}
+              >
+                <div style={{
+                  fontFamily: 'var(--font-playfair), Georgia, serif',
+                  fontWeight: 700,
+                  fontSize: '.95rem',
+                  color: 'var(--text-primary)',
+                  marginBottom: '.3rem',
+                }}>
+                  {tool.title}
                 </div>
+                <p style={{ fontSize: '.8rem', color: 'var(--text-muted)', margin: '0 0 .75rem', lineHeight: 1.5 }}>
+                  {tool.desc}
+                </p>
+                <span style={{ fontSize: '.82rem', color: 'var(--accent-1)', fontWeight: 600 }}>
+                  {tool.cta} →
+                </span>
               </Link>
             ))}
           </div>

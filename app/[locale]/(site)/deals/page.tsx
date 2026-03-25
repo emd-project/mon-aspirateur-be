@@ -63,7 +63,7 @@ export default async function DealsPage({ params }: Props) {
                 <ProductCTA
                   key={p.name}
                   name={p.name}
-                  brand={''}
+                  brand={p.brandName}
                   priceEur={p.priceEur}
                   score={p.score}
                   highlight={p.highlight}

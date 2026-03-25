@@ -124,7 +124,7 @@ export default async function ChoisirCategoriePage({ params }: PageProps) {
             <ProductCTA
               key={pick.name}
               name={pick.name}
-              brand={pick.name.split(' ')[0] ?? ''}
+              brand={pick.brandName}
               priceEur={pick.priceEur}
               score={pick.score}
               highlight={pick.highlight}

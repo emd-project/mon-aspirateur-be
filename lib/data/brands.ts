@@ -410,8 +410,14 @@ export function getBrandsByCategory(category: ProductCategory): Brand[] {
   return brands.filter(b => b.categories.includes(category))
 }
 
-export function getTopPicksByCategory(category: ProductCategory): BrandProduct[] {
+export type BrandProductWithBrand = BrandProduct & { brandName: string }
+
+export function getTopPicksByCategory(category: ProductCategory): BrandProductWithBrand[] {
   return brands
-    .flatMap(b => b.topProducts.filter(p => p.category === category && p.isTopPick))
+    .flatMap(b =>
+      b.topProducts
+        .filter(p => p.category === category && p.isTopPick)
+        .map(p => ({ ...p, brandName: b.name }))
+    )
     .sort((a, b) => b.score - a.score)
 }
