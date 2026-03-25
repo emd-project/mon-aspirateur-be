@@ -72,10 +72,10 @@ export default function ProductCTA({
       <div style={{
         fontFamily: 'var(--font-playfair), Georgia, serif',
         fontWeight: 900,
-        fontSize: '1.75rem',
+        fontSize: '1.35rem',
         color: 'var(--accent-1)',
         lineHeight: 1,
-        marginBottom: '.75rem',
+        marginBottom: '.5rem',
         fontVariantNumeric: 'oldstyle-nums',
       }}>
         {priceEur} €
@@ -86,8 +86,7 @@ export default function ProductCTA({
         fontSize: '.875rem',
         color: 'var(--text-secondary)',
         lineHeight: 1.55,
-        margin: '0 0 1rem',
-        flex: 1,
+        margin: '0 0 .875rem',
       }}>
         {highlight}
       </p>

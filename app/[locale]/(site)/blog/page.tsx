@@ -3,8 +3,7 @@ import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import { currentYear } from '@/lib/utils/year'
-import { getArticles } from '@/lib/data/mock/articles'
-import SectionDivider from '@/components/effects/SectionDivider'
+import { getArticlesMdx } from '@/lib/content/articles'
 import NoiseOverlay from '@/components/effects/NoiseOverlay'
 
 export const revalidate = 3600
@@ -25,12 +24,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function BlogHubPage({ params }: PageProps) {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'blog' })
-  const articles = getArticles(locale)
+  const articles = getArticlesMdx(locale)
 
   return (
     <>
       {/* Hero */}
-      <section style={{ position: 'relative', background: 'var(--bg-surface)', padding: 'var(--space-16) var(--space-10)', overflow: 'hidden' }}>
+      <section style={{ position: 'relative', background: 'var(--bg-surface)', padding: '3rem 1.5rem', borderBottom: '1px solid var(--border-light)', overflow: 'hidden' }}>
         <NoiseOverlay />
         <div style={{ maxWidth: 900, margin: '0 auto', position: 'relative', zIndex: 1 }}>
           <nav aria-label="Fil d'Ariane" style={{ marginBottom: 'var(--space-6)' }}>
@@ -49,19 +48,17 @@ export default async function BlogHubPage({ params }: PageProps) {
         </div>
       </section>
 
-      <SectionDivider variant="diagonal" fill="var(--bg-primary)" flipY />
-
-      {/* Articles grid — effect-articles-grid */}
-      <section style={{ background: 'var(--bg-primary)', padding: 'var(--space-12) var(--space-10)' }}>
+      {/* Articles grid */}
+      <section style={{ background: 'var(--bg-primary)', padding: '3rem 1.5rem' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
           {articles.length === 0 ? (
             <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: 'var(--space-16) 0' }}>
               {locale === 'fr' ? 'Aucun article disponible.' : 'No articles available.'}
             </p>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 'var(--space-6)' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
               {articles.map((article) => (
-                <article key={article.slug} className="card-lift" style={{ background: 'var(--bg-surface)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)', padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+                <article key={article.slug} className="card-lift" style={{ background: 'var(--bg-surface)', borderRadius: '6px', border: '1px solid var(--border-light)', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
                   <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--accent-1)' }}>
                     {article.category}
                   </span>
