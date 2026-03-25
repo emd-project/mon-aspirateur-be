@@ -53,6 +53,7 @@ export default function FaqAccordion({ items, title = 'Questions fréquentes' }:
               }}
             >
               <dt>
+                <h3 style={{ margin: 0, fontWeight: 'inherit' }}>
                 <button
                   type="button"
                   aria-expanded={isOpen}
@@ -72,10 +73,10 @@ export default function FaqAccordion({ items, title = 'Questions fréquentes' }:
                 >
                   <span style={{
                     fontFamily: 'var(--font-playfair), Georgia, serif',
-                    fontSize: '.975rem',
+                    fontSize: 'clamp(1rem, 2vw, 1.1rem)',
                     fontWeight: 700,
                     color: 'var(--text-primary)',
-                    lineHeight: 1.45,
+                    lineHeight: 1.4,
                   }}>
                     {item.question}
                   </span>
@@ -101,6 +102,7 @@ export default function FaqAccordion({ items, title = 'Questions fréquentes' }:
                     {isOpen ? '−' : '+'}
                   </span>
                 </button>
+                </h3>
               </dt>
 
               {isOpen && (
