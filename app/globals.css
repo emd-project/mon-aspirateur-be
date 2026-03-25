@@ -1,0 +1,205 @@
+@import "tailwindcss";
+
+/* ─── Tailwind v4 @theme tokens ─────────────────────────────────────── */
+@theme {
+  --color-accent-1:       #CC4A1A;
+  --color-accent-2:       #E8956D;
+  --color-accent-3:       #F2C49A;
+  --color-bg-primary:     #FAF8F3;
+  --color-bg-surface:     #F5F3EE;
+  --color-bg-surface-2:   #EDE9E1;
+  --color-text-primary:   #1A1917;
+  --color-text-secondary: #4B4A48;
+  --color-text-muted:     #8A8880;
+  --color-border:         #D8D5CF;
+  --color-border-strong:  #B0ADA6;
+  --color-success:        #2A7A4B;
+  --color-warning:        #B87B0C;
+  --color-error:          #C0392B;
+}
+
+/* ─── Design tokens ─────────────────────────────────────────────────── */
+:root {
+  --bg-primary:    #FAF8F3;
+  --bg-surface:    #F5F3EE;
+  --bg-surface-2:  #EDE9E1;
+  --accent-1:      #CC4A1A;
+  --accent-2:      #E8956D;
+  --accent-3:      #F2C49A;
+  --text-primary:  #1A1917;
+  --text-secondary:#4B4A48;
+  --text-muted:    #8A8880;
+  --border:        #D8D5CF;
+  --border-strong: #B0ADA6;
+  --success:       #2A7A4B;
+  --warning:       #B87B0C;
+  --error:         #C0392B;
+
+  --glass-bg:     rgba(250,248,243,0.72);
+  --glass-border: rgba(200,196,188,0.4);
+  --glass-blur:   14px;
+  --noise-opacity: 0.04;
+
+  --aurora-1:       #CC4A1A;
+  --aurora-2:       #E8956D;
+  --aurora-3:       #F5E6C8;
+  --gradient-angle: 135deg;
+
+  --font-primary: var(--font-inter, 'Inter', sans-serif);
+  --font-display: var(--font-playfair, 'Playfair Display', Georgia, serif);
+  --font-mono:    var(--font-jetbrains, 'JetBrains Mono', monospace);
+
+  --space-1:  4px;  --space-2:  8px;  --space-3:  12px; --space-4:  16px;
+  --space-6:  24px; --space-8:  32px; --space-10: 40px; --space-12: 48px;
+  --space-16: 64px;
+
+  --radius-sm:   6px;  --radius-md:   10px; --radius-lg:  16px;
+  --radius-xl:   24px; --radius-full: 9999px;
+
+  --shadow-sm:     0 1px 3px rgba(26,25,23,0.08);
+  --shadow-md:     0 4px 16px rgba(26,25,23,0.10);
+  --shadow-lg:     0 8px 32px rgba(26,25,23,0.12);
+  --shadow-accent: 0 4px 20px rgba(204,74,26,0.18);
+
+  --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ─── Dark mode ─────────────────────────────────────────────────────── */
+[data-theme="dark"] {
+  --bg-primary:    #1A1917;
+  --bg-surface:    #242220;
+  --bg-surface-2:  #2E2C29;
+  --accent-1:      #E8956D;
+  --accent-2:      #F2C49A;
+  --accent-3:      #CC4A1A;
+  --text-primary:  #F5F3EE;
+  --text-secondary:#C2BFB8;
+  --text-muted:    #7A7870;
+  --border:        #3A3835;
+  --border-strong: #5A5855;
+  --glass-bg:      rgba(26,25,23,0.72);
+  --glass-border:  rgba(90,88,85,0.4);
+}
+
+/* ─── Base ──────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-primary);
+  font-size: 16px;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Focus ─────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--accent-1);
+  outline-offset: 3px;
+}
+
+/* ─── Skip to content ───────────────────────────────────────────────── */
+.skip-to-content {
+  position: absolute;
+  top: -100%;
+  left: var(--space-4);
+  z-index: 9999;
+  padding: var(--space-2) var(--space-4);
+  background: var(--accent-1);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  text-decoration: none;
+  transition: top 0.2s var(--ease-out);
+}
+.skip-to-content:focus { top: var(--space-4); }
+
+/* ─── Typo classes ──────────────────────────────────────────────────── */
+.typo-h1-home {
+  font-family: var(--font-display);
+  font-size: clamp(40px, 6vw, 72px);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  background: linear-gradient(var(--gradient-angle), var(--accent-1), var(--accent-2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.typo-h1-article {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.typo-h1-article::first-letter { color: var(--accent-1); }
+
+.typo-quote {
+  font-size: 120%;
+  line-height: 1.6;
+  border-left: 3px solid var(--accent-1);
+  padding-left: var(--space-6);
+  color: var(--text-muted);
+  font-variant-ligatures: common-ligatures;
+}
+
+.typo-score { font-variant-numeric: oldstyle-nums; }
+
+/* ─── Animations ─────────────────────────────────────────────────────── */
+@keyframes aurora-move-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%       { transform: translate(40px, -30px) scale(1.1); }
+}
+@keyframes aurora-move-2 {
+  0%, 100% { transform: translate(0, 0) scale(1.05); }
+  50%       { transform: translate(-50px, 20px) scale(0.95); }
+}
+@keyframes aurora-move-3 {
+  0%, 100% { transform: translate(0, 0) scale(0.9); }
+  50%       { transform: translate(30px, 40px) scale(1.1); }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes aurora-move-1 { 0%, 100% { transform: none; } }
+  @keyframes aurora-move-2 { 0%, 100% { transform: none; } }
+  @keyframes aurora-move-3 { 0%, 100% { transform: none; } }
+  @keyframes fade-up        { from { opacity: 1; transform: none; } }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.5s var(--ease-out) both;
+}
+
+/* ─── Card hover lift ─────────────────────────────────────────────────── */
+.card-lift {
+  transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+  will-change: transform;
+}
+.card-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ─── Glassmorphism ───────────────────────────────────────────────────── */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+}

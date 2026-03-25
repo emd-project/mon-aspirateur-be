@@ -1,0 +1,236 @@
+{
+  "common": {
+    "siteName": "mon-aspirateur.be",
+    "tagline": "Le guide de référence belge pour choisir son aspirateur",
+    "cta": "Voir notre sélection",
+    "readMore": "Lire la suite",
+    "publishedOn": "Publié le",
+    "updatedOn": "Mis à jour le",
+    "readingTime": "{min} min de lecture",
+    "backToHome": "Retour à l'accueil",
+    "search": "Rechercher",
+    "noResults": "Aucun résultat pour cette recherche.",
+    "skipToContent": "Aller au contenu principal",
+    "formSuccess": "Merci ! Votre message a bien été envoyé.",
+    "formError": "Une erreur est survenue. Veuillez réessayer.",
+    "breadcrumbHome": "Accueil"
+  },
+  "nav": {
+    "guides": "Guides d'achat",
+    "comparatifs": "Comparatifs",
+    "tools": "Outils",
+    "toolsQuiz": "Quiz",
+    "toolsComparateur": "Comparateur",
+    "toolsSimulateur": "Simulateur",
+    "blog": "Blog",
+    "toggleTheme": "Changer le thème",
+    "toggleMenu": "Ouvrir le menu"
+  },
+  "footer": {
+    "navigation": "Navigation",
+    "categories": "Catégories",
+    "about": "À propos",
+    "legal": "Mentions légales",
+    "privacy": "Confidentialité",
+    "cookies": "Cookies",
+    "madeIn": "Fait en Belgique",
+    "authorLink": "Par Thomas V."
+  },
+  "home": {
+    "meta": {
+      "title": "Aspirateur Belgique {year} | mon-aspirateur.be",
+      "description": "Comparateur et guide d'achat aspirateur pour la Belgique. Guides experts, comparatifs marques et outils interactifs pour choisir votre aspirateur en {year}."
+    },
+    "hero": {
+      "headline": "Choisissez votre aspirateur sans vous tromper",
+      "subheadline": "Guides d'achat, comparatifs marques et outils interactifs pensés pour le marché belge.",
+      "cta": "Voir notre sélection {year}",
+      "ctaSecondary": "Quiz : quel aspirateur me convient ?"
+    },
+    "sections": {
+      "featured": "À la une",
+      "guides": "Guides d'achat",
+      "comparatifs": "Comparatifs",
+      "tools": "Outils interactifs",
+      "blog": "Blog"
+    }
+  },
+  "guides": {
+    "meta": {
+      "title": "Guide aspirateur {year} — Choisir le bon modèle | mon-aspirateur.be",
+      "description": "Tous nos guides d'achat aspirateur pour la Belgique. Robot, balai sans fil, traîneau : conseils d'expert et sélections testées en {year}."
+    },
+    "hub": {
+      "title": "Guides d'achat aspirateur {year}",
+      "subtitle": "Nos guides sont rédigés par Thomas V., testeur expert, et mis à jour régulièrement."
+    }
+  },
+  "comparatifs": {
+    "meta": {
+      "title": "Comparatifs aspirateurs {year} | mon-aspirateur.be",
+      "description": "Comparatifs marque vs marque, testés et sourcés pour le marché belge. Dyson, Miele, Roomba, Bosch : notre verdict clair en {year}."
+    },
+    "hub": {
+      "title": "Comparatifs aspirateurs {year}",
+      "subtitle": "Des analyses complètes avec verdict clair — pas de jargon marketing."
+    },
+    "verdict": "Notre verdict",
+    "brandA": "Marque A",
+    "brandB": "Marque B"
+  },
+  "blog": {
+    "meta": {
+      "title": "Blog aspirateur Belgique {year} | mon-aspirateur.be",
+      "description": "Conseils, actus et décryptages sur les aspirateurs pour le marché belge. Par Thomas V., expert électroménager."
+    },
+    "hub": {
+      "title": "Blog aspirateur",
+      "subtitle": "Conseils pratiques et analyses expertes pour bien choisir et entretenir votre aspirateur."
+    },
+    "tldr": "En bref",
+    "tableOfContents": "Sommaire",
+    "relatedArticles": "Articles liés",
+    "faq": "Questions fréquentes"
+  },
+  "author": {
+    "meta": {
+      "title": "Thomas V. — Expert aspirateurs | mon-aspirateur.be",
+      "description": "Thomas V. teste et compare les aspirateurs pour aider les ménages belges à choisir sans se faire avoir par le marketing."
+    },
+    "role": "Expert électroménager & testeur aspirateurs",
+    "publishedArticles": "{count} articles publiés",
+    "testedSince": "Testeur depuis 2019"
+  },
+  "tools": {
+    "quiz": {
+      "meta": {
+        "title": "Quiz : quel aspirateur choisir ? | mon-aspirateur.be",
+        "description": "Répondez à 6 questions pour obtenir une recommandation personnalisée adaptée à votre logement et votre budget."
+      },
+      "title": "Quel aspirateur vous convient ?",
+      "subtitle": "Répondez à nos questions pour obtenir une recommandation personnalisée.",
+      "stepOf": "Étape {current} sur {total}",
+      "next": "Suivant",
+      "previous": "Précédent",
+      "seeResults": "Voir les résultats",
+      "restart": "Recommencer",
+      "resultsTitle": "Nos recommandations pour vous",
+      "compatibility": "Compatibilité",
+      "questions": {
+        "logement": {
+          "label": "Type de logement",
+          "options": {
+            "appartement": "Appartement",
+            "maison": "Maison"
+          }
+        },
+        "surface": {
+          "label": "Surface en m²",
+          "hint": "Surface totale à aspirer"
+        },
+        "sol": {
+          "label": "Type de sol principal",
+          "options": {
+            "parquet": "Parquet / carrelage",
+            "moquette": "Moquette",
+            "mixte": "Mixte"
+          }
+        },
+        "animaux": {
+          "label": "Animaux de compagnie ?",
+          "options": {
+            "oui": "Oui",
+            "non": "Non"
+          }
+        },
+        "budget": {
+          "label": "Budget maximum (EUR)",
+          "hint": "Prix indicatif en Belgique"
+        },
+        "priorite": {
+          "label": "Votre priorité",
+          "options": {
+            "silence": "Silencieux (< 65 dB)",
+            "autonomie": "Longue autonomie",
+            "puissance": "Puissance maximale"
+          }
+        }
+      }
+    },
+    "simulateur": {
+      "meta": {
+        "title": "Simulateur superficie aspirateur | mon-aspirateur.be",
+        "description": "Calculez l'autonomie et la capacité recommandées pour votre aspirateur selon votre superficie et votre fréquence d'aspiration."
+      },
+      "title": "Simulateur superficie",
+      "subtitle": "Entrez vos paramètres pour obtenir les caractéristiques recommandées.",
+      "surface": "Superficie (m²)",
+      "rooms": "Nombre de pièces",
+      "frequency": "Fréquence d'aspiration (fois/semaine)",
+      "floorType": "Type de sol",
+      "calculate": "Calculer",
+      "results": {
+        "title": "Recommandations pour votre logement",
+        "minAutonomy": "Autonomie minimale recommandée",
+        "binCapacity": "Capacité bac recommandée",
+        "noiseLevel": "Niveau sonore conseillé",
+        "matchingProducts": "Modèles adaptés"
+      }
+    },
+    "comparateur": {
+      "meta": {
+        "title": "Comparateur aspirateurs côte-à-côte | mon-aspirateur.be",
+        "description": "Comparez jusqu'à 2 aspirateurs côte-à-côte sur tous les critères techniques. Données vérifiées pour la Belgique."
+      },
+      "title": "Comparateur côte-à-côte",
+      "subtitle": "Sélectionnez deux modèles pour comparer leurs caractéristiques.",
+      "selectModel": "Choisir un modèle",
+      "addModel": "Ajouter un modèle",
+      "criteria": {
+        "price": "Prix (EUR)",
+        "autonomy": "Autonomie (min)",
+        "noise": "Bruit (dB)",
+        "surface": "Surface max (m²)",
+        "hepa": "Filtration HEPA",
+        "pet": "Pour animaux",
+        "score": "Score global"
+      },
+      "best": "Meilleur",
+      "yes": "Oui",
+      "no": "Non"
+    }
+  },
+  "legal": {
+    "mentions": {
+      "meta": {
+        "title": "Mentions légales | mon-aspirateur.be",
+        "description": "Mentions légales de mon-aspirateur.be : éditeur, hébergeur, responsabilité."
+      }
+    },
+    "privacy": {
+      "meta": {
+        "title": "Politique de confidentialité | mon-aspirateur.be",
+        "description": "Comment mon-aspirateur.be collecte et traite vos données personnelles. RGPD Belgique."
+      }
+    },
+    "cookies": {
+      "meta": {
+        "title": "Politique de cookies | mon-aspirateur.be",
+        "description": "Utilisation des cookies sur mon-aspirateur.be. Plausible CE, privacy-first, sans cookie tiers."
+      }
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "Page introuvable",
+      "message": "La page que vous cherchez n'existe pas ou a été déplacée.",
+      "cta": "Retour à l'accueil"
+    },
+    "error": {
+      "title": "Une erreur est survenue",
+      "message": "Quelque chose s'est mal passé. Veuillez réessayer.",
+      "retry": "Réessayer",
+      "cta": "Retour à l'accueil"
+    }
+  }
+}

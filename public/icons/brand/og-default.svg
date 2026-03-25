@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#FAF8F3"/>
+  <!-- Fond texture géométrique -->
+  <circle cx="900" cy="100" r="300" fill="#F2C49A" opacity="0.2"/>
+  <circle cx="1100" cy="500" r="200" fill="#E8956D" opacity="0.15"/>
+  <!-- Logo balai -->
+  <line x1="140" y1="180" x2="100" y2="420" stroke="#CC4A1A" stroke-width="12" stroke-linecap="round"/>
+  <rect x="72" y="415" width="90" height="28" rx="14" fill="#CC4A1A"/>
+  <!-- Texte -->
+  <text x="200" y="310" font-family="Georgia, serif" font-size="72" font-weight="700" fill="#1A1917">mon-aspirateur<tspan fill="#CC4A1A">.be</tspan></text>
+  <text x="200" y="390" font-family="Arial, sans-serif" font-size="28" fill="#8A8880">Le guide de référence belge pour choisir son aspirateur</text>
+</svg>

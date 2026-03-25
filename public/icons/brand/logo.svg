@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 40" fill="none" aria-label="mon-aspirateur.be">
+  <!-- Silhouette aspirateur balai stylisé -->
+  <g aria-hidden="true">
+    <!-- Manche -->
+    <line x1="18" y1="4" x2="10" y2="32" stroke="#CC4A1A" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- Tête -->
+    <rect x="4" y="30" width="22" height="6" rx="3" fill="#CC4A1A"/>
+    <!-- Point lumineux -->
+    <circle cx="28" cy="31" r="2" fill="#E8956D"/>
+  </g>
+  <!-- Wordmark -->
+  <text x="36" y="26" font-family="Georgia, serif" font-size="16" font-weight="700" fill="#1A1917" letter-spacing="-0.3">mon-aspirateur<tspan fill="#CC4A1A">.be</tspan></text>
+</svg>
