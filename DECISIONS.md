@@ -35,6 +35,15 @@ typo-h1-article → text-wrap:balance + Playfair 700 + ::first-letter --accent-1
 typo-quote      → font-variant-ligatures + 120% + border-left 3px --accent-1 + color --text-muted
 typo-score      → font-variant-numeric:oldstyle-nums · dates et notes produits
 
+## Voix éditoriale — décisions tranchées
+- Pronom : **vous** (jamais tu) — cible belge 35-55 ans, achat 400-1 000 €
+- Registre : direct, factuel, sans conditionnel dans un verdict
+- Formules autorisées : "Le vrai tip :", "En clair :", "En pratique,"
+- Formules interdites : "honnête/honnêtement" comme marqueur de marque, "révolutionnaire", "game-changer", "coup de cœur", "incroyable", "impressionnant"
+- Gras : entités nommées + prix + chiffres clés uniquement — max 3-4 par paragraphe
+- H2/H3 : sous forme de questions contenant le mot-clé (GEO §14)
+- Premier paragraphe de chaque H2 : réponse directe (jamais contexte d'abord)
+
 ## Décisions spécifiques au projet
 - Auteur "Thomas V." — pas de nom complet ni de LinkedIn — monogramme TV
 - schema Person : sameAs:[] (pas de LinkedIn) · image omis · Google l'accepte

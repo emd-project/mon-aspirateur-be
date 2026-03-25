@@ -36,6 +36,14 @@ Nouvel auteur → AUTHOR-[slug].md + /auteurs/[slug] avant tout article.
 - Blocage → STOP + re-plan
 - Done → prouver avant de marquer
 
+## Voix éditoriale — règles absolues
+- Pronom : **vous** (jamais tu) — sans exception
+- Interdit : "honnête" comme marqueur de marque · "révolutionnaire" · "game-changer" · "coup de cœur" · "incroyable" · "impressionnant" · conditionnel dans un verdict
+- Formules maison : "Le vrai tip :" · "En clair :" · "En pratique,"
+- Gras : entités nommées + prix + chiffres clés — max 3-4 par paragraphe, jamais des adjectifs
+- H2/H3 : toujours sous forme de question contenant le mot-clé (GEO)
+- Premier paragraphe H2 : réponse directe en ouverture (jamais contexte d'abord)
+
 ## Filtre qualité — avant chaque commit
 - [ ] tsc --noEmit · next lint · vitest run
 - [ ] Zéro <img> · zéro next/image éditorial · SVG only
@@ -44,7 +52,7 @@ Nouvel auteur → AUTHOR-[slug].md + /auteurs/[slug] avant tout article.
 - [ ] Secrets hors repo · params await · CSP sans unsafe-eval
 - [ ] Zéro fonts.googleapis.com · adjustFontFallback:true
 - [ ] Article : byline + AuthorCard + JSON-LD author
-- [ ] Article : no-go list AUTHOR-thomas-v.md vérifiée
+- [ ] Article : no-go list AUTHOR-thomas-v.md vérifiée · zéro "tu" · zéro "honnête" comme marque
 - [ ] Page auteur publiée avant premier article
 - [ ] Chaque section a un fond traité documenté dans DECISIONS.md
 - [ ] prefers-reduced-motion respecté sur toutes les animations
