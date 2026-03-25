@@ -1,208 +1,134 @@
 import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 
 type FooterProps = {
   locale: string
-  t: {
-    navigation: string
-    categories: string
-    about: string
-    legal: string
-    privacy: string
-    cookies: string
-    madeIn: string
-    authorLink: string
-    guides: string
-    comparatifs: string
-    blog: string
-    tools: string
-  }
 }
 
-// SVG ligne décorative géométrique — effect-footer
-function FooterDecorativeLine() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 1200 24"
-      preserveAspectRatio="none"
-      style={{ display: 'block', width: '100%', height: 24, opacity: 0.15 }}
-    >
-      <polyline
-        points="0,12 200,4 400,20 600,4 800,20 1000,4 1200,12"
-        fill="none"
-        stroke="var(--accent-2)"
-        strokeWidth="1.5"
-      />
-      <circle cx="200" cy="4" r="3" fill="var(--accent-1)" />
-      <circle cx="600" cy="4" r="3" fill="var(--accent-1)" />
-      <circle cx="1000" cy="4" r="3" fill="var(--accent-1)" />
-    </svg>
-  )
-}
+export default async function Footer({ locale }: FooterProps) {
+  const t    = await getTranslations({ locale, namespace: 'footer' })
+  const base = `/${locale}`
 
-export default function Footer({ locale, t }: FooterProps) {
-  const year = new Date().getFullYear()
+  const categories = [
+    { slug: 'balai',       label: 'Aspirateurs balai' },
+    { slug: 'robot',       label: 'Robots aspirateurs' },
+    { slug: 'traineau',    label: 'Aspirateurs traîneau' },
+    { slug: 'laveur',      label: 'Laveurs de sol' },
+    { slug: 'accessoires', label: 'Accessoires' },
+  ]
 
   return (
     <footer
-      role="contentinfo"
       style={{
-        background: 'var(--text-primary)',
-        color: 'var(--bg-surface)',
-        paddingTop: 'var(--space-16)',
+        background: 'var(--bg-raised)',
+        borderTop: '1px solid var(--border-light)',
+        paddingTop: '3rem',
+        paddingBottom: '2rem',
+        marginTop: '4rem',
       }}
     >
-      <FooterDecorativeLine />
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1.5rem' }}>
 
-      <div
-        style={{
-          maxWidth: 1280,
-          margin: '0 auto',
-          padding: 'var(--space-12) var(--space-10)',
+        <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: 'var(--space-8)',
-        }}
-      >
-        {/* Col 1 — Navigation */}
-        <div>
-          <h3
-            style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              color: 'var(--text-muted)',
-              marginBottom: 'var(--space-4)',
-            }}
-          >
-            {t.navigation}
-          </h3>
-          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+          gap: '2rem',
+          paddingBottom: '2.5rem',
+          borderBottom: '1px solid var(--border-light)',
+        }}>
+
+          {/* Brand */}
+          <div>
+            <div style={{
+              fontFamily: 'var(--font-playfair), Georgia, serif',
+              fontSize: '1.3rem',
+              fontWeight: 900,
+              letterSpacing: '-.02em',
+              color: 'var(--text-primary)',
+              marginBottom: '.75rem',
+            }}>
+              Mon<span style={{ color: 'var(--accent-1)' }}>Aspirateur</span>
+            </div>
+            <p style={{ fontSize: '.875rem', color: 'var(--text-secondary)', lineHeight: 1.6, maxWidth: '220px' }}>
+              {t('tagline')}
+            </p>
+            <p style={{ marginTop: '1rem', fontSize: '.75rem', color: 'var(--text-muted)' }}>
+              {t('authorLink')}
+            </p>
+          </div>
+
+          {/* Comparer */}
+          <div>
+            <div style={{ fontSize: '.72rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '.75rem' }}>
+              Comparer
+            </div>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '.4rem' }}>
+              {categories.map(cat => (
+                <li key={cat.slug}>
+                  <Link href={`${base}/comparer/${cat.slug}`} style={{ fontSize: '.875rem', color: 'var(--text-secondary)', textDecoration: 'none' }}>
+                    {cat.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Guides */}
+          <div>
+            <div style={{ fontSize: '.72rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '.75rem' }}>
+              Guides
+            </div>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '.4rem' }}>
+              {categories.slice(0, 4).map(cat => (
+                <li key={cat.slug}>
+                  <Link href={`${base}/choisir/${cat.slug}`} style={{ fontSize: '.875rem', color: 'var(--text-secondary)', textDecoration: 'none' }}>
+                    Choisir : {cat.label.toLowerCase()}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Liens */}
+          <div>
+            <div style={{ fontSize: '.72rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '.75rem' }}>
+              {t('about')}
+            </div>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '.4rem' }}>
+              {[
+                { href: `${base}/quiz`,             label: 'Quiz aspirateur' },
+                { href: `${base}/deals`,            label: 'Deals & Promos' },
+                { href: `${base}/marques`,          label: 'Toutes les marques' },
+                { href: `${base}/blog`,             label: 'Blog' },
+                { href: `${base}/auteurs/thomas-v`, label: "L'auteur" },
+              ].map(link => (
+                <li key={link.href}>
+                  <Link href={link.href} style={{ fontSize: '.875rem', color: 'var(--text-secondary)', textDecoration: 'none' }}>
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div style={{ marginTop: '1.5rem', display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <p style={{ fontSize: '.75rem', color: 'var(--text-muted)', maxWidth: '480px', lineHeight: 1.6, margin: 0 }}>
+            {t('affDisclaimer')}
+          </p>
+          <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
             {[
-              { href: `/${locale}/guides`, label: t.guides },
-              { href: `/${locale}/comparatifs`, label: t.comparatifs },
-              { href: `/${locale}/blog`, label: t.blog },
-              { href: `/${locale}/outils/quiz`, label: t.tools },
-            ].map(({ href, label }) => (
-              <li key={href}>
-                <Link
-                  href={href}
-                  style={{ color: 'var(--bg-surface-2)', textDecoration: 'none', fontSize: '14px', transition: 'color 0.15s' }}
-                >
-                  {label}
-                </Link>
-              </li>
+              { href: `${base}/mentions-legales`, label: t('legal') },
+              { href: `${base}/confidentialite`,  label: t('privacy') },
+              { href: `${base}/cookies`,          label: t('cookies') },
+            ].map(link => (
+              <Link key={link.href} href={link.href} style={{ fontSize: '.75rem', color: 'var(--text-muted)', textDecoration: 'none' }}>
+                {link.label}
+              </Link>
             ))}
-          </ul>
+          </div>
         </div>
 
-        {/* Col 2 — Catégories */}
-        <div>
-          <h3
-            style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              color: 'var(--text-muted)',
-              marginBottom: 'var(--space-4)',
-            }}
-          >
-            {t.categories}
-          </h3>
-          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-            {[
-              { href: `/${locale}/guides/choisir-robot-aspirateur`, label: locale === 'fr' ? 'Robot aspirateur' : 'Robot vacuum' },
-              { href: `/${locale}/guides`, label: locale === 'fr' ? 'Aspirateur balai sans fil' : 'Cordless vacuum' },
-              { href: `/${locale}/comparatifs`, label: locale === 'fr' ? 'Comparatifs marques' : 'Brand comparisons' },
-              { href: `/${locale}/outils/simulateur`, label: locale === 'fr' ? 'Simulateur superficie' : 'Area simulator' },
-            ].map(({ href, label }) => (
-              <li key={href}>
-                <Link
-                  href={href}
-                  style={{ color: 'var(--bg-surface-2)', textDecoration: 'none', fontSize: '14px' }}
-                >
-                  {label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Col 3 — À propos */}
-        <div>
-          <h3
-            style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              color: 'var(--text-muted)',
-              marginBottom: 'var(--space-4)',
-            }}
-          >
-            {t.about}
-          </h3>
-          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-            <li>
-              <Link
-                href={`/${locale}/auteurs/thomas-v`}
-                style={{ color: 'var(--bg-surface-2)', textDecoration: 'none', fontSize: '14px' }}
-              >
-                {t.authorLink}
-              </Link>
-            </li>
-            <li>
-              <Link
-                href={`/${locale}/mentions-legales`}
-                style={{ color: 'var(--bg-surface-2)', textDecoration: 'none', fontSize: '14px' }}
-              >
-                {t.legal}
-              </Link>
-            </li>
-            <li>
-              <Link
-                href={`/${locale}/confidentialite`}
-                style={{ color: 'var(--bg-surface-2)', textDecoration: 'none', fontSize: '14px' }}
-              >
-                {t.privacy}
-              </Link>
-            </li>
-            <li>
-              <Link
-                href={`/${locale}/cookies`}
-                style={{ color: 'var(--bg-surface-2)', textDecoration: 'none', fontSize: '14px' }}
-              >
-                {t.cookies}
-              </Link>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      {/* Bottom bar */}
-      <div
-        style={{
-          borderTop: '1px solid rgba(255,255,255,0.08)',
-          padding: 'var(--space-6) var(--space-10)',
-          maxWidth: 1280,
-          margin: '0 auto',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: 'var(--space-3)',
-        }}
-      >
-        <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-muted)' }}>
-          © {year} mon-aspirateur.be — {t.madeIn}
-        </p>
-        <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-muted)' }}>
-          {locale === 'fr'
-            ? 'Aucun cookie tiers · Plausible CE · RGPD Belgique'
-            : 'No third-party cookies · Plausible CE · GDPR Belgium'}
-        </p>
       </div>
     </footer>
   )

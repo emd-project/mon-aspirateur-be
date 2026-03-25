@@ -1,42 +1,40 @@
 'use client'
 
 import { useReducer } from 'react'
-import { filterProducts } from '@/lib/data/mock/products'
-import type { Product } from '@/lib/data/types'
-import ProductCard from './ProductCard'
+import { useTranslations } from 'next-intl'
+import { getTopPicksByCategory } from '@/lib/data/brands'
+import type { ProductCategory } from '@/lib/data/types'
 
 type QuizState = {
   step: number
-  logement: 'appartement' | 'maison' | null
-  surface: number
+  logement: 'studio' | 'appartement' | 'maison' | null
   sol: 'parquet' | 'moquette' | 'mixte' | null
-  animaux: boolean | null
-  budget: number
-  priorite: 'silence' | 'autonomie' | 'puissance' | null
+  animaux: 'non' | 'chat' | 'chien' | 'plusieurs' | null
+  budget: 'moins200' | '200_400' | '400_700' | 'plus700' | null
   done: boolean
 }
 
 type QuizAction =
   | { type: 'SET_LOGEMENT'; value: QuizState['logement'] }
-  | { type: 'SET_SURFACE'; value: number }
-  | { type: 'SET_SOL'; value: QuizState['sol'] }
-  | { type: 'SET_ANIMAUX'; value: boolean }
-  | { type: 'SET_BUDGET'; value: number }
-  | { type: 'SET_PRIORITE'; value: QuizState['priorite'] }
+  | { type: 'SET_SOL';      value: QuizState['sol'] }
+  | { type: 'SET_ANIMAUX';  value: QuizState['animaux'] }
+  | { type: 'SET_BUDGET';   value: QuizState['budget'] }
   | { type: 'NEXT' }
   | { type: 'PREV' }
   | { type: 'RESET' }
 
-const TOTAL_STEPS = 6
+const TOTAL_STEPS = 4
+
+const initialState: QuizState = {
+  step: 1, logement: null, sol: null, animaux: null, budget: null, done: false,
+}
 
 function reducer(state: QuizState, action: QuizAction): QuizState {
   switch (action.type) {
     case 'SET_LOGEMENT': return { ...state, logement: action.value }
-    case 'SET_SURFACE':  return { ...state, surface: action.value }
     case 'SET_SOL':      return { ...state, sol: action.value }
     case 'SET_ANIMAUX':  return { ...state, animaux: action.value }
     case 'SET_BUDGET':   return { ...state, budget: action.value }
-    case 'SET_PRIORITE': return { ...state, priorite: action.value }
     case 'NEXT': {
       const next = state.step + 1
       return { ...state, step: next, done: next > TOTAL_STEPS }
@@ -47,25 +45,14 @@ function reducer(state: QuizState, action: QuizAction): QuizState {
   }
 }
 
-const initialState: QuizState = {
-  step: 1, logement: null, surface: 80, sol: null, animaux: null,
-  budget: 400, priorite: null, done: false,
-}
-
-type QuizStepperProps = {
-  locale: string
-  t: {
-    title: string; subtitle: string; stepOf: string; next: string; previous: string
-    seeResults: string; restart: string; resultsTitle: string; compatibility: string
-    questions: {
-      logement: { label: string; options: { appartement: string; maison: string } }
-      surface: { label: string; hint: string }
-      sol: { label: string; options: { parquet: string; moquette: string; mixte: string } }
-      animaux: { label: string; options: { oui: string; non: string } }
-      budget: { label: string; hint: string }
-      priorite: { label: string; options: { silence: string; autonomie: string; puissance: string } }
-    }
-  }
+// Recommande une catégorie selon les réponses
+function recommendCategory(state: QuizState): ProductCategory {
+  if (state.logement === 'studio') return 'balai'
+  if (state.budget === 'moins200') return 'balai'
+  if (state.budget === 'plus700') return 'robot'
+  if (state.animaux === 'chien' || state.animaux === 'plusieurs') return 'robot'
+  if (state.sol === 'moquette') return 'traineau'
+  return 'balai'
 }
 
 function OptionBtn({ label, selected, onClick }: { label: string; selected: boolean; onClick: () => void }) {
@@ -74,16 +61,17 @@ function OptionBtn({ label, selected, onClick }: { label: string; selected: bool
       type="button"
       onClick={onClick}
       style={{
-        padding: 'var(--space-4) var(--space-6)',
+        padding: '.75rem 1.25rem',
         borderRadius: 'var(--radius-md)',
-        border: selected ? '2px solid var(--accent-1)' : '1px solid var(--border)',
-        background: selected ? 'rgba(204,74,26,0.06)' : 'var(--bg-surface)',
+        border: selected ? '2px solid var(--accent-1)' : '1.5px solid var(--border-medium)',
+        background: selected ? 'var(--accent-1-soft)' : 'var(--bg-surface)',
         color: selected ? 'var(--accent-1)' : 'var(--text-primary)',
         fontWeight: selected ? 700 : 500,
-        fontSize: '15px',
+        fontSize: '.9rem',
         cursor: 'pointer',
-        transition: 'all 0.15s var(--ease-out)',
+        transition: 'all .15s',
         textAlign: 'left',
+        width: '100%',
       }}
     >
       {label}
@@ -91,159 +79,157 @@ function OptionBtn({ label, selected, onClick }: { label: string; selected: bool
   )
 }
 
-export default function QuizStepper({ locale, t }: QuizStepperProps) {
+export default function QuizStepper() {
+  const t = useTranslations('quiz')
   const [state, dispatch] = useReducer(reducer, initialState)
-  const q = t.questions
 
   const canAdvance = (): boolean => {
     if (state.step === 1) return state.logement !== null
-    if (state.step === 2) return state.surface > 0
-    if (state.step === 3) return state.sol !== null
-    if (state.step === 4) return state.animaux !== null
-    if (state.step === 5) return state.budget > 0
-    if (state.step === 6) return state.priorite !== null
+    if (state.step === 2) return state.sol !== null
+    if (state.step === 3) return state.animaux !== null
+    if (state.step === 4) return state.budget !== null
     return true
   }
 
   if (state.done) {
-    const results = filterProducts({
-      locale,
-      maxPrice: state.budget,
-      petFriendly: state.animaux === true,
-      minSurface: state.surface,
-      minAutonomy: state.priorite === 'autonomie' ? 100 : undefined,
-    }).slice(0, 3)
+    const category = recommendCategory(state)
+    const results  = getTopPicksByCategory(category).slice(0, 3)
+    const catLabel: Record<ProductCategory, string> = {
+      balai: 'Aspirateurs balai', robot: 'Robots aspirateurs',
+      traineau: 'Aspirateurs traîneau', laveur: 'Laveurs de sol', accessoires: 'Accessoires',
+    }
 
     return (
       <div>
-        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 'var(--space-6)' }}>
-          {t.resultsTitle}
+        <h2 style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: '1.5rem', fontWeight: 700, marginBottom: '.5rem', color: 'var(--text-primary)' }}>
+          {t('resultsTitle')}
         </h2>
-        {results.length === 0 ? (
-          <p style={{ color: 'var(--text-muted)' }}>
-            {locale === 'fr' ? 'Aucun modèle ne correspond exactement à vos critères. Essayez d\'augmenter votre budget.' : 'No model matches your exact criteria. Try increasing your budget.'}
-          </p>
-        ) : (
-          <div style={{ display: 'grid', gap: 'var(--space-4)', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
-            {results.map((p: Product) => <ProductCard key={p.slug} product={p} locale={locale} />)}
-          </div>
-        )}
+        <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem', fontSize: '.9rem' }}>
+          Pour vous, on recommande les <strong>{catLabel[category]}</strong>.
+        </p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {results.map(p => (
+            <div key={p.name} className="card" style={{ padding: '1rem 1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '.75rem' }}>
+              <div>
+                <div style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)', marginBottom: '.25rem' }}>
+                  {p.name}
+                </div>
+                <div style={{ fontSize: '.85rem', color: 'var(--text-secondary)' }}>{p.highlight}</div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexShrink: 0 }}>
+                <span style={{ fontFamily: 'var(--font-playfair)', fontWeight: 900, fontSize: '1.25rem', color: 'var(--accent-1)' }}>
+                  {p.priceEur} €
+                </span>
+                <a
+                  href={p.affiliateUrl}
+                  rel="noopener noreferrer sponsored"
+                  className="btn btn-primary"
+                  style={{ fontSize: '.85rem', padding: '.5rem 1rem' }}
+                >
+                  Voir →
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
         <button
           type="button"
           onClick={() => dispatch({ type: 'RESET' })}
-          style={{ marginTop: 'var(--space-8)', padding: 'var(--space-3) var(--space-6)', background: 'none', border: '1px solid var(--border)', borderRadius: 'var(--radius-full)', cursor: 'pointer', color: 'var(--text-secondary)', fontWeight: 600, fontSize: '14px' }}
+          className="btn btn-ghost"
+          style={{ marginTop: '1.5rem' }}
         >
-          {t.restart}
+          {t('restart')}
         </button>
       </div>
     )
   }
 
+  const progress = (state.step / TOTAL_STEPS) * 100
+
   return (
-    <div style={{ maxWidth: 560 }}>
-      {/* Progress */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-6)' }}>
-        <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
-          {t.stepOf.replace('{current}', String(state.step)).replace('{total}', String(TOTAL_STEPS))}
-        </span>
-        <div style={{ height: 4, flex: 1, maxWidth: 200, background: 'var(--border)', borderRadius: 'var(--radius-full)', margin: '0 var(--space-4)' }}>
-          <div style={{ height: '100%', width: `${(state.step / TOTAL_STEPS) * 100}%`, background: 'var(--accent-1)', borderRadius: 'var(--radius-full)', transition: 'width 0.3s var(--ease-out)' }} />
+    <div>
+      {/* Barre de progression */}
+      <div style={{ marginBottom: '2rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '.5rem', fontSize: '.8rem', color: 'var(--text-muted)' }}>
+          <span>{t('stepOf', { current: state.step, total: TOTAL_STEPS })}</span>
+          <span>{Math.round(progress)} %</span>
+        </div>
+        <div className="compare-bar-track">
+          <div className="compare-bar-fill" style={{ width: `${progress}%`, background: 'var(--accent-1)', transition: 'width .3s' }} />
         </div>
       </div>
 
-      {/* Steps */}
+      {/* Step 1 — Logement */}
       {state.step === 1 && (
         <div>
-          <p style={{ fontWeight: 700, marginBottom: 'var(--space-4)', color: 'var(--text-primary)' }}>{q.logement.label}</p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-            <OptionBtn label={q.logement.options.appartement} selected={state.logement === 'appartement'} onClick={() => dispatch({ type: 'SET_LOGEMENT', value: 'appartement' })} />
-            <OptionBtn label={q.logement.options.maison} selected={state.logement === 'maison'} onClick={() => dispatch({ type: 'SET_LOGEMENT', value: 'maison' })} />
+          <p style={{ fontWeight: 700, marginBottom: '1rem', color: 'var(--text-primary)', fontSize: '1.05rem' }}>
+            {t('questions.logement.label')}
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '.6rem' }}>
+            {(['studio', 'appartement', 'maison'] as const).map(v => (
+              <OptionBtn key={v} label={t(`questions.logement.options.${v}`)} selected={state.logement === v} onClick={() => dispatch({ type: 'SET_LOGEMENT', value: v })} />
+            ))}
           </div>
         </div>
       )}
 
+      {/* Step 2 — Sol */}
       {state.step === 2 && (
         <div>
-          <p style={{ fontWeight: 700, marginBottom: 'var(--space-2)', color: 'var(--text-primary)' }}>{q.surface.label}</p>
-          <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: 'var(--space-4)' }}>{q.surface.hint}</p>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
-            <input
-              type="range" min={20} max={300} step={10}
-              value={state.surface}
-              onChange={(e) => dispatch({ type: 'SET_SURFACE', value: Number(e.target.value) })}
-              style={{ flex: 1, accentColor: 'var(--accent-1)' }}
-            />
-            <span style={{ fontFamily: 'var(--font-display)', fontSize: '24px', fontWeight: 900, color: 'var(--accent-1)', minWidth: 80, textAlign: 'right' }}>
-              {state.surface} m²
-            </span>
+          <p style={{ fontWeight: 700, marginBottom: '1rem', color: 'var(--text-primary)', fontSize: '1.05rem' }}>
+            {t('questions.sol.label')}
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '.6rem' }}>
+            {(['parquet', 'moquette', 'mixte'] as const).map(v => (
+              <OptionBtn key={v} label={t(`questions.sol.options.${v}`)} selected={state.sol === v} onClick={() => dispatch({ type: 'SET_SOL', value: v })} />
+            ))}
           </div>
         </div>
       )}
 
+      {/* Step 3 — Animaux */}
       {state.step === 3 && (
         <div>
-          <p style={{ fontWeight: 700, marginBottom: 'var(--space-4)', color: 'var(--text-primary)' }}>{q.sol.label}</p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-            {(['parquet', 'moquette', 'mixte'] as const).map((v) => (
-              <OptionBtn key={v} label={q.sol.options[v]} selected={state.sol === v} onClick={() => dispatch({ type: 'SET_SOL', value: v })} />
+          <p style={{ fontWeight: 700, marginBottom: '1rem', color: 'var(--text-primary)', fontSize: '1.05rem' }}>
+            {t('questions.animaux.label')}
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '.6rem' }}>
+            {(['non', 'chat', 'chien', 'plusieurs'] as const).map(v => (
+              <OptionBtn key={v} label={t(`questions.animaux.options.${v}`)} selected={state.animaux === v} onClick={() => dispatch({ type: 'SET_ANIMAUX', value: v })} />
             ))}
           </div>
         </div>
       )}
 
+      {/* Step 4 — Budget */}
       {state.step === 4 && (
         <div>
-          <p style={{ fontWeight: 700, marginBottom: 'var(--space-4)', color: 'var(--text-primary)' }}>{q.animaux.label}</p>
-          <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-            <OptionBtn label={q.animaux.options.oui} selected={state.animaux === true} onClick={() => dispatch({ type: 'SET_ANIMAUX', value: true })} />
-            <OptionBtn label={q.animaux.options.non} selected={state.animaux === false} onClick={() => dispatch({ type: 'SET_ANIMAUX', value: false })} />
-          </div>
-        </div>
-      )}
-
-      {state.step === 5 && (
-        <div>
-          <p style={{ fontWeight: 700, marginBottom: 'var(--space-2)', color: 'var(--text-primary)' }}>{q.budget.label}</p>
-          <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: 'var(--space-4)' }}>{q.budget.hint}</p>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
-            <input
-              type="range" min={100} max={1000} step={50}
-              value={state.budget}
-              onChange={(e) => dispatch({ type: 'SET_BUDGET', value: Number(e.target.value) })}
-              style={{ flex: 1, accentColor: 'var(--accent-1)' }}
-            />
-            <span style={{ fontFamily: 'var(--font-display)', fontSize: '24px', fontWeight: 900, color: 'var(--accent-1)', minWidth: 80, textAlign: 'right' }}>
-              {state.budget} €
-            </span>
-          </div>
-        </div>
-      )}
-
-      {state.step === 6 && (
-        <div>
-          <p style={{ fontWeight: 700, marginBottom: 'var(--space-4)', color: 'var(--text-primary)' }}>{q.priorite.label}</p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-            {(['silence', 'autonomie', 'puissance'] as const).map((v) => (
-              <OptionBtn key={v} label={q.priorite.options[v]} selected={state.priorite === v} onClick={() => dispatch({ type: 'SET_PRIORITE', value: v })} />
+          <p style={{ fontWeight: 700, marginBottom: '1rem', color: 'var(--text-primary)', fontSize: '1.05rem' }}>
+            {t('questions.budget.label')}
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '.6rem' }}>
+            {(['moins200', '200_400', '400_700', 'plus700'] as const).map(v => (
+              <OptionBtn key={v} label={t(`questions.budget.options.${v}`)} selected={state.budget === v} onClick={() => dispatch({ type: 'SET_BUDGET', value: v })} />
             ))}
           </div>
         </div>
       )}
 
-      {/* Nav */}
-      <div style={{ display: 'flex', gap: 'var(--space-4)', marginTop: 'var(--space-8)' }}>
+      {/* Navigation */}
+      <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
         {state.step > 1 && (
-          <button type="button" onClick={() => dispatch({ type: 'PREV' })} style={{ padding: 'var(--space-3) var(--space-6)', background: 'none', border: '1px solid var(--border)', borderRadius: 'var(--radius-full)', cursor: 'pointer', color: 'var(--text-secondary)', fontWeight: 600 }}>
-            {t.previous}
+          <button type="button" onClick={() => dispatch({ type: 'PREV' })} className="btn btn-ghost">
+            {t('previous')}
           </button>
         )}
         <button
           type="button"
           onClick={() => dispatch({ type: 'NEXT' })}
           disabled={!canAdvance()}
-          style={{ padding: 'var(--space-3) var(--space-8)', background: canAdvance() ? 'var(--accent-1)' : 'var(--border)', color: canAdvance() ? '#fff' : 'var(--text-muted)', border: 'none', borderRadius: 'var(--radius-full)', cursor: canAdvance() ? 'pointer' : 'not-allowed', fontWeight: 700, fontSize: '15px', transition: 'background 0.15s' }}
+          className="btn btn-primary"
+          style={{ opacity: canAdvance() ? 1 : .45, cursor: canAdvance() ? 'pointer' : 'not-allowed' }}
         >
-          {state.step === TOTAL_STEPS ? t.seeResults : t.next}
+          {state.step === TOTAL_STEPS ? t('seeResults') : t('next')}
         </button>
       </div>
     </div>

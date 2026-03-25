@@ -1,279 +1,362 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { useTheme } from 'next-themes'
-import { Menu, X, Sun, Moon, Monitor } from 'lucide-react'
+import { useTranslations, useLocale } from 'next-intl'
+import { categoryOrder } from '@/lib/data/comparateur'
 
-type HeaderProps = {
-  locale: string
-  t: {
-    guides: string
-    comparatifs: string
-    tools: string
-    toolsQuiz: string
-    toolsComparateur: string
-    toolsSimulateur: string
-    blog: string
-    toggleTheme: string
-    toggleMenu: string
-  }
-}
+type NavLeaf  = { href: string; label: string }
+type NavGroup = { label: string; children: NavLeaf[] }
+type NavItem  = NavLeaf | NavGroup
 
-function LogoSvg() {
+const isNavGroup = (item: NavItem): item is NavGroup => 'children' in item
+
+function SunIcon() {
   return (
-    <svg
-      viewBox="0 0 180 36"
-      fill="none"
-      aria-hidden="true"
-      style={{ height: 32, width: 'auto' }}
-    >
-      {/* Manche aspirateur */}
-      <line x1="16" y1="3" x2="8" y2="28" stroke="var(--accent-1)" strokeWidth="2.5" strokeLinecap="round" />
-      {/* Tête */}
-      <rect x="2" y="26" width="20" height="6" rx="3" fill="var(--accent-1)" />
-      {/* Dot lumineux */}
-      <circle cx="25" cy="27" r="2" fill="var(--accent-2)" />
-      {/* Wordmark */}
-      <text x="32" y="23" fontFamily="Georgia, serif" fontSize="14" fontWeight="700" fill="var(--text-primary)" letterSpacing="-0.2">
-        mon-aspirateur
-        <tspan fill="var(--accent-1)">.be</tspan>
-      </text>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="4"/>
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
     </svg>
   )
 }
 
-function ThemeToggle({ label }: { label: string }) {
-  const { theme, setTheme } = useTheme()
-
-  const next = theme === 'dark' ? 'light' : theme === 'light' ? 'system' : 'dark'
-  const Icon = theme === 'dark' ? Moon : theme === 'light' ? Sun : Monitor
-
+function MoonIcon() {
   return (
-    <button
-      type="button"
-      aria-label={label}
-      onClick={() => setTheme(next)}
-      style={{
-        background: 'none',
-        border: '1px solid var(--border)',
-        borderRadius: 'var(--radius-sm)',
-        padding: '6px',
-        cursor: 'pointer',
-        color: 'var(--text-secondary)',
-        display: 'flex',
-        alignItems: 'center',
-        transition: 'border-color 0.2s var(--ease-out)',
-      }}
-    >
-      <Icon size={16} aria-hidden="true" />
-    </button>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </svg>
   )
 }
 
-type NavLeaf = { href: string; label: string }
-type NavGroup = { label: string; children: NavLeaf[] }
-type NavItem = NavLeaf | NavGroup
+function ChevronDown() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <polyline points="6 9 12 15 18 9"/>
+    </svg>
+  )
+}
 
-const isNavGroup = (item: NavItem): item is NavGroup => 'children' in item
+export default function Header() {
+  const t      = useTranslations('nav')
+  const locale = useLocale()
+  const { resolvedTheme, setTheme } = useTheme()
 
-export default function Header({ locale, t }: HeaderProps) {
-  const [menuOpen, setMenuOpen] = useState(false)
-  const otherLocale = locale === 'fr' ? 'en' : 'fr'
+  const [menuOpen,  setMenuOpen]  = useState(false)
+  const [openGroup, setOpenGroup] = useState<string | null>(null)
+  const [scrolled,  setScrolled]  = useState(false)
+
+  const handleScroll = useCallback(() => {
+    setScrolled(window.scrollY > 12)
+  }, [])
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [handleScroll])
+
+  const base = `/${locale}`
+
+  const categoryLabels: Record<string, string> = {
+    balai:       t('categories.balai'),
+    robot:       t('categories.robot'),
+    traineau:    t('categories.traineau'),
+    laveur:      t('categories.laveur'),
+    accessoires: t('categories.accessoires'),
+  }
 
   const navLinks: NavItem[] = [
-    { href: `/${locale}/guides`, label: t.guides },
-    { href: `/${locale}/comparatifs`, label: t.comparatifs },
     {
-      label: t.tools,
-      children: [
-        { href: `/${locale}/outils/quiz`, label: t.toolsQuiz },
-        { href: `/${locale}/outils/comparateur`, label: t.toolsComparateur },
-        { href: `/${locale}/outils/simulateur`, label: t.toolsSimulateur },
-      ],
+      label: t('comparer'),
+      children: categoryOrder.map(cat => ({
+        href:  `${base}/comparer/${cat}`,
+        label: categoryLabels[cat] ?? cat,
+      })),
     },
-    { href: `/${locale}/blog`, label: t.blog },
+    {
+      label: t('choisir'),
+      children: categoryOrder.slice(0, 4).map(cat => ({
+        href:  `${base}/choisir/${cat}`,
+        label: categoryLabels[cat] ?? cat,
+      })),
+    },
+    { href: `${base}/marques`, label: t('marques') },
+    { href: `${base}/deals`,   label: t('deals') },
+    { href: `${base}/blog`,    label: t('blog') },
   ]
 
   return (
     <header
-      role="banner"
       style={{
         position: 'sticky',
         top: 0,
-        zIndex: 100,
-        background: 'var(--glass-bg)',
-        backdropFilter: 'blur(var(--glass-blur))',
-        WebkitBackdropFilter: 'blur(var(--glass-blur))',
-        borderBottom: '1px solid var(--glass-border)',
+        zIndex: 40,
+        transition: 'box-shadow .25s',
+        boxShadow: scrolled ? '0 1px 0 var(--border-light)' : 'none',
+        backdropFilter: scrolled ? 'blur(12px)' : 'none',
+        WebkitBackdropFilter: scrolled ? 'blur(12px)' : 'none',
+        background: scrolled ? 'rgba(250,247,242,.9)' : 'transparent',
       }}
     >
-      <div
-        style={{
-          maxWidth: 1280,
-          margin: '0 auto',
-          padding: '0 var(--space-10)',
-          height: 64,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: 'var(--space-6)',
-        }}
-      >
-        {/* Logo */}
-        <Link href={`/${locale}`} aria-label="mon-aspirateur.be — accueil" style={{ flexShrink: 0 }}>
-          <LogoSvg />
-        </Link>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1.5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', height: '64px', gap: '1.5rem' }}>
 
-        {/* Nav desktop */}
-        <nav aria-label="Navigation principale" style={{ display: 'flex', gap: 'var(--space-6)', alignItems: 'center' }}>
-          {navLinks.map((item) =>
-            isNavGroup(item) ? (
-              <div key={item.label} style={{ position: 'relative' }} className="nav-dropdown-parent">
-                <span
+          {/* Logo */}
+          <Link
+            href={base}
+            style={{
+              fontFamily: 'var(--font-playfair), Georgia, serif',
+              fontSize: '1.2rem',
+              fontWeight: 900,
+              color: 'var(--text-primary)',
+              textDecoration: 'none',
+              letterSpacing: '-.02em',
+              flexShrink: 0,
+            }}
+          >
+            Mon<span style={{ color: 'var(--accent-1)' }}>Aspirateur</span>
+          </Link>
+
+          {/* Desktop nav */}
+          <nav
+            aria-label="Navigation principale"
+            style={{ display: 'flex', alignItems: 'center', gap: '.1rem', flex: 1 }}
+          >
+            {navLinks.map(item => (
+              isNavGroup(item) ? (
+                <div key={item.label} style={{ position: 'relative' }}>
+                  <button
+                    onClick={() => setOpenGroup(openGroup === item.label ? null : item.label)}
+                    aria-expanded={openGroup === item.label}
+                    aria-haspopup="true"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '.3rem',
+                      padding: '.4rem .75rem',
+                      borderRadius: 'var(--radius-pill)',
+                      background: 'transparent',
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontSize: '.9rem',
+                      fontWeight: 500,
+                      color: 'var(--text-secondary)',
+                    }}
+                  >
+                    {item.label}
+                    <ChevronDown />
+                  </button>
+
+                  {openGroup === item.label && (
+                    <>
+                      <div
+                        style={{ position: 'fixed', inset: 0, zIndex: 10 }}
+                        onClick={() => setOpenGroup(null)}
+                        aria-hidden="true"
+                      />
+                      <div
+                        style={{
+                          position: 'absolute',
+                          top: 'calc(100% + .5rem)',
+                          left: 0,
+                          background: 'var(--bg-surface)',
+                          border: '1px solid var(--border-light)',
+                          borderRadius: 'var(--radius-lg)',
+                          boxShadow: 'var(--shadow-lg)',
+                          padding: '.5rem',
+                          minWidth: '200px',
+                          zIndex: 20,
+                        }}
+                      >
+                        {item.children.map(child => (
+                          <Link
+                            key={child.href}
+                            href={child.href}
+                            onClick={() => setOpenGroup(null)}
+                            style={{
+                              display: 'block',
+                              padding: '.5rem .75rem',
+                              borderRadius: 'var(--radius-sm)',
+                              fontSize: '.875rem',
+                              color: 'var(--text-secondary)',
+                              textDecoration: 'none',
+                            }}
+                          >
+                            {child.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  key={(item as NavLeaf).href}
+                  href={(item as NavLeaf).href}
                   style={{
-                    fontSize: '14px',
+                    padding: '.4rem .75rem',
+                    borderRadius: 'var(--radius-pill)',
+                    fontSize: '.9rem',
                     fontWeight: 500,
                     color: 'var(--text-secondary)',
-                    cursor: 'default',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px',
+                    textDecoration: 'none',
                   }}
                 >
                   {item.label}
-                  <span aria-hidden="true" style={{ fontSize: '10px' }}>▾</span>
-                </span>
-                {/* Dropdown — shown on hover via CSS would need stylesheet; using simple approach */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '100%',
-                    left: 0,
-                    minWidth: 160,
-                    background: 'var(--bg-surface)',
-                    border: '1px solid var(--border)',
-                    borderRadius: 'var(--radius-md)',
-                    padding: 'var(--space-2) 0',
-                    marginTop: 'var(--space-2)',
-                    boxShadow: 'var(--shadow-md)',
-                    display: 'none',
-                  }}
-                  className="nav-dropdown"
-                >
-                  {item.children.map((child) => (
-                    <Link
-                      key={child.href}
-                      href={child.href}
-                      style={{
-                        display: 'block',
-                        padding: 'var(--space-2) var(--space-4)',
-                        fontSize: '14px',
-                        color: 'var(--text-secondary)',
-                        textDecoration: 'none',
-                      }}
-                    >
-                      {child.label}
-                    </Link>
-                  ))}
+                </Link>
+              )
+            ))}
+          </nav>
+
+          {/* Right actions */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem' }}>
+            <Link
+              href={`${base}/quiz`}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                padding: '.5rem 1rem',
+                borderRadius: 'var(--radius-pill)',
+                background: 'var(--accent-1)',
+                color: '#fff',
+                fontSize: '.85rem',
+                fontWeight: 600,
+                textDecoration: 'none',
+              }}
+            >
+              Quiz
+            </Link>
+
+            {resolvedTheme !== undefined && (
+              <button
+                onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+                aria-label={t('toggleTheme')}
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: 'var(--radius-pill)',
+                  border: '1px solid var(--border-light)',
+                  background: 'var(--bg-surface)',
+                  color: 'var(--text-secondary)',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                {resolvedTheme === 'dark' ? <SunIcon /> : <MoonIcon />}
+              </button>
+            )}
+
+            {/* Mobile hamburger */}
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label={t('toggleMenu')}
+              aria-expanded={menuOpen}
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: 'var(--radius-pill)',
+                border: '1px solid var(--border-light)',
+                background: 'var(--bg-surface)',
+                color: 'var(--text-secondary)',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                {menuOpen
+                  ? <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>
+                  : <><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></>
+                }
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile menu */}
+      {menuOpen && (
+        <div
+          style={{
+            background: 'var(--bg-surface)',
+            borderTop: '1px solid var(--border-light)',
+            padding: '1rem 1.5rem 1.5rem',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '.25rem',
+          }}
+        >
+          {navLinks.map(item =>
+            isNavGroup(item) ? (
+              <div key={item.label}>
+                <div style={{
+                  fontSize: '.72rem',
+                  fontWeight: 700,
+                  letterSpacing: '.1em',
+                  textTransform: 'uppercase',
+                  color: 'var(--text-muted)',
+                  padding: '.75rem .5rem .3rem',
+                }}>
+                  {item.label}
                 </div>
+                {item.children.map(child => (
+                  <Link
+                    key={child.href}
+                    href={child.href}
+                    onClick={() => setMenuOpen(false)}
+                    style={{
+                      display: 'block',
+                      padding: '.45rem .5rem',
+                      fontSize: '.9rem',
+                      color: 'var(--text-secondary)',
+                      textDecoration: 'none',
+                    }}
+                  >
+                    {child.label}
+                  </Link>
+                ))}
               </div>
             ) : (
               <Link
-                key={item.href}
-                href={item.href}
+                key={(item as NavLeaf).href}
+                href={(item as NavLeaf).href}
+                onClick={() => setMenuOpen(false)}
                 style={{
-                  fontSize: '14px',
+                  display: 'block',
+                  padding: '.65rem .5rem',
+                  fontSize: '.95rem',
                   fontWeight: 500,
-                  color: 'var(--text-secondary)',
+                  color: 'var(--text-primary)',
                   textDecoration: 'none',
-                  transition: 'color 0.15s',
+                  borderTop: '1px solid var(--border-light)',
                 }}
               >
                 {item.label}
               </Link>
             )
           )}
-        </nav>
 
-        {/* Actions */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', flexShrink: 0 }}>
-          {/* Langue */}
           <Link
-            href={`/${otherLocale}`}
-            aria-label={`Switch to ${otherLocale === 'en' ? 'English' : 'Français'}`}
+            href={`${base}/quiz`}
+            onClick={() => setMenuOpen(false)}
             style={{
-              fontSize: '12px',
+              display: 'block',
+              marginTop: '.75rem',
+              padding: '.75rem',
+              borderRadius: 'var(--radius-pill)',
+              background: 'var(--accent-1)',
+              color: '#fff',
+              textAlign: 'center',
               fontWeight: 600,
-              color: 'var(--text-muted)',
               textDecoration: 'none',
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em',
             }}
           >
-            {otherLocale}
+            Quiz — Trouver mon aspirateur
           </Link>
-
-          <ThemeToggle label={t.toggleTheme} />
-
-          {/* Burger mobile */}
-          <button
-            type="button"
-            aria-label={t.toggleMenu}
-            aria-expanded={menuOpen}
-            aria-controls="mobile-nav"
-            onClick={() => setMenuOpen(!menuOpen)}
-            style={{
-              display: 'none',
-              background: 'none',
-              border: '1px solid var(--border)',
-              borderRadius: 'var(--radius-sm)',
-              padding: '6px',
-              cursor: 'pointer',
-              color: 'var(--text-secondary)',
-            }}
-            className="mobile-menu-btn"
-          >
-            {menuOpen ? <X size={16} aria-hidden="true" /> : <Menu size={16} aria-hidden="true" />}
-          </button>
         </div>
-      </div>
-
-      {/* Mobile nav */}
-      {menuOpen && (
-        <nav
-          id="mobile-nav"
-          aria-label="Navigation mobile"
-          style={{
-            background: 'var(--bg-surface)',
-            borderTop: '1px solid var(--border)',
-            padding: 'var(--space-4) var(--space-6)',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 'var(--space-3)',
-          }}
-        >
-          {navLinks.map((item) =>
-            isNavGroup(item) ? (
-              <div key={item.label}>
-                <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                  {item.label}
-                </span>
-                <div style={{ marginTop: 'var(--space-2)', display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', paddingLeft: 'var(--space-4)' }}>
-                  {item.children.map((child) => (
-                    <Link key={child.href} href={child.href} onClick={() => setMenuOpen(false)} style={{ fontSize: '15px', color: 'var(--text-secondary)', textDecoration: 'none' }}>
-                      {child.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <Link key={item.href} href={item.href} onClick={() => setMenuOpen(false)} style={{ fontSize: '15px', fontWeight: 500, color: 'var(--text-primary)', textDecoration: 'none' }}>
-                {item.label}
-              </Link>
-            )
-          )}
-        </nav>
       )}
     </header>
   )

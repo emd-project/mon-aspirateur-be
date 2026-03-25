@@ -1,49 +1,54 @@
-# Progression — mon-aspirateur.be
+# Progression — Mon Aspirateur
 
-## Complété — Étape 1 : Init
-- [x] Bootstrap Next.js ~16.2.1 + TypeScript strict + noUncheckedIndexedAccess
-- [x] middleware.ts — redirection / → /fr (PREMIER FICHIER)
-- [x] next.config.ts — headers CSP + next-intl plugin
-- [x] app/globals.css — tokens CSS complets + dark mode + animations
-- [x] app/[locale]/layout.tsx — fonts (Inter+Playfair+JetBrains) + ThemeProvider + NextIntlClientProvider
-- [x] i18n/routing.ts + i18n/request.ts — next-intl v4 setup
-- [x] messages/fr.json + messages/en.json — i18n complet (toutes les sections)
-- [x] lib/utils/year.ts — currentYear() serveur
-- [x] lib/utils/formatScore.ts
-- [x] lib/config/ai-providers.ts — 5 providers + prompt site:mon-aspirateur.be
-- [x] lib/data/types.ts — interfaces TypeScript agnostiques CMS
-- [x] lib/data/mock/ — authors, articles, guides, comparatifs, products
-- [x] components/effects/ — AuroraBackground, NoiseOverlay, SectionDivider, AnimatedHeading
-- [x] components/ui/ — AuthorByline, AuthorCard, ScoreBadge, FaqAccordion, ProductCard
-- [x] public/icons/brand/ — logo.svg, favicon.svg, og-default.svg
-- [x] .env.example — toutes les clés, valeurs vides
-- [x] .github/workflows/ci.yml — lint + type-check + test + audit
-- [x] vitest.config.ts + tests/setup.ts
-- [x] docs/CDC.md, docs/SEO-GEO-REDACTION.md, docs/AUTHOR-thomas-v.md
-- [x] CLAUDE.md, DECISIONS.md, README.md
+## Complété — Pivot V2 : DA + Architecture affiliation
 
-## En cours — Étape 2 : Layout & Auteur
-- [ ] components/layout/Header.tsx — navigation FR/EN + dark mode toggle
-- [ ] components/layout/Footer.tsx — 3 colonnes + légaux
-- [ ] app/[locale]/(site)/layout.tsx — wrapper site avec Header+Footer
-- [ ] app/[locale]/not-found.tsx
-- [ ] app/[locale]/error.tsx
-- [ ] app/[locale]/(site)/auteurs/thomas-v/page.tsx
+### DA & Design system
+- [x] globals.css — palette chaude light-first (beige, terracotta, vert sauge, bleu pétrole, doré)
+- [x] Tokens catégorie : --color-balai/robot/traineau/laveur/accessoires
+- [x] Grain papier CSS (body::after, opacity .022)
+- [x] Suppression Aurora / NoiseOverlay / dark-first
 
-## Prochaine — Étape 3 : Pages & Contenu
-- [ ] Home page — aurora hero + hubs
-- [ ] Hub guides + 1 guide détail
-- [ ] Hub comparatifs + 1 comparatif
-- [ ] Hub blog + 1 article
-- [ ] Pages légales (mentions, confidentialité, cookies)
-- [ ] app/sitemap.ts · app/robots.ts
-- [ ] app/[locale]/opengraph-image.tsx
+### Data layer
+- [x] lib/data/types.ts — ajout ProductCategory type
+- [x] lib/data/brands.ts — 13 marques + top produits (Rowenta inclus)
+- [x] lib/data/comparateur.ts — 5 catégories, specs, produits réels
+- [x] lib/data/mock/products.ts — migration type → category
 
-## Prochaine — Étape 4 : Outils & SEO final
-- [ ] /outils/quiz — QuizStepper 'use client'
-- [ ] /outils/simulateur — SimulateurForm 'use client'
-- [ ] /outils/comparateur — ComparateurTable 'use client' (skeleton V1)
-- [ ] Lighthouse audit + budget JS vérification
+### Composants éditoriaux
+- [x] ProductCTA — carte Amazon avec prix oversize, score, highlight
+- [x] StatCard — chiffre clé Playfair 900
+- [x] CompareBar — barre de comparaison avec couleur catégorie
+- [x] PullQuote — citation éditoriale avec bordure gauche catégorie
+- [x] Verdict — encadré verdict honnête (bord terracotta)
+- [x] StickyCTA — barre fixe glass blur
+- [x] ProductCard — migré vers category, badges warm
 
-## Bloqué
-Rien à date.
+### Layout
+- [x] Header — 'use client', scroll glass, nav Comparer/Choisir/Marques/Deals/Blog, CTA Quiz
+- [x] Footer — async server component, traductions propres
+- [x] layout.tsx — simplifié (Header + Footer autonomes)
+
+### Pages
+- [x] Home — hero warm, sections catégories, top picks, marques, outils
+- [x] /comparer/[categorie] — ISR 3600, CompareBar + ProductCTA
+- [x] /choisir/[categorie] — ISR 3600, Verdict + PullQuote honnête
+- [x] /marques — SSG, grille 13 marques
+- [x] /marques/[slug] — ISR 3600, top produits par marque
+- [x] /quiz — SSG, QuizStepper 4 étapes (useTranslations interne)
+- [x] /deals — SSG, top picks par catégorie
+- [x] /simulateur — SSG, calendrier cycles prix Amazon
+- [x] /blog, /auteurs/thomas-v, pages légales — conservées
+
+### Messages
+- [x] fr.json — refonte complète (nav, comparer, choisir, marques, deals, simulateur, quiz)
+
+### Qualité
+- [x] tsc --noEmit → 0 erreurs
+- [x] eslint → 0 erreurs, 0 warnings
+- [x] vitest → 5/5 tests
+
+## Prochaine session
+- [ ] MDX pipeline (next-mdx-remote/rsc) pour articles
+- [ ] Contenu éditorial : 12 articles + 5 comparateurs brand vs brand
+- [ ] Sanity V2 — swap lib/data/mock → GROQ
+- [ ] Lighthouse audit

@@ -1,442 +1,315 @@
-// @cdc 5.0 — Home · SSG · JSON-LD WebSite
-// effect-hero → aurora CSS + noise + H1 clip-text
-
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
-import { currentYear } from '@/lib/utils/year'
-import AuroraBackground from '@/components/effects/AuroraBackground'
-import AnimatedHeading from '@/components/effects/AnimatedHeading'
-import SectionDivider from '@/components/effects/SectionDivider'
-import { getGuides } from '@/lib/data/mock/guides'
-import { getComparatifs } from '@/lib/data/mock/comparatifs'
-import { getArticles } from '@/lib/data/mock/articles'
+import { getTopPicksByCategory } from '@/lib/data/brands'
+import { categoryOrder, categoryMeta } from '@/lib/data/comparateur'
+import { brands } from '@/lib/data/brands'
+import ProductCTA from '@/components/ui/ProductCTA'
 
-type PageProps = { params: Promise<{ locale: string }> }
+export const dynamic = 'force-static'
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+type Props = { params: Promise<{ locale: string }> }
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'home.meta' })
-  const year = currentYear()
   return {
-    title: t('title', { year }),
-    description: t('description', { year }),
-    alternates: {
-      canonical: `/${locale}`,
-      languages: { fr: '/fr', en: '/en' },
-    },
+    title: t('title'),
+    description: t('description'),
   }
 }
 
-export default async function HomePage({ params }: PageProps) {
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Mon Aspirateur',
+  description: 'Le guide aspirateur honnête — comparatifs, guides et outils pour choisir sans se tromper.',
+  url: 'https://monaspirateur.fr',
+  publisher: {
+    '@type': 'Organization',
+    name: 'Mon Aspirateur',
+  },
+}
+
+const categoryIcons: Record<string, string> = {
+  balai:       '🧹',
+  robot:       '🤖',
+  traineau:    '🏠',
+  laveur:      '💧',
+  accessoires: '🔧',
+}
+
+export default async function HomePage({ params }: Props) {
   const { locale } = await params
-  const t = await getTranslations({ locale, namespace: 'home' })
-  const tCommon = await getTranslations({ locale, namespace: 'common' })
-  const year = currentYear()
+  const t    = await getTranslations({ locale, namespace: 'home' })
+  const base = `/${locale}`
 
-  const guides = getGuides(locale)
-  const comparatifs = getComparatifs(locale)
-  const articles = getArticles(locale)
+  // Top picks balai + robot pour la section coups de cœur
+  const topBalai = getTopPicksByCategory('balai').slice(0, 2)
+  const topRobot = getTopPicksByCategory('robot').slice(0, 2)
+  const topPicks = [...topBalai, ...topRobot]
 
-  // JSON-LD WebSite + SearchAction
-  const websiteJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    name: 'mon-aspirateur.be',
-    url: 'https://mon-aspirateur.be',
-    description: tCommon('tagline'),
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: { '@type': 'EntryPoint', urlTemplate: `https://mon-aspirateur.be/${locale}?q={search_term_string}` },
-      'query-input': 'required name=search_term_string',
-    },
-  }
+  // Top 6 marques
+  const topBrands = brands.slice(0, 6)
 
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* ── HERO — effect-hero ── */}
-      <AuroraBackground
+      {/* ── HERO ──────────────────────────────────────────────── */}
+      <section
         style={{
           background: 'var(--bg-primary)',
-          padding: 'var(--space-16) var(--space-10)',
-          minHeight: '70vh',
-          display: 'flex',
-          alignItems: 'center',
-        } as React.CSSProperties}
-      >
-        <div style={{ maxWidth: 800, margin: '0 auto', textAlign: 'center' }}>
-          <AnimatedHeading
-            text={t('hero.headline')}
-            variant="home"
-            animationDelay="0.1s"
-          />
-
-          <p
-            className="animate-fade-up"
-            style={{
-              fontSize: 'clamp(17px, 2vw, 20px)',
-              color: 'var(--text-secondary)',
-              margin: 'var(--space-6) auto var(--space-10)',
-              maxWidth: 600,
-              lineHeight: 1.7,
-              animationDelay: '0.25s',
-            }}
-          >
-            {t('hero.subheadline')}
-          </p>
-
-          <div
-            className="animate-fade-up"
-            style={{
-              display: 'flex',
-              gap: 'var(--space-4)',
-              justifyContent: 'center',
-              flexWrap: 'wrap',
-              animationDelay: '0.4s',
-            }}
-          >
-            <Link
-              href={`/${locale}/guides`}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 'var(--space-2)',
-                padding: 'var(--space-4) var(--space-8)',
-                background: 'var(--accent-1)',
-                color: '#fff',
-                borderRadius: 'var(--radius-full)',
-                textDecoration: 'none',
-                fontWeight: 700,
-                fontSize: '16px',
-                boxShadow: 'var(--shadow-accent)',
-                transition: 'transform 0.15s var(--ease-out)',
-              }}
-            >
-              {t('hero.cta', { year })}
-            </Link>
-
-            <Link
-              href={`/${locale}/outils/quiz`}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 'var(--space-2)',
-                padding: 'var(--space-4) var(--space-8)',
-                background: 'transparent',
-                color: 'var(--text-primary)',
-                border: '1px solid var(--border-strong)',
-                borderRadius: 'var(--radius-full)',
-                textDecoration: 'none',
-                fontWeight: 600,
-                fontSize: '15px',
-                transition: 'border-color 0.15s var(--ease-out)',
-              }}
-            >
-              {t('hero.ctaSecondary')}
-            </Link>
-          </div>
-        </div>
-      </AuroraBackground>
-
-      <SectionDivider variant="diagonal" fill="var(--bg-surface)" flipY />
-
-      {/* ── GUIDES HUB ── */}
-      <section
-        style={{
-          background: 'var(--bg-surface)',
-          padding: 'var(--space-16) var(--space-10)',
-        }}
-      >
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 'var(--space-8)' }}>
-            <h2
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(24px, 3vw, 36px)',
-                fontWeight: 700,
-                color: 'var(--text-primary)',
-                margin: 0,
-              }}
-            >
-              {t('sections.guides')}
-            </h2>
-            <Link href={`/${locale}/guides`} style={{ fontSize: '14px', color: 'var(--accent-1)', textDecoration: 'none', fontWeight: 600 }}>
-              {tCommon('readMore')} →
-            </Link>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 'var(--space-6)' }}>
-            {guides.slice(0, 3).map((guide) => (
-              <article
-                key={guide.slug}
-                className="card-lift"
-                style={{
-                  background: 'var(--bg-primary)',
-                  borderRadius: 'var(--radius-lg)',
-                  border: '1px solid var(--border)',
-                  padding: 'var(--space-6)',
-                }}
-              >
-                <h3
-                  style={{
-                    fontFamily: 'var(--font-display)',
-                    fontSize: '18px',
-                    fontWeight: 700,
-                    color: 'var(--text-primary)',
-                    margin: '0 0 var(--space-3)',
-                    lineHeight: 1.3,
-                  }}
-                >
-                  <Link href={`/${locale}/guides/${guide.slug}`} style={{ color: 'inherit', textDecoration: 'none' }}>
-                    {guide.title}
-                  </Link>
-                </h3>
-                <p style={{ margin: '0 0 var(--space-4)', fontSize: '14px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                  {guide.excerpt}
-                </p>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', color: 'var(--text-muted)' }}>
-                  <time dateTime={guide.publishedAt}>
-                    {new Date(guide.publishedAt).toLocaleDateString(locale === 'fr' ? 'fr-BE' : 'en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}
-                  </time>
-                  <span>{guide.readingTimeMin} min</span>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <SectionDivider variant="wave" fill="var(--bg-primary)" flipY />
-
-      {/* ── OUTILS — effect-tools-section ── */}
-      <section
-        style={{
+          padding: 'clamp(3rem, 8vw, 6rem) 1.5rem',
+          textAlign: 'center',
           position: 'relative',
-          background: 'var(--text-primary)',
-          padding: 'var(--space-16) var(--space-10)',
           overflow: 'hidden',
         }}
       >
-        {/* Halo radial --accent-3 */}
+        {/* Cercle décoratif fond */}
         <div
           aria-hidden="true"
           style={{
             position: 'absolute',
-            top: '-20%',
-            right: '-10%',
-            width: '50%',
-            height: '150%',
-            background: `radial-gradient(ellipse at center, var(--aurora-3)1A 0%, transparent 70%)`,
+            top: '-120px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '600px',
+            height: '600px',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, var(--accent-1-soft) 0%, transparent 70%)',
+            opacity: .6,
             pointerEvents: 'none',
           }}
         />
 
-        <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 1 }}>
-          <h2
-            style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 'clamp(24px, 3vw, 36px)',
-              fontWeight: 700,
-              color: 'var(--bg-surface)',
-              marginBottom: 'var(--space-10)',
-            }}
+        <div
+          style={{ maxWidth: '720px', margin: '0 auto', position: 'relative' }}
+          className="animate-fade-up"
+        >
+          <div
+            className="typo-overline"
+            style={{ marginBottom: '1rem', color: 'var(--accent-1)' }}
           >
-            {t('sections.tools')}
-          </h2>
+            Le guide aspirateur honnête
+          </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 'var(--space-6)' }}>
-            {[
-              {
-                num: '01',
-                href: `/${locale}/outils/quiz`,
-                title: locale === 'fr' ? 'Quiz aspirateur' : 'Vacuum quiz',
-                desc: locale === 'fr'
-                  ? 'Répondez à 6 questions, obtenez une recommandation personnalisée.'
-                  : 'Answer 6 questions, get a personalised recommendation.',
-              },
-              {
-                num: '02',
-                href: `/${locale}/outils/simulateur`,
-                title: locale === 'fr' ? 'Simulateur superficie' : 'Area simulator',
-                desc: locale === 'fr'
-                  ? 'Calculez l\'autonomie et la capacité recommandées selon vos m².'
-                  : 'Calculate the recommended autonomy and capacity for your area.',
-              },
-              {
-                num: '03',
-                href: `/${locale}/outils/comparateur`,
-                title: locale === 'fr' ? 'Comparateur' : 'Comparator',
-                desc: locale === 'fr'
-                  ? 'Comparez deux modèles côte-à-côte sur tous les critères.'
-                  : 'Compare two models side by side on all criteria.',
-              },
-            ].map(({ num, href, title, desc }) => (
-              <Link
-                key={href}
-                href={href}
-                style={{ textDecoration: 'none' }}
-              >
-                <article
-                  style={{
-                    padding: 'var(--space-8)',
-                    background: 'rgba(255,255,255,0.04)',
-                    border: '1px solid rgba(255,255,255,0.08)',
-                    borderRadius: 'var(--radius-lg)',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    transition: 'background 0.2s var(--ease-out)',
-                  }}
-                >
-                  {/* Numérotation oversize watermark */}
-                  <span
-                    aria-hidden="true"
-                    style={{
-                      position: 'absolute',
-                      top: 'var(--space-4)',
-                      right: 'var(--space-4)',
-                      fontFamily: 'var(--font-display)',
-                      fontSize: '72px',
-                      fontWeight: 900,
-                      color: 'rgba(255,255,255,0.05)',
-                      lineHeight: 1,
-                      userSelect: 'none',
-                    }}
-                  >
-                    {num}
-                  </span>
-                  <h3
-                    style={{
-                      fontFamily: 'var(--font-display)',
-                      fontSize: '20px',
-                      fontWeight: 700,
-                      color: 'var(--bg-surface)',
-                      margin: '0 0 var(--space-3)',
-                    }}
-                  >
-                    {title}
-                  </h3>
-                  <p style={{ margin: 0, fontSize: '14px', color: 'rgba(242,195,154,0.8)', lineHeight: 1.6 }}>
-                    {desc}
-                  </p>
-                </article>
-              </Link>
-            ))}
+          <h1 className="typo-h1-home" style={{ marginBottom: '1.25rem' }}>
+            {t('hero.headline')}
+          </h1>
+
+          <p className="typo-lead" style={{ marginBottom: '2rem' }}>
+            {t('hero.subheadline')}
+          </p>
+
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Link href={`${base}/comparer/balai`} className="btn btn-primary" style={{ fontSize: '1rem', padding: '.75rem 1.75rem' }}>
+              {t('hero.cta')}
+            </Link>
+            <Link href={`${base}/quiz`} className="btn btn-ghost" style={{ fontSize: '1rem', padding: '.75rem 1.75rem' }}>
+              {t('hero.ctaSecondary')}
+            </Link>
           </div>
         </div>
       </section>
 
-      <SectionDivider variant="diagonal" fill="var(--bg-surface-2)" />
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1.5rem' }}>
 
-      {/* ── COMPARATIFS — effect-comparateur ── */}
-      <section
-        style={{
-          position: 'relative',
-          background: 'var(--bg-surface-2)',
-          padding: 'var(--space-16) var(--space-10)',
-          overflow: 'hidden',
-        }}
-      >
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 'var(--space-8)' }}>
-            <h2
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(24px, 3vw, 36px)',
-                fontWeight: 700,
-                color: 'var(--text-primary)',
-                margin: 0,
-              }}
-            >
-              {t('sections.comparatifs')}
-            </h2>
-            <Link href={`/${locale}/comparatifs`} style={{ fontSize: '14px', color: 'var(--accent-1)', textDecoration: 'none', fontWeight: 600 }}>
-              {tCommon('readMore')} →
+        {/* ── CATÉGORIES ────────────────────────────────────────── */}
+        <section style={{ padding: '3rem 0' }}>
+          <h2 className="typo-h2" style={{ marginBottom: '1.5rem' }}>
+            {t('sections.categories')}
+          </h2>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+            gap: '1rem',
+          }}>
+            {categoryOrder.map(cat => {
+              const meta  = categoryMeta[cat]
+              const color = `var(--color-${cat})`
+              return (
+                <Link
+                  key={cat}
+                  href={`${base}/comparer/${cat}`}
+                  style={{ textDecoration: 'none' }}
+                >
+                  <div
+                    className="card card-lift"
+                    style={{
+                      padding: '1.25rem',
+                      borderTop: `3px solid ${color}`,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <div style={{ fontSize: '1.75rem', marginBottom: '.5rem' }}>
+                      {categoryIcons[cat] ?? '✦'}
+                    </div>
+                    <div style={{
+                      fontFamily: 'var(--font-playfair), Georgia, serif',
+                      fontWeight: 700,
+                      fontSize: '.95rem',
+                      color: 'var(--text-primary)',
+                      marginBottom: '.25rem',
+                    }}>
+                      {meta.label}
+                    </div>
+                    <div style={{ fontSize: '.8rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>
+                      {meta.description}
+                    </div>
+                  </div>
+                </Link>
+              )
+            })}
+          </div>
+        </section>
+
+        <hr className="section-divider" />
+
+        {/* ── TOP PICKS ─────────────────────────────────────────── */}
+        <section style={{ padding: '3rem 0' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '1.5rem', gap: '1rem', flexWrap: 'wrap' }}>
+            <h2 className="typo-h2">{t('sections.topPicks')}</h2>
+            <Link href={`${base}/comparer/balai`} style={{ fontSize: '.875rem', color: 'var(--accent-1)', textDecoration: 'none' }}>
+              Voir tous les comparatifs →
             </Link>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 'var(--space-6)' }}>
-            {comparatifs.slice(0, 2).map((comp) => (
-              <article
-                key={comp.slug}
-                className="card-lift glass"
-                style={{
-                  borderRadius: 'var(--radius-lg)',
-                  padding: 'var(--space-6)',
-                }}
-              >
-                <div style={{ display: 'flex', gap: 'var(--space-3)', alignItems: 'center', marginBottom: 'var(--space-4)' }}>
-                  <span style={{ padding: '4px 12px', background: 'var(--accent-1)', color: '#fff', borderRadius: 'var(--radius-full)', fontSize: '13px', fontWeight: 700 }}>
-                    {comp.brandA}
-                  </span>
-                  <span style={{ fontSize: '13px', color: 'var(--text-muted)', fontWeight: 600 }}>vs</span>
-                  <span style={{ padding: '4px 12px', background: 'var(--bg-surface-2)', color: 'var(--text-primary)', border: '1px solid var(--border)', borderRadius: 'var(--radius-full)', fontSize: '13px', fontWeight: 700 }}>
-                    {comp.brandB}
-                  </span>
-                </div>
-                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '17px', fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 var(--space-3)', lineHeight: 1.3 }}>
-                  <Link href={`/${locale}/comparatifs/${comp.slug}`} style={{ color: 'inherit', textDecoration: 'none' }}>
-                    {comp.title}
-                  </Link>
-                </h3>
-                <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                  {comp.verdict}
-                </p>
-              </article>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+            gap: '1.25rem',
+          }}>
+            {topPicks.map(p => (
+              <ProductCTA
+                key={p.name}
+                name={p.name}
+                brand={p.affiliateUrl}
+                priceEur={p.priceEur}
+                score={p.score}
+                highlight={p.highlight}
+                affiliateUrl={p.affiliateUrl}
+                category={p.category}
+                isTopPick={p.isTopPick}
+              />
             ))}
           </div>
-        </div>
-      </section>
+        </section>
 
-      <SectionDivider variant="wave" fill="var(--bg-primary)" />
+        <hr className="section-divider" />
 
-      {/* ── BLOG ── */}
-      {articles.length > 0 && (
-        <section style={{ background: 'var(--bg-primary)', padding: 'var(--space-16) var(--space-10)' }}>
-          <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 'var(--space-8)' }}>
-              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(24px, 3vw, 36px)', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-                {t('sections.blog')}
-              </h2>
-              <Link href={`/${locale}/blog`} style={{ fontSize: '14px', color: 'var(--accent-1)', textDecoration: 'none', fontWeight: 600 }}>
-                {tCommon('readMore')} →
-              </Link>
-            </div>
+        {/* ── MARQUES ───────────────────────────────────────────── */}
+        <section style={{ padding: '3rem 0' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '1.5rem', gap: '1rem', flexWrap: 'wrap' }}>
+            <h2 className="typo-h2">{t('sections.marques')}</h2>
+            <Link href={`${base}/marques`} style={{ fontSize: '.875rem', color: 'var(--accent-1)', textDecoration: 'none' }}>
+              Toutes les marques →
+            </Link>
+          </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 'var(--space-6)' }}>
-              {articles.slice(0, 3).map((article) => (
-                <article
-                  key={article.slug}
-                  className="card-lift"
-                  style={{ background: 'var(--bg-surface)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)', padding: 'var(--space-6)' }}
-                >
-                  <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--accent-1)' }}>
-                    {article.category}
-                  </span>
-                  <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '17px', fontWeight: 700, color: 'var(--text-primary)', margin: 'var(--space-2) 0 var(--space-3)', lineHeight: 1.35 }}>
-                    <Link href={`/${locale}/blog/${article.categorySlug}/${article.slug}`} style={{ color: 'inherit', textDecoration: 'none' }}>
-                      {article.title}
-                    </Link>
-                  </h3>
-                  <p style={{ margin: '0 0 var(--space-4)', fontSize: '14px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                    {article.excerpt}
-                  </p>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: 'var(--text-muted)' }}>
-                    <time dateTime={article.publishedAt}>
-                      {new Date(article.publishedAt).toLocaleDateString(locale === 'fr' ? 'fr-BE' : 'en-GB', { year: 'numeric', month: 'short', day: 'numeric' })}
-                    </time>
-                    <span>{article.readingTimeMin} min</span>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+            gap: '1rem',
+          }}>
+            {topBrands.map(brand => (
+              <Link
+                key={brand.slug}
+                href={`${base}/marques/${brand.slug}`}
+                style={{ textDecoration: 'none' }}
+              >
+                <div className="card card-lift" style={{ padding: '1.25rem' }}>
+                  <div style={{
+                    fontFamily: 'var(--font-playfair), Georgia, serif',
+                    fontSize: '1.1rem',
+                    fontWeight: 900,
+                    color: 'var(--text-primary)',
+                    marginBottom: '.4rem',
+                  }}>
+                    {brand.name}
+                    <span style={{ fontSize: '.75rem', fontWeight: 400, color: 'var(--text-muted)', marginLeft: '.4rem', fontFamily: 'var(--font-inter)' }}>
+                      {brand.country}
+                    </span>
                   </div>
-                </article>
-              ))}
-            </div>
+                  <p style={{ fontSize: '.8rem', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
+                    {brand.positioning}
+                  </p>
+                </div>
+              </Link>
+            ))}
           </div>
         </section>
-      )}
+
+        <hr className="section-divider" />
+
+        {/* ── OUTILS ────────────────────────────────────────────── */}
+        <section style={{ padding: '3rem 0' }}>
+          <h2 className="typo-h2" style={{ marginBottom: '1.5rem' }}>
+            {t('sections.comparer')}
+          </h2>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
+            gap: '1rem',
+          }}>
+            {[
+              {
+                href: `${base}/quiz`,
+                icon: '🎯',
+                title: 'Quiz aspirateur',
+                desc: '4 questions → votre recommandation personnalisée',
+                cta: 'Faire le quiz',
+                color: 'var(--color-balai)',
+              },
+              {
+                href: `${base}/deals`,
+                icon: '🏷️',
+                title: 'Deals & Promos',
+                desc: 'Sélection des meilleures promos du moment',
+                cta: 'Voir les deals',
+                color: 'var(--color-laveur)',
+              },
+              {
+                href: `${base}/simulateur`,
+                icon: '📅',
+                title: 'Quand acheter ?',
+                desc: 'Cycles de prix Amazon décryptés',
+                cta: 'Voir le calendrier',
+                color: 'var(--color-traineau)',
+              },
+            ].map(tool => (
+              <Link key={tool.href} href={tool.href} style={{ textDecoration: 'none' }}>
+                <div
+                  className="card card-lift"
+                  style={{ padding: '1.5rem', borderTop: `3px solid ${tool.color}` }}
+                >
+                  <div style={{ fontSize: '2rem', marginBottom: '.75rem' }}>{tool.icon}</div>
+                  <div style={{
+                    fontFamily: 'var(--font-playfair), Georgia, serif',
+                    fontWeight: 700,
+                    fontSize: '1rem',
+                    color: 'var(--text-primary)',
+                    marginBottom: '.4rem',
+                  }}>
+                    {tool.title}
+                  </div>
+                  <p style={{ fontSize: '.875rem', color: 'var(--text-secondary)', margin: '0 0 1rem', lineHeight: 1.5 }}>
+                    {tool.desc}
+                  </p>
+                  <span style={{ fontSize: '.85rem', color: tool.color, fontWeight: 600 }}>
+                    {tool.cta} →
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+      </div>
     </>
   )
 }

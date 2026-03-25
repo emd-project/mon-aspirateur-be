@@ -1,7 +1,7 @@
 {
   "common": {
-    "siteName": "mon-aspirateur.be",
-    "tagline": "Le guide de référence belge pour choisir son aspirateur",
+    "siteName": "Mon Aspirateur",
+    "tagline": "Le guide aspirateur honnête",
     "cta": "Voir notre sélection",
     "readMore": "Lire la suite",
     "publishedOn": "Publié le",
@@ -9,22 +9,33 @@
     "readingTime": "{min} min de lecture",
     "backToHome": "Retour à l'accueil",
     "search": "Rechercher",
-    "noResults": "Aucun résultat pour cette recherche.",
+    "noResults": "Aucun résultat.",
     "skipToContent": "Aller au contenu principal",
-    "formSuccess": "Merci ! Votre message a bien été envoyé.",
-    "formError": "Une erreur est survenue. Veuillez réessayer.",
-    "breadcrumbHome": "Accueil"
+    "breadcrumbHome": "Accueil",
+    "score": "Score",
+    "priceFrom": "À partir de",
+    "buyOn": "Voir sur Amazon",
+    "topPick": "Notre coup de cœur",
+    "bestValue": "Meilleur rapport qualité/prix",
+    "yes": "Oui",
+    "no": "Non"
   },
   "nav": {
-    "guides": "Guides d'achat",
-    "comparatifs": "Comparatifs",
-    "tools": "Outils",
-    "toolsQuiz": "Quiz",
-    "toolsComparateur": "Comparateur",
-    "toolsSimulateur": "Simulateur",
+    "comparer": "Comparer",
+    "choisir": "Choisir",
+    "marques": "Marques",
+    "deals": "Deals",
     "blog": "Blog",
+    "quiz": "Quiz",
     "toggleTheme": "Changer le thème",
-    "toggleMenu": "Ouvrir le menu"
+    "toggleMenu": "Ouvrir le menu",
+    "categories": {
+      "balai": "Aspirateurs balai",
+      "robot": "Robots aspirateurs",
+      "traineau": "Aspirateurs traîneau",
+      "laveur": "Laveurs de sol",
+      "accessoires": "Accessoires"
+    }
   },
   "footer": {
     "navigation": "Navigation",
@@ -33,190 +44,188 @@
     "legal": "Mentions légales",
     "privacy": "Confidentialité",
     "cookies": "Cookies",
-    "madeIn": "Fait en Belgique",
-    "authorLink": "Par Thomas V."
+    "madeWith": "Fait avec soin",
+    "authorLink": "Par Thomas V.",
+    "affDisclaimer": "En tant que partenaire Amazon, nous percevons une commission sur les achats éligibles, sans surcoût pour vous.",
+    "tagline": "Le guide aspirateur honnête — des vrais tests, une vraie voix."
   },
   "home": {
     "meta": {
-      "title": "Aspirateur Belgique {year} | mon-aspirateur.be",
-      "description": "Comparateur et guide d'achat aspirateur pour la Belgique. Guides experts, comparatifs marques et outils interactifs pour choisir votre aspirateur en {year}."
+      "title": "Mon Aspirateur — Le guide aspirateur honnête",
+      "description": "Comparateur et guide d'achat aspirateur. Guides experts, comparatifs marques, quiz et outils pour choisir votre aspirateur sans lire 45 fiches techniques."
     },
     "hero": {
-      "headline": "Choisissez votre aspirateur sans vous tromper",
-      "subheadline": "Guides d'achat, comparatifs marques et outils interactifs pensés pour le marché belge.",
-      "cta": "Voir notre sélection {year}",
-      "ctaSecondary": "Quiz : quel aspirateur me convient ?"
+      "headline": "Choisissez votre aspirateur en moins de 10 minutes",
+      "subheadline": "Des vrais tests, une vraie voix. Pas de jargon, pas de fiches techniques — juste ce qu'il faut savoir pour ne pas se tromper.",
+      "cta": "Trouver mon aspirateur",
+      "ctaSecondary": "Quiz rapide (2 min)"
     },
     "sections": {
-      "featured": "À la une",
-      "guides": "Guides d'achat",
-      "comparatifs": "Comparatifs",
-      "tools": "Outils interactifs",
-      "blog": "Blog"
+      "categories": "Choisir par catégorie",
+      "topPicks": "Nos coups de cœur",
+      "comparer": "Comparer les modèles",
+      "deals": "Deals du moment",
+      "blog": "Derniers articles",
+      "marques": "Les marques"
     }
   },
-  "guides": {
+  "comparer": {
     "meta": {
-      "title": "Guide aspirateur {year} — Choisir le bon modèle | mon-aspirateur.be",
-      "description": "Tous nos guides d'achat aspirateur pour la Belgique. Robot, balai sans fil, traîneau : conseils d'expert et sélections testées en {year}."
+      "title": "Comparateur {categorie} — Comparer les modèles | Mon Aspirateur",
+      "description": "Comparez les {categorie} côte-à-côte sur tous les critères : puissance, autonomie, bruit, prix. Données vérifiées."
     },
     "hub": {
-      "title": "Guides d'achat aspirateur {year}",
-      "subtitle": "Nos guides sont rédigés par Thomas V., testeur expert, et mis à jour régulièrement."
+      "title": "Comparer les {categorie}",
+      "subtitle": "Tous les modèles côte-à-côte. Honnêtement."
+    },
+    "selectCategory": "Choisir une catégorie",
+    "specs": "Caractéristiques techniques",
+    "bestScore": "Meilleur score",
+    "lowestPrice": "Prix le plus bas"
+  },
+  "choisir": {
+    "meta": {
+      "title": "Quel {categorie} choisir ? Guide {year} | Mon Aspirateur",
+      "description": "Notre guide complet pour choisir le bon {categorie} selon votre usage, votre logement et votre budget. Mis à jour en {year}."
+    },
+    "hub": {
+      "title": "Quel aspirateur choisir ?",
+      "subtitle": "Un guide par usage — on vous dit clairement ce qui vaut le coup."
     }
   },
-  "comparatifs": {
+  "marques": {
     "meta": {
-      "title": "Comparatifs aspirateurs {year} | mon-aspirateur.be",
-      "description": "Comparatifs marque vs marque, testés et sourcés pour le marché belge. Dyson, Miele, Roomba, Bosch : notre verdict clair en {year}."
+      "title": "Marques aspirateurs — Guide complet | Mon Aspirateur",
+      "description": "Tout ce qu'il faut savoir sur Dyson, Rowenta, Dreame, Roborock, Miele et les autres marques d'aspirateurs."
     },
     "hub": {
-      "title": "Comparatifs aspirateurs {year}",
-      "subtitle": "Des analyses complètes avec verdict clair — pas de jargon marketing."
+      "title": "Les marques d'aspirateurs",
+      "subtitle": "Notre verdict honnête sur chaque marque — forces, faiblesses, pour qui."
     },
-    "verdict": "Notre verdict",
-    "brandA": "Marque A",
-    "brandB": "Marque B"
+    "topProducts": "Top produits",
+    "positioning": "Positionnement",
+    "categories": "Catégories couvertes"
+  },
+  "deals": {
+    "meta": {
+      "title": "Deals aspirateurs — Promos du moment | Mon Aspirateur",
+      "description": "Les meilleures promotions aspirateurs du moment. Sélection mise à jour régulièrement par notre équipe."
+    },
+    "title": "Deals & Promos aspirateurs",
+    "subtitle": "Les bons plans du moment — filtrés pour vous éviter les fausses promos.",
+    "filterAll": "Tous",
+    "noDeals": "Aucun deal pour cette catégorie en ce moment.",
+    "priceAlert": "Alerte prix",
+    "tip": "Le vrai tip : les meilleures promos arrivent lors du Prime Day (juillet), du Black Friday (novembre) et des soldes de janvier."
+  },
+  "simulateur": {
+    "meta": {
+      "title": "Simulateur cycles de prix aspirateurs | Mon Aspirateur",
+      "description": "Calculez quand acheter votre aspirateur au meilleur prix selon les cycles de promotions Amazon."
+    },
+    "title": "Quand acheter au meilleur prix ?",
+    "subtitle": "Les cycles de prix Amazon décryptés — pour ne pas payer plein tarif.",
+    "events": {
+      "soldesJanvier": "Soldes janvier",
+      "primeDay": "Prime Day (juillet)",
+      "backToSchool": "Rentrée (août-sept)",
+      "blackFriday": "Black Friday",
+      "cyber": "Cyber Monday",
+      "noel": "Fêtes (déc)"
+    },
+    "discountLabel": "Remise habituelle",
+    "bestMoment": "Meilleur moment"
+  },
+  "quiz": {
+    "meta": {
+      "title": "Quiz : quel aspirateur me convient ? | Mon Aspirateur",
+      "description": "4 questions pour trouver l'aspirateur parfait pour votre logement, vos animaux et votre budget."
+    },
+    "title": "Quel aspirateur vous convient ?",
+    "subtitle": "4 questions. Une recommandation honnête.",
+    "stepOf": "{current}/{total}",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "seeResults": "Voir ma recommandation",
+    "restart": "Recommencer",
+    "resultsTitle": "Notre recommandation pour vous",
+    "questions": {
+      "logement": {
+        "label": "Vous habitez ?",
+        "options": {
+          "studio": "Studio / F1",
+          "appartement": "Appartement (F2-F4)",
+          "maison": "Maison"
+        }
+      },
+      "sol": {
+        "label": "Votre sol principal ?",
+        "options": {
+          "parquet": "Parquet / carrelage",
+          "moquette": "Moquette / tapis",
+          "mixte": "Mixte"
+        }
+      },
+      "animaux": {
+        "label": "Des animaux ?",
+        "options": {
+          "non": "Non",
+          "chat": "Chat",
+          "chien": "Chien",
+          "plusieurs": "Plusieurs animaux"
+        }
+      },
+      "budget": {
+        "label": "Votre budget ?",
+        "options": {
+          "moins200": "< 200 €",
+          "200_400": "200 – 400 €",
+          "400_700": "400 – 700 €",
+          "plus700": "> 700 €"
+        }
+      }
+    }
   },
   "blog": {
     "meta": {
-      "title": "Blog aspirateur Belgique {year} | mon-aspirateur.be",
-      "description": "Conseils, actus et décryptages sur les aspirateurs pour le marché belge. Par Thomas V., expert électroménager."
+      "title": "Blog aspirateurs — Conseils & Tests | Mon Aspirateur",
+      "description": "Conseils pratiques, décryptages et tests sur les aspirateurs. Par Thomas V., testeur indépendant."
     },
     "hub": {
-      "title": "Blog aspirateur",
-      "subtitle": "Conseils pratiques et analyses expertes pour bien choisir et entretenir votre aspirateur."
+      "title": "Articles & Conseils",
+      "subtitle": "Des tests honnêtes, des conseils concrets — pas du contenu généré à la chaîne."
     },
     "tldr": "En bref",
     "tableOfContents": "Sommaire",
-    "relatedArticles": "Articles liés",
+    "relatedArticles": "À lire aussi",
     "faq": "Questions fréquentes"
   },
   "author": {
     "meta": {
-      "title": "Thomas V. — Expert aspirateurs | mon-aspirateur.be",
-      "description": "Thomas V. teste et compare les aspirateurs pour aider les ménages belges à choisir sans se faire avoir par le marketing."
+      "title": "Thomas V. — Testeur aspirateurs | Mon Aspirateur",
+      "description": "Thomas V. teste et compare les aspirateurs pour vous aider à choisir sans vous faire avoir par le marketing."
     },
-    "role": "Expert électroménager & testeur aspirateurs",
-    "publishedArticles": "{count} articles publiés",
+    "role": "Testeur & Expert aspirateurs",
+    "publishedArticles": "{count} articles",
     "testedSince": "Testeur depuis 2019"
-  },
-  "tools": {
-    "quiz": {
-      "meta": {
-        "title": "Quiz : quel aspirateur choisir ? | mon-aspirateur.be",
-        "description": "Répondez à 6 questions pour obtenir une recommandation personnalisée adaptée à votre logement et votre budget."
-      },
-      "title": "Quel aspirateur vous convient ?",
-      "subtitle": "Répondez à nos questions pour obtenir une recommandation personnalisée.",
-      "stepOf": "Étape {current} sur {total}",
-      "next": "Suivant",
-      "previous": "Précédent",
-      "seeResults": "Voir les résultats",
-      "restart": "Recommencer",
-      "resultsTitle": "Nos recommandations pour vous",
-      "compatibility": "Compatibilité",
-      "questions": {
-        "logement": {
-          "label": "Type de logement",
-          "options": {
-            "appartement": "Appartement",
-            "maison": "Maison"
-          }
-        },
-        "surface": {
-          "label": "Surface en m²",
-          "hint": "Surface totale à aspirer"
-        },
-        "sol": {
-          "label": "Type de sol principal",
-          "options": {
-            "parquet": "Parquet / carrelage",
-            "moquette": "Moquette",
-            "mixte": "Mixte"
-          }
-        },
-        "animaux": {
-          "label": "Animaux de compagnie ?",
-          "options": {
-            "oui": "Oui",
-            "non": "Non"
-          }
-        },
-        "budget": {
-          "label": "Budget maximum (EUR)",
-          "hint": "Prix indicatif en Belgique"
-        },
-        "priorite": {
-          "label": "Votre priorité",
-          "options": {
-            "silence": "Silencieux (< 65 dB)",
-            "autonomie": "Longue autonomie",
-            "puissance": "Puissance maximale"
-          }
-        }
-      }
-    },
-    "simulateur": {
-      "meta": {
-        "title": "Simulateur superficie aspirateur | mon-aspirateur.be",
-        "description": "Calculez l'autonomie et la capacité recommandées pour votre aspirateur selon votre superficie et votre fréquence d'aspiration."
-      },
-      "title": "Simulateur superficie",
-      "subtitle": "Entrez vos paramètres pour obtenir les caractéristiques recommandées.",
-      "surface": "Superficie (m²)",
-      "rooms": "Nombre de pièces",
-      "frequency": "Fréquence d'aspiration (fois/semaine)",
-      "floorType": "Type de sol",
-      "calculate": "Calculer",
-      "results": {
-        "title": "Recommandations pour votre logement",
-        "minAutonomy": "Autonomie minimale recommandée",
-        "binCapacity": "Capacité bac recommandée",
-        "noiseLevel": "Niveau sonore conseillé",
-        "matchingProducts": "Modèles adaptés"
-      }
-    },
-    "comparateur": {
-      "meta": {
-        "title": "Comparateur aspirateurs côte-à-côte | mon-aspirateur.be",
-        "description": "Comparez jusqu'à 2 aspirateurs côte-à-côte sur tous les critères techniques. Données vérifiées pour la Belgique."
-      },
-      "title": "Comparateur côte-à-côte",
-      "subtitle": "Sélectionnez deux modèles pour comparer leurs caractéristiques.",
-      "selectModel": "Choisir un modèle",
-      "addModel": "Ajouter un modèle",
-      "criteria": {
-        "price": "Prix (EUR)",
-        "autonomy": "Autonomie (min)",
-        "noise": "Bruit (dB)",
-        "surface": "Surface max (m²)",
-        "hepa": "Filtration HEPA",
-        "pet": "Pour animaux",
-        "score": "Score global"
-      },
-      "best": "Meilleur",
-      "yes": "Oui",
-      "no": "Non"
-    }
   },
   "legal": {
     "mentions": {
       "meta": {
-        "title": "Mentions légales | mon-aspirateur.be",
-        "description": "Mentions légales de mon-aspirateur.be : éditeur, hébergeur, responsabilité."
+        "title": "Mentions légales | Mon Aspirateur",
+        "description": "Mentions légales de monaspirateur.fr."
       }
     },
     "privacy": {
       "meta": {
-        "title": "Politique de confidentialité | mon-aspirateur.be",
-        "description": "Comment mon-aspirateur.be collecte et traite vos données personnelles. RGPD Belgique."
+        "title": "Politique de confidentialité | Mon Aspirateur",
+        "description": "Comment Mon Aspirateur collecte et traite vos données personnelles."
       }
     },
     "cookies": {
       "meta": {
-        "title": "Politique de cookies | mon-aspirateur.be",
-        "description": "Utilisation des cookies sur mon-aspirateur.be. Plausible CE, privacy-first, sans cookie tiers."
+        "title": "Politique de cookies | Mon Aspirateur",
+        "description": "Utilisation des cookies sur Mon Aspirateur."
       }
     }
   },

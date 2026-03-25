@@ -3,6 +3,8 @@
 
 export type Locale = 'fr' | 'en'
 
+export type ProductCategory = 'balai' | 'robot' | 'traineau' | 'laveur' | 'accessoires'
+
 export type Author = {
   slug: string
   name: string
@@ -63,7 +65,7 @@ export type Product = {
   slug: string
   name: string
   brand: string
-  type: 'robot' | 'balai' | 'traineau' | 'sans-fil'
+  category: ProductCategory
   score: number
   priceEur: number
   surfaceM2Max: number
