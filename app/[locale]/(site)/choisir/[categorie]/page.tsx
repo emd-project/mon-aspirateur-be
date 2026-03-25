@@ -83,15 +83,15 @@ export default async function ChoisirCategoriePage({ params }: PageProps) {
   const tip = honestTips[category] ?? ''
 
   return (
-    <main style={{ maxWidth: 860, margin: '0 auto', padding: '3rem 1.5rem' }}>
+    <main style={{ maxWidth: 860, margin: '0 auto', padding: '4rem 1.5rem 3rem' }}>
       {/* Header */}
-      <header style={{ marginBottom: '2rem' }}>
-        <p className="typo-overline" style={{ marginBottom: 'var(--space-2)' }}>
+      <header style={{ marginBottom: '2.5rem', paddingBottom: '2rem', borderBottom: '1px solid var(--border-light)' }}>
+        <p className="typo-overline" style={{ marginBottom: '.5rem' }}>
           {locale === 'fr' ? 'Guide d\'achat' : 'Buying guide'}
         </p>
         <h1
           className="typo-h1-article"
-          style={{ marginBottom: 'var(--space-4)', color: meta.color }}
+          style={{ marginBottom: '1rem', color: meta.color }}
         >
           {locale === 'fr'
             ? `Quel ${meta.label.toLowerCase()} choisir ?`
@@ -102,7 +102,7 @@ export default async function ChoisirCategoriePage({ params }: PageProps) {
 
       {/* Section 1: Pour qui ? */}
       <section aria-labelledby="pour-qui" style={{ marginBottom: '2rem' }}>
-        <h2 id="pour-qui" className="typo-h2" style={{ marginBottom: 'var(--space-4)' }}>
+        <h2 id="pour-qui" className="typo-h2" style={{ marginBottom: '1rem' }}>
           {locale === 'fr' ? 'Pour qui ?' : 'Who is it for?'}
         </h2>
         <Verdict title={locale === 'fr' ? 'Ce type est fait pour vous si…' : 'This type is right for you if…'}>
@@ -139,7 +139,7 @@ export default async function ChoisirCategoriePage({ params }: PageProps) {
       {/* Section 3: Honest tip */}
       {tip && (
         <section aria-label={locale === 'fr' ? 'Le vrai tip' : 'The real tip'}>
-          <h2 className="typo-h2" style={{ marginBottom: 'var(--space-4)' }}>
+          <h2 className="typo-h2" style={{ marginBottom: '1rem' }}>
             {locale === 'fr' ? 'Le vrai tip' : 'The real tip'}
           </h2>
           <PullQuote quote={tip} category={category} />

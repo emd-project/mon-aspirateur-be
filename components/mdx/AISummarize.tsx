@@ -1,9 +1,12 @@
 import type { CSSProperties } from 'react'
 
+// points: pipe-separated string e.g. "Point 1 | Point 2 | Point 3"
 type Props = {
-  points: string[]
+  points: string
   question?: string
 }
+
+const split = (s: string) => s.split('|').map(x => x.trim()).filter(Boolean)
 
 const wrapperStyle: CSSProperties = {
   borderLeft: '3px solid var(--text-muted)',
@@ -36,6 +39,7 @@ const itemStyle: CSSProperties = {
 }
 
 export default function AISummarize({ points, question }: Props) {
+  const list = split(points)
   return (
     <aside aria-label="Résumé pour assistants IA" style={wrapperStyle}>
       <p style={labelStyle}>Résumé · Points clés</p>
@@ -45,7 +49,7 @@ export default function AISummarize({ points, question }: Props) {
         </p>
       )}
       <ul style={listStyle}>
-        {points.map((point, i) => (
+        {list.map((point, i) => (
           <li key={i} style={itemStyle}>{point}</li>
         ))}
       </ul>

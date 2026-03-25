@@ -1,9 +1,12 @@
+// Props: pipe-separated strings e.g. pros="A | B | C" cons="X | Y"
 type ProConTableProps = {
-  pros: string[]
-  cons: string[]
+  pros: string   // "item1 | item2 | item3"
+  cons: string   // "item1 | item2"
   proTitle?: string
   conTitle?: string
 }
+
+const split = (s: string) => s.split('|').map(x => x.trim()).filter(Boolean)
 
 export default function ProConTable({
   pros,
@@ -11,6 +14,9 @@ export default function ProConTable({
   proTitle = 'Pour',
   conTitle = 'Contre',
 }: ProConTableProps) {
+  const proList = split(pros)
+  const conList = split(cons)
+
   return (
     <div style={{
       display: 'grid',
@@ -46,9 +52,8 @@ export default function ProConTable({
           {conTitle}
         </span>
       </div>
-      {/* Rows */}
       <ul style={{ background: 'var(--bg-surface)', margin: 0, padding: '1rem 1rem 1rem 1.75rem', display: 'flex', flexDirection: 'column', gap: '.4rem', listStyle: 'none' }}>
-        {pros.map((p, i) => (
+        {proList.map((p, i) => (
           <li key={i} style={{ fontSize: '.875rem', color: 'var(--text-secondary)', lineHeight: 1.5, display: 'flex', gap: '.5rem' }}>
             <span style={{ color: 'var(--accent-2)', flexShrink: 0, fontWeight: 700 }}>+</span>
             {p}
@@ -56,7 +61,7 @@ export default function ProConTable({
         ))}
       </ul>
       <ul style={{ background: 'var(--bg-surface)', margin: 0, padding: '1rem 1rem 1rem 1.75rem', display: 'flex', flexDirection: 'column', gap: '.4rem', listStyle: 'none' }}>
-        {cons.map((c, i) => (
+        {conList.map((c, i) => (
           <li key={i} style={{ fontSize: '.875rem', color: 'var(--text-secondary)', lineHeight: 1.5, display: 'flex', gap: '.5rem' }}>
             <span style={{ color: 'var(--accent-1)', flexShrink: 0, fontWeight: 700 }}>−</span>
             {c}
