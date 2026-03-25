@@ -60,7 +60,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
       className={`${fontPrimary.variable} ${fontDisplay.variable} ${fontMono.variable}`}
     >
       <body>
-        <a href="#main-content" className="skip-to-content">
+        <a href="#main-content" className="skip-link">
           {locale === 'fr' ? 'Aller au contenu principal' : 'Skip to main content'}
         </a>
         <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem>

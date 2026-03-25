@@ -11,8 +11,7 @@ export default async function SiteLayout({ children, params }: SiteLayoutProps) 
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <a href="#main-content" className="skip-link">Aller au contenu principal</a>
-      <Header />
+<Header />
       <main id="main-content" style={{ flex: 1 }}>
         {children}
       </main>

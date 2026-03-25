@@ -20,7 +20,7 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: 'Mon Aspirateur',
-  description: 'Le guide aspirateur honnête — comparatifs, guides et outils pour choisir sans se tromper.',
+  description: 'Comparatifs aspirateurs, tests terrain et guides d\'achat — pour choisir sans se tromper.',
   url: 'https://monaspirateur.fr',
   publisher: { '@type': 'Organization', name: 'Mon Aspirateur' },
 }
@@ -74,7 +74,7 @@ export default async function HomePage({ params }: Props) {
             color: 'var(--accent-1)',
             marginBottom: '1.25rem',
           }}>
-            Le guide aspirateur honnête
+            Aspirateurs — tests terrain
           </p>
 
           <h1

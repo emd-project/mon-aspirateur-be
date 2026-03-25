@@ -55,7 +55,7 @@ export const brands: Brand[] = [
         category: 'balai',
         priceEur: 149,
         score: 7.0,
-        highlight: 'Le balai entrée de gamme honnête pour une surface < 60 m²',
+        highlight: 'L\'entrée de gamme sans surprise — surface < 60 m², fait le job',
         affiliateUrl: '#',
       },
       {
@@ -395,7 +395,7 @@ export const brands: Brand[] = [
         category: 'balai',
         priceEur: 199,
         score: 7.3,
-        highlight: '120 000 Pa, 60 min, filtre HEPA — honnête et sans chichi',
+        highlight: '120 000 Pa, 60 min, filtre HEPA — sans chichi, fait le job',
         affiliateUrl: '#',
       },
     ],

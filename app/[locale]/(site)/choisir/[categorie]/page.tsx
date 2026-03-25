@@ -65,10 +65,10 @@ const verdictPoints: Record<string, VerdictPoint[]> = {
 }
 
 const honestTips: Record<string, string> = {
-  balai: "Honnêtement, un Dreame T30 à 399€ fait 90% du boulot d'un Dyson V15 à 699€. La différence se voit surtout sur tapis épais.",
-  robot: "Le vrai tip : achetez un robot avec LiDAR même basique. Les robots à navigation aléatoire font des aller-retours inutiles et ratent des zones.",
-  traineau: "En clair : si vous avez un grand appartement en location et des tapis, le traîneau reste imbattable. Pour le reste, un bon balai suffit.",
-  laveur: "Le vrai tip : un laveur sans autovidage ça pue si vous oubliez de vider la cuve. Tineco S7 Pro ou rien.",
+  balai: "Un Dreame T30 à 399 € fait 90 % du boulot d'un Dyson V15 à 699 €. La différence se voit surtout sur tapis épais — pas sur parquet.",
+  robot: "Le vrai tip : prenez un robot avec LiDAR même basique. Navigation aléatoire = aller-retours inutiles et zones ratées, peu importe la puissance.",
+  traineau: "En clair : grand appartement en location avec tapis, le traîneau reste imbattable. Pour le reste, un bon balai suffit.",
+  laveur: "Un laveur sans autovidage sent mauvais si vous oubliez de vider la cuve après chaque usage. Tineco Floor One S7 Pro, ou passer son tour.",
 }
 
 export default async function ChoisirCategoriePage({ params }: PageProps) {
@@ -138,9 +138,9 @@ export default async function ChoisirCategoriePage({ params }: PageProps) {
 
       {/* Section 3: Honest tip */}
       {tip && (
-        <section aria-label={locale === 'fr' ? 'Conseil honnête' : 'Honest advice'}>
+        <section aria-label={locale === 'fr' ? 'Le vrai tip' : 'The real tip'}>
           <h2 className="typo-h2" style={{ marginBottom: 'var(--space-4)' }}>
-            {locale === 'fr' ? 'Le conseil honnête' : 'The honest advice'}
+            {locale === 'fr' ? 'Le vrai tip' : 'The real tip'}
           </h2>
           <PullQuote quote={tip} category={category} />
         </section>

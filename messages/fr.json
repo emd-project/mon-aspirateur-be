@@ -1,7 +1,7 @@
 {
   "common": {
     "siteName": "Mon Aspirateur",
-    "tagline": "Le guide aspirateur honnête",
+    "tagline": "Aspirateurs — tests terrain, voix directe",
     "cta": "Voir notre sélection",
     "readMore": "Lire la suite",
     "publishedOn": "Publié le",
@@ -47,11 +47,11 @@
     "madeWith": "Fait avec soin",
     "authorLink": "Par Thomas V.",
     "affDisclaimer": "En tant que partenaire Amazon, nous percevons une commission sur les achats éligibles, sans surcoût pour vous.",
-    "tagline": "Le guide aspirateur honnête — des vrais tests, une vraie voix."
+    "tagline": "Des tests terrain, une voix directe — sans langue de bois."
   },
   "home": {
     "meta": {
-      "title": "Mon Aspirateur — Le guide aspirateur honnête",
+      "title": "Mon Aspirateur — Comparatifs et tests aspirateurs",
       "description": "Comparateur et guide d'achat aspirateur. Guides experts, comparatifs marques, quiz et outils pour choisir votre aspirateur sans lire 45 fiches techniques."
     },
     "hero": {
@@ -76,7 +76,7 @@
     },
     "hub": {
       "title": "Comparer les {categorie}",
-      "subtitle": "Tous les modèles côte-à-côte. Honnêtement."
+      "subtitle": "Tous les modèles côte-à-côte. Sans langue de bois."
     },
     "selectCategory": "Choisir une catégorie",
     "specs": "Caractéristiques techniques",
@@ -100,7 +100,7 @@
     },
     "hub": {
       "title": "Les marques d'aspirateurs",
-      "subtitle": "Notre verdict honnête sur chaque marque — forces, faiblesses, pour qui."
+      "subtitle": "Forces, faiblesses, pour qui — marque par marque."
     },
     "topProducts": "Top produits",
     "positioning": "Positionnement",
@@ -142,7 +142,7 @@
       "description": "4 questions pour trouver l'aspirateur parfait pour votre logement, vos animaux et votre budget."
     },
     "title": "Quel aspirateur vous convient ?",
-    "subtitle": "4 questions. Une recommandation honnête.",
+    "subtitle": "4 questions. Une réponse directe.",
     "stepOf": "{current}/{total}",
     "next": "Suivant",
     "previous": "Précédent",
@@ -193,7 +193,7 @@
     },
     "hub": {
       "title": "Articles & Conseils",
-      "subtitle": "Des tests honnêtes, des conseils concrets — pas du contenu généré à la chaîne."
+      "subtitle": "Des tests terrain, des conseils concrets — pas du contenu généré à la chaîne."
     },
     "tldr": "En bref",
     "tableOfContents": "Sommaire",
