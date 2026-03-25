@@ -1,10 +1,13 @@
 // effect-hero → aurora CSS animée 3 orbes + noise overlay SVG 0.04 · mémorable sans image
 // DECISIONS.md: effect-hero
 
+import type { CSSProperties } from 'react'
+
 type AuroraBackgroundProps = {
   colors?: [string, string, string]
   speed?: 'slow' | 'medium' | 'fast'
   className?: string
+  style?: CSSProperties
   children?: React.ReactNode
 }
 
@@ -18,6 +21,7 @@ export default function AuroraBackground({
   colors = ['var(--aurora-1)', 'var(--aurora-2)', 'var(--aurora-3)'],
   speed = 'medium',
   className = '',
+  style,
   children,
 }: AuroraBackgroundProps) {
   const dur = DURATION[speed]
@@ -26,7 +30,7 @@ export default function AuroraBackground({
   return (
     <div
       className={className}
-      style={{ position: 'relative', overflow: 'hidden', isolation: 'isolate' }}
+      style={{ position: 'relative', overflow: 'hidden', isolation: 'isolate', ...style }}
     >
       {/* Aurora orbes — CSS @keyframes uniquement, pas de JS */}
       <div
