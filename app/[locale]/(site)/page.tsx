@@ -384,18 +384,97 @@ export default async function HomePage({ params }: Props) {
               {locale === 'fr' ? 'Toutes les marques →' : 'All brands →'}
             </Link>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '.75rem' }}>
-            {topBrands.map(brand => (
-              <Link key={brand.slug} href={`${base}/marques/${brand.slug}`} style={{ textDecoration: 'none' }}>
-                <div style={{ padding: '1rem', border: '1px solid var(--border-light)', borderRadius: '6px', background: 'var(--bg-surface)' }}>
-                  <div style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)', marginBottom: '.25rem' }}>
-                    {brand.name}
-                    <span style={{ fontSize: '.72rem', fontWeight: 400, color: 'var(--text-muted)', marginLeft: '.4rem' }}>{brand.country}</span>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
+            {topBrands.map(brand => {
+              const top = brand.topProducts?.[0]
+              return (
+                <Link key={brand.slug} href={`${base}/marques/${brand.slug}`} style={{ textDecoration: 'none', display: 'flex' }}>
+                  <div style={{
+                    width: '100%',
+                    padding: '1.25rem 1.5rem',
+                    border: '1px solid var(--border-light)',
+                    borderRadius: '6px',
+                    background: 'var(--bg-surface)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '.75rem',
+                  }}>
+                    {/* En-tête : nom + pays */}
+                    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '.5rem' }}>
+                      <span style={{
+                        fontFamily: 'var(--font-playfair), Georgia, serif',
+                        fontWeight: 900,
+                        fontSize: '1.15rem',
+                        color: 'var(--text-primary)',
+                        letterSpacing: '-.01em',
+                      }}>
+                        {brand.name}
+                      </span>
+                      <span style={{
+                        fontSize: '.65rem',
+                        fontWeight: 700,
+                        letterSpacing: '.1em',
+                        textTransform: 'uppercase',
+                        color: 'var(--text-muted)',
+                        border: '1px solid var(--border-light)',
+                        borderRadius: '3px',
+                        padding: '.1rem .35rem',
+                        flexShrink: 0,
+                      }}>
+                        {brand.country}
+                      </span>
+                    </div>
+
+                    {/* Positionnement */}
+                    <p style={{ fontSize: '.85rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.55, flex: 1 }}>
+                      {brand.positioning}
+                    </p>
+
+                    {/* Catégories */}
+                    <div style={{ display: 'flex', gap: '.35rem', flexWrap: 'wrap' }}>
+                      {brand.categories.map(cat => (
+                        <span key={cat} style={{
+                          fontSize: '.65rem',
+                          fontWeight: 600,
+                          letterSpacing: '.06em',
+                          textTransform: 'uppercase',
+                          color: 'var(--text-muted)',
+                          background: 'var(--bg-subtle)',
+                          borderRadius: '3px',
+                          padding: '.15rem .45rem',
+                        }}>
+                          {cat}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Produit phare */}
+                    {top && (
+                      <div style={{
+                        paddingTop: '.75rem',
+                        borderTop: '1px solid var(--border-light)',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'baseline',
+                        gap: '.5rem',
+                      }}>
+                        <span style={{ fontSize: '.78rem', color: 'var(--text-muted)', lineHeight: 1.4, flex: 1 }}>
+                          {top.name}
+                        </span>
+                        <span style={{
+                          fontWeight: 700,
+                          fontSize: '.85rem',
+                          color: 'var(--accent-1)',
+                          flexShrink: 0,
+                        }}>
+                          {top.priceEur} €
+                        </span>
+                      </div>
+                    )}
                   </div>
-                  <p style={{ fontSize: '.78rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.45 }}>{brand.positioning}</p>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              )
+            })}
           </div>
         </section>
 
