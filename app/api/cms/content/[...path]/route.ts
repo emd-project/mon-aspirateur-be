@@ -107,13 +107,20 @@ export async function PUT(
       return NextResponse.json({ error: 'Corps invalide' }, { status: 400 })
     }
 
-    const { filePath, frontmatter, body: mdxBody, sha } = body
+    const { filePath, frontmatter, body: mdxBody, sha: clientSha } = body
     if (!filePath || !frontmatter) {
       return NextResponse.json({ error: 'filePath et frontmatter requis' }, { status: 400 })
     }
 
     const token = getToken()
     const slugName = rest[rest.length - 1] ?? 'untitled'
+
+    // If no sha provided, check if the file already exists (to avoid 422)
+    let sha = clientSha
+    if (!sha) {
+      const existing = await getFile(cmsConfig.repo, filePath, cmsConfig.branch, token)
+      if (existing) sha = existing.sha
+    }
 
     let content: string
     if (collectionDef.format === 'mdx') {

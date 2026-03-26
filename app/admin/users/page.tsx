@@ -10,7 +10,7 @@ const C = {
 
 export default async function UsersPage() {
   const session = await requireAdmin()
-  const token = session.githubToken ?? process.env.CMS_GITHUB_TOKEN
+  const token = process.env.CMS_GITHUB_TOKEN
 
   const { users } = await getUsers(cmsConfig.repo, cmsConfig.branch, token)
 

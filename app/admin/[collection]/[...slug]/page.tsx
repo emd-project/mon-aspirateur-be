@@ -27,7 +27,7 @@ export default async function EntryPage({
   let entry: ContentEntry | undefined
 
   if (!isNew) {
-    const token = session.githubToken ?? process.env.CMS_GITHUB_TOKEN
+    const token = process.env.CMS_GITHUB_TOKEN
     // slug is e.g. ['fr', 'guide-achat', 'my-article'] for MDX collections
     const ext = collectionDef.format === 'mdx' ? '.mdx' : '.yaml'
     const filePath = `${collectionDef.path}/${slug.join('/')}${ext}`

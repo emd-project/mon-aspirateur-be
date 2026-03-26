@@ -22,7 +22,7 @@ export default async function CollectionPage({
   const collectionDef = cmsConfig.collections[collection]
   if (!collectionDef) notFound()
 
-  const token = session.githubToken ?? process.env.CMS_GITHUB_TOKEN
+  const token = process.env.CMS_GITHUB_TOKEN
 
   let entries: {
     slug: string
