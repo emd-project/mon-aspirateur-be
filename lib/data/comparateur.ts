@@ -81,24 +81,11 @@ export const comparateurProducts: ProductSpec[] = [
     modelName: 'Rowenta X-Force Flex 14.60 Animal',
     category: 'balai',
     priceEur: 399,
-    score: 8.5,
+    score: 9.0,
     affiliateUrl: '#',
     specs: {
       puissance: 530, autonomie: 65, charge: 3.5,
       poids: 3.1, bac: 0.9, bruit: 74, hepa: true, prix: 399,
-    },
-  },
-  {
-    productId: 'dyson-v15-detect',
-    brandSlug: 'dyson',
-    modelName: 'Dyson V15 Detect Absolute',
-    category: 'balai',
-    priceEur: 699,
-    score: 9.1,
-    affiliateUrl: '#',
-    specs: {
-      puissance: 240, autonomie: 60, charge: 4.5,
-      poids: 3.1, bac: 0.76, bruit: 79, hepa: true, prix: 699,
     },
   },
   {
@@ -115,19 +102,6 @@ export const comparateurProducts: ProductSpec[] = [
     },
   },
   {
-    productId: 'samsung-bespoke-jet-ai',
-    brandSlug: 'samsung',
-    modelName: 'Samsung Bespoke Jet AI Complete',
-    category: 'balai',
-    priceEur: 799,
-    score: 8.9,
-    affiliateUrl: '#',
-    specs: {
-      puissance: 280, autonomie: 60, charge: 3.5,
-      poids: 3.0, bac: 0.6, bruit: 77, hepa: true, prix: 799,
-    },
-  },
-  {
     productId: 'miele-triflex-hx2',
     brandSlug: 'miele',
     modelName: 'Miele Triflex HX2 Pro',
@@ -141,6 +115,32 @@ export const comparateurProducts: ProductSpec[] = [
     },
   },
   {
+    productId: 'tineco-pure-one-station-s25',
+    brandSlug: 'tineco',
+    modelName: 'Tineco Pure One Station S25',
+    category: 'balai',
+    priceEur: 349,
+    score: 8.2,
+    affiliateUrl: '#',
+    specs: {
+      puissance: 185, autonomie: 70, charge: 3,
+      poids: 3.3, bac: 0.8, bruit: 74, hepa: true, prix: 349,
+    },
+  },
+  {
+    productId: 'xiaomi-g10-plus',
+    brandSlug: 'xiaomi',
+    modelName: 'Xiaomi Vacuum Cleaner G10 Plus',
+    category: 'balai',
+    priceEur: 199,
+    score: 8.0,
+    affiliateUrl: '#',
+    specs: {
+      puissance: 185, autonomie: 60, charge: 3.5,
+      poids: 3.0, bac: 0.6, bruit: 77, hepa: true, prix: 199,
+    },
+  },
+  {
     productId: 'bosch-unlimited-10',
     brandSlug: 'bosch',
     modelName: 'Bosch Unlimited 10 BCS812',
@@ -151,6 +151,32 @@ export const comparateurProducts: ProductSpec[] = [
     specs: {
       puissance: 180, autonomie: 60, charge: 5,
       poids: 3.2, bac: 0.9, bruit: 78, hepa: false, prix: 299,
+    },
+  },
+  {
+    productId: 'samsung-bespoke-jet-ai',
+    brandSlug: 'samsung',
+    modelName: 'Samsung Bespoke Jet AI Complete',
+    category: 'balai',
+    priceEur: 799,
+    score: 7.7,
+    affiliateUrl: '#',
+    specs: {
+      puissance: 280, autonomie: 60, charge: 3.5,
+      poids: 3.0, bac: 0.6, bruit: 77, hepa: true, prix: 799,
+    },
+  },
+  {
+    productId: 'dyson-v15-detect',
+    brandSlug: 'dyson',
+    modelName: 'Dyson V15 Detect Absolute',
+    category: 'balai',
+    priceEur: 699,
+    score: 7.5,
+    affiliateUrl: '#',
+    specs: {
+      puissance: 240, autonomie: 60, charge: 4.5,
+      poids: 3.1, bac: 0.76, bruit: 79, hepa: true, prix: 699,
     },
   },
 
