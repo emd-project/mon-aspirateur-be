@@ -3,8 +3,8 @@ import { getSession } from '@/packages/cms/lib/get-session'
 import { listFiles, uploadMedia, deleteFile } from '@/packages/cms/lib/github'
 import { cmsConfig } from '@/cms.config'
 
-function getToken(githubToken?: string): string | undefined {
-  return githubToken ?? process.env.CMS_GITHUB_TOKEN
+function getToken(): string | undefined {
+  return process.env.CMS_GITHUB_TOKEN
 }
 
 export async function GET(_req: NextRequest) {
@@ -12,7 +12,7 @@ export async function GET(_req: NextRequest) {
     const session = await getSession()
     if (!session) return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
 
-    const token = getToken(session.githubToken)
+    const token = getToken()
     const files = await listFiles(cmsConfig.repo, cmsConfig.media.path, cmsConfig.branch, token)
     const images = files.filter(
       (f) => f.type === 'file' && /\.(png|jpg|jpeg|webp|svg|gif)$/i.test(f.name)
@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
 
     const safeName = name.replace(/[^a-zA-Z0-9._-]/g, '-').toLowerCase()
     const filePath = `${cmsConfig.media.path}/${safeName}`
-    const token = getToken(session.githubToken)
+    const token = getToken()
 
     const result = await uploadMedia(cmsConfig.repo, filePath, cmsConfig.branch, base64, token)
     const publicUrl = `/${cmsConfig.media.path.replace(/^public\//, '')}/${safeName}`
@@ -87,7 +87,7 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: 'path et sha requis' }, { status: 400 })
     }
 
-    const token = getToken(session.githubToken)
+    const token = getToken()
     await deleteFile(
       cmsConfig.repo,
       body.path,

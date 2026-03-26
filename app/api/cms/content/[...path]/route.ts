@@ -4,8 +4,8 @@ import { getFile, putFile, deleteFile, listFilesRecursive } from '@/packages/cms
 import { parseMdx, stringifyMdx } from '@/packages/cms/lib/parser'
 import { cmsConfig } from '@/cms.config'
 
-function getToken(githubToken?: string): string | undefined {
-  return githubToken ?? process.env.CMS_GITHUB_TOKEN
+function getToken(): string | undefined {
+  return process.env.CMS_GITHUB_TOKEN
 }
 
 export async function GET(
@@ -28,7 +28,7 @@ export async function GET(
       return NextResponse.json({ error: 'Collection introuvable' }, { status: 404 })
     }
 
-    const token = getToken(session.githubToken)
+    const token = getToken()
 
     if (rest.length === 0) {
       const files = await listFilesRecursive(
@@ -112,7 +112,7 @@ export async function PUT(
       return NextResponse.json({ error: 'filePath et frontmatter requis' }, { status: 400 })
     }
 
-    const token = getToken(session.githubToken)
+    const token = getToken()
     const slugName = rest[rest.length - 1] ?? 'untitled'
 
     let content: string
@@ -179,7 +179,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'filePath et sha requis' }, { status: 400 })
     }
 
-    const token = getToken(session.githubToken)
+    const token = getToken()
     const slugName = rest[rest.length - 1] ?? 'unknown'
 
     await deleteFile(

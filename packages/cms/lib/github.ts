@@ -2,8 +2,10 @@ import type { GitHubFile, GitHubFileContent } from '../types'
 
 const GITHUB_API = 'https://api.github.com'
 
-function getToken(sessionToken?: string): string {
-  return sessionToken ?? process.env.CMS_GITHUB_TOKEN ?? ''
+function getToken(_sessionToken?: string): string {
+  // Always use the PAT for GitHub API operations.
+  // OAuth tokens only have read:user scope (identity), not repo access.
+  return process.env.CMS_GITHUB_TOKEN ?? ''
 }
 
 function headers(token: string): HeadersInit {

@@ -13,7 +13,7 @@ const C = {
 
 export default async function DashboardPage() {
   const session = await requireSession()
-  const token = session.githubToken ?? process.env.CMS_GITHUB_TOKEN
+  const token = process.env.CMS_GITHUB_TOKEN
 
   const counts: Record<string, number> = {}
   for (const [key, col] of Object.entries(cmsConfig.collections)) {
