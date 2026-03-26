@@ -11,7 +11,7 @@ const C = {
 
 export default async function MediaPage() {
   const session = await requireSession()
-  const token = session.githubToken ?? process.env.CMS_GITHUB_TOKEN
+  const token = process.env.CMS_GITHUB_TOKEN
 
   let files: GitHubFile[] = []
   try {
