@@ -18,125 +18,138 @@ export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ action: string[] }> }
 ) {
-  const { action } = await params
-  const route = action.join('/')
+  try {
+    const { action } = await params
+    const route = action.join('/')
 
-  // ── GET /api/cms/auth/login → redirect to GitHub OAuth
-  if (route === 'login') {
-    const state = generateOAuthState()
-    const url = getGithubAuthUrl(state)
-    const res = NextResponse.redirect(url)
-    res.cookies.set(OAUTH_STATE_COOKIE, state, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 600, // 10 min
-      path: '/',
-    })
-    return res
-  }
-
-  // ── GET /api/cms/auth/callback?code=xxx&state=xxx
-  if (route === 'callback') {
-    const code = req.nextUrl.searchParams.get('code')
-    const state = req.nextUrl.searchParams.get('state')
-    const cookieStore = await cookies()
-    const savedState = cookieStore.get(OAUTH_STATE_COOKIE)?.value
-
-    if (!code || !state || state !== savedState) {
-      return NextResponse.redirect(new URL('/admin?error=oauth', req.url))
+    if (route === 'login') {
+      const state = generateOAuthState()
+      const url = getGithubAuthUrl(state)
+      const res = NextResponse.redirect(url)
+      res.cookies.set(OAUTH_STATE_COOKIE, state, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 600,
+        path: '/',
+      })
+      return res
     }
 
-    try {
-      const { login, token } = await exchangeGithubCode(code)
-      if (!isAllowedGithubUser(login)) {
-        return NextResponse.redirect(new URL('/admin?error=unauthorized', req.url))
+    if (route === 'callback') {
+      const code = req.nextUrl.searchParams.get('code')
+      const state = req.nextUrl.searchParams.get('state')
+      const cookieStore = await cookies()
+      const savedState = cookieStore.get(OAUTH_STATE_COOKIE)?.value
+
+      if (!code || !state || state !== savedState) {
+        return NextResponse.redirect(new URL('/admin?error=oauth', req.url))
       }
 
-      const sessionToken = encryptSession({
-        userId: `github:${login}`,
-        role: 'admin',
-        loginMethod: 'github',
-        githubToken: token,
-      })
-
-      const res = NextResponse.redirect(new URL('/admin/dashboard', req.url))
-      res.cookies.set(SESSION_COOKIE, sessionToken, sessionCookieOptions())
-      res.cookies.delete(OAUTH_STATE_COOKIE)
-      return res
-    } catch {
-      return NextResponse.redirect(new URL('/admin?error=oauth', req.url))
+      try {
+        const { login, token } = await exchangeGithubCode(code)
+        if (!isAllowedGithubUser(login)) {
+          return NextResponse.redirect(new URL('/admin?error=unauthorized', req.url))
+        }
+        const sessionToken = encryptSession({
+          userId: `github:${login}`,
+          role: 'admin',
+          loginMethod: 'github',
+          githubToken: token,
+        })
+        const res = NextResponse.redirect(new URL('/admin/dashboard', req.url))
+        res.cookies.set(SESSION_COOKIE, sessionToken, sessionCookieOptions())
+        res.cookies.delete(OAUTH_STATE_COOKIE)
+        return res
+      } catch {
+        return NextResponse.redirect(new URL('/admin?error=oauth', req.url))
+      }
     }
-  }
 
-  // ── GET /api/cms/auth/logout
-  if (route === 'logout') {
-    const res = NextResponse.redirect(new URL('/admin', req.url))
-    res.cookies.delete(SESSION_COOKIE)
-    return res
-  }
+    if (route === 'logout') {
+      const res = NextResponse.redirect(new URL('/admin', req.url))
+      res.cookies.delete(SESSION_COOKIE)
+      return res
+    }
 
-  return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  } catch (err) {
+    console.error('[cms/auth GET]', err)
+    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
+  }
 }
 
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ action: string[] }> }
 ) {
-  const { action } = await params
-  const route = action.join('/')
+  try {
+    const { action } = await params
+    const route = action.join('/')
 
-  // ── POST /api/cms/auth/login → email + password
-  if (route === 'login') {
-    const ip = req.headers.get('x-forwarded-for') ?? req.headers.get('x-real-ip') ?? 'unknown'
-    const { allowed } = checkRateLimit(ip)
-    if (!allowed) {
-      return NextResponse.json(
-        { error: 'Trop de tentatives. Réessayez dans 15 minutes.' },
-        { status: 429 }
-      )
+    if (route === 'login') {
+      const ip = req.headers.get('x-forwarded-for') ?? req.headers.get('x-real-ip') ?? 'unknown'
+      const { allowed } = checkRateLimit(ip)
+      if (!allowed) {
+        return NextResponse.json(
+          { error: 'Trop de tentatives. Réessayez dans 15 minutes.' },
+          { status: 429 }
+        )
+      }
+
+      let body: { email?: string; password?: string }
+      try {
+        body = (await req.json()) as { email?: string; password?: string }
+      } catch {
+        return NextResponse.json({ error: 'Corps de requête invalide' }, { status: 400 })
+      }
+
+      const { email, password } = body
+      if (!email || !password) {
+        return NextResponse.json({ error: 'Email et mot de passe requis' }, { status: 400 })
+      }
+
+      let user = null
+      try {
+        user = await findUserByEmail(
+          cmsConfig.repo,
+          cmsConfig.branch,
+          email,
+          process.env.CMS_GITHUB_TOKEN
+        )
+      } catch (err) {
+        console.error('[cms/auth/login] findUserByEmail failed:', err)
+        return NextResponse.json(
+          { error: 'Impossible de vérifier les identifiants. Vérifiez CMS_GITHUB_TOKEN.' },
+          { status: 503 }
+        )
+      }
+
+      if (!user) {
+        return NextResponse.json({ error: 'Identifiants incorrects' }, { status: 401 })
+      }
+
+      const valid = await verifyPassword(password, user.passwordHash, user.salt)
+      if (!valid) {
+        return NextResponse.json({ error: 'Identifiants incorrects' }, { status: 401 })
+      }
+
+      resetRateLimit(ip)
+
+      const sessionToken = encryptSession({
+        userId: user.id,
+        role: user.role,
+        loginMethod: 'password',
+      })
+
+      const res = NextResponse.json({ ok: true })
+      res.cookies.set(SESSION_COOKIE, sessionToken, sessionCookieOptions())
+      return res
     }
 
-    let body: { email?: string; password?: string }
-    try {
-      body = (await req.json()) as { email?: string; password?: string }
-    } catch {
-      return NextResponse.json({ error: 'Corps de requête invalide' }, { status: 400 })
-    }
-
-    const { email, password } = body
-    if (!email || !password) {
-      return NextResponse.json({ error: 'Email et mot de passe requis' }, { status: 400 })
-    }
-
-    const user = await findUserByEmail(
-      cmsConfig.repo,
-      cmsConfig.branch,
-      email,
-      process.env.CMS_GITHUB_TOKEN
-    )
-
-    if (!user) {
-      return NextResponse.json({ error: 'Identifiants incorrects' }, { status: 401 })
-    }
-
-    const valid = await verifyPassword(password, user.passwordHash, user.salt)
-    if (!valid) {
-      return NextResponse.json({ error: 'Identifiants incorrects' }, { status: 401 })
-    }
-
-    resetRateLimit(ip)
-
-    const sessionToken = encryptSession({
-      userId: user.id,
-      role: user.role,
-      loginMethod: 'password',
-    })
-
-    const res = NextResponse.json({ ok: true })
-    res.cookies.set(SESSION_COOKIE, sessionToken, sessionCookieOptions())
-    return res
+    return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  } catch (err) {
+    console.error('[cms/auth POST]', err)
+    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
-
-  return NextResponse.json({ error: 'Not found' }, { status: 404 })
 }

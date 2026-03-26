@@ -14,113 +14,134 @@ async function requireAdmin(_req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-  const { error } = await requireAdmin(req)
-  if (error) return error
+  try {
+    const { error } = await requireAdmin(req)
+    if (error) return error
 
-  const session = await getSession()
-  const token = session?.githubToken ?? process.env.CMS_GITHUB_TOKEN
-  const { users } = await getUsers(cmsConfig.repo, cmsConfig.branch, token)
-
-  // Never expose password hashes
-  const safe = users.map(({ passwordHash: _h, salt: _s, ...u }) => u)
-  return NextResponse.json(safe)
+    const session = await getSession()
+    const token = session?.githubToken ?? process.env.CMS_GITHUB_TOKEN
+    const { users } = await getUsers(cmsConfig.repo, cmsConfig.branch, token)
+    const safe = users.map(({ passwordHash: _h, salt: _s, ...u }) => u)
+    return NextResponse.json(safe)
+  } catch (err) {
+    console.error('[cms/users GET]', err)
+    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
+  }
 }
 
 export async function POST(req: NextRequest) {
-  const { error } = await requireAdmin(req)
-  if (error) return error
-
-  let body: { name?: string; email?: string; password?: string; role?: string }
   try {
-    body = (await req.json()) as typeof body
-  } catch {
-    return NextResponse.json({ error: 'Corps invalide' }, { status: 400 })
+    const { error } = await requireAdmin(req)
+    if (error) return error
+
+    let body: { name?: string; email?: string; password?: string; role?: string }
+    try {
+      body = (await req.json()) as typeof body
+    } catch {
+      return NextResponse.json({ error: 'Corps invalide' }, { status: 400 })
+    }
+
+    const { name, email, password, role } = body
+    if (!name || !email || !password) {
+      return NextResponse.json({ error: 'name, email et password requis' }, { status: 400 })
+    }
+
+    const pwError = validatePassword(password)
+    if (pwError) return NextResponse.json({ error: pwError }, { status: 400 })
+
+    const session = await getSession()
+    const token = session?.githubToken ?? process.env.CMS_GITHUB_TOKEN
+    const { users, sha } = await getUsers(cmsConfig.repo, cmsConfig.branch, token)
+
+    if (users.find((u) => u.email === email)) {
+      return NextResponse.json({ error: 'Cet email est déjà utilisé' }, { status: 409 })
+    }
+
+    const { hash, salt } = await hashPassword(password)
+    const newUser = {
+      id: randomBytes(8).toString('hex'),
+      name,
+      email,
+      role: (role as UserRole) ?? 'editor',
+      passwordHash: hash,
+      salt,
+    }
+
+    await saveUsers(cmsConfig.repo, cmsConfig.branch, [...users, newUser], sha, token)
+    const { passwordHash: _h, salt: _s, ...safe } = newUser
+    return NextResponse.json(safe, { status: 201 })
+  } catch (err) {
+    console.error('[cms/users POST]', err)
+    const msg = err instanceof Error ? err.message : 'Erreur serveur'
+    return NextResponse.json({ error: msg }, { status: 500 })
   }
-
-  const { name, email, password, role } = body
-  if (!name || !email || !password) {
-    return NextResponse.json({ error: 'name, email et password requis' }, { status: 400 })
-  }
-
-  const pwError = validatePassword(password)
-  if (pwError) return NextResponse.json({ error: pwError }, { status: 400 })
-
-  const session = await getSession()
-  const token = session?.githubToken ?? process.env.CMS_GITHUB_TOKEN
-  const { users, sha } = await getUsers(cmsConfig.repo, cmsConfig.branch, token)
-
-  if (users.find((u) => u.email === email)) {
-    return NextResponse.json({ error: 'Cet email est déjà utilisé' }, { status: 409 })
-  }
-
-  const { hash, salt } = await hashPassword(password)
-  const newUser = {
-    id: randomBytes(8).toString('hex'),
-    name,
-    email,
-    role: (role as UserRole) ?? 'editor',
-    passwordHash: hash,
-    salt,
-  }
-
-  await saveUsers(cmsConfig.repo, cmsConfig.branch, [...users, newUser], sha, token)
-  const { passwordHash: _h, salt: _s, ...safe } = newUser
-  return NextResponse.json(safe, { status: 201 })
 }
 
 export async function PUT(req: NextRequest) {
-  const { error } = await requireAdmin(req)
-  if (error) return error
-
-  let body: { id?: string; role?: string; password?: string }
   try {
-    body = (await req.json()) as typeof body
-  } catch {
-    return NextResponse.json({ error: 'Corps invalide' }, { status: 400 })
+    const { error } = await requireAdmin(req)
+    if (error) return error
+
+    let body: { id?: string; role?: string; password?: string }
+    try {
+      body = (await req.json()) as typeof body
+    } catch {
+      return NextResponse.json({ error: 'Corps invalide' }, { status: 400 })
+    }
+
+    if (!body.id) return NextResponse.json({ error: 'id requis' }, { status: 400 })
+
+    const session = await getSession()
+    const token = session?.githubToken ?? process.env.CMS_GITHUB_TOKEN
+    const { users, sha } = await getUsers(cmsConfig.repo, cmsConfig.branch, token)
+
+    const idx = users.findIndex((u) => u.id === body.id)
+    if (idx === -1) return NextResponse.json({ error: 'Utilisateur introuvable' }, { status: 404 })
+
+    const user = users[idx]
+    if (!user) return NextResponse.json({ error: 'Utilisateur introuvable' }, { status: 404 })
+
+    if (body.role) user.role = body.role as UserRole
+    if (body.password) {
+      const pwError = validatePassword(body.password)
+      if (pwError) return NextResponse.json({ error: pwError }, { status: 400 })
+      const { hash, salt } = await hashPassword(body.password)
+      user.passwordHash = hash
+      user.salt = salt
+    }
+
+    await saveUsers(cmsConfig.repo, cmsConfig.branch, users, sha, token)
+    const { passwordHash: _h, salt: _s, ...safe } = user
+    return NextResponse.json(safe)
+  } catch (err) {
+    console.error('[cms/users PUT]', err)
+    const msg = err instanceof Error ? err.message : 'Erreur serveur'
+    return NextResponse.json({ error: msg }, { status: 500 })
   }
-
-  if (!body.id) return NextResponse.json({ error: 'id requis' }, { status: 400 })
-
-  const session = await getSession()
-  const token = session?.githubToken ?? process.env.CMS_GITHUB_TOKEN
-  const { users, sha } = await getUsers(cmsConfig.repo, cmsConfig.branch, token)
-
-  const idx = users.findIndex((u) => u.id === body.id)
-  if (idx === -1) return NextResponse.json({ error: 'Utilisateur introuvable' }, { status: 404 })
-
-  const user = users[idx]
-  if (!user) return NextResponse.json({ error: 'Utilisateur introuvable' }, { status: 404 })
-
-  if (body.role) user.role = body.role as UserRole
-  if (body.password) {
-    const pwError = validatePassword(body.password)
-    if (pwError) return NextResponse.json({ error: pwError }, { status: 400 })
-    const { hash, salt } = await hashPassword(body.password)
-    user.passwordHash = hash
-    user.salt = salt
-  }
-
-  await saveUsers(cmsConfig.repo, cmsConfig.branch, users, sha, token)
-  const { passwordHash: _h, salt: _s, ...safe } = user
-  return NextResponse.json(safe)
 }
 
 export async function DELETE(req: NextRequest) {
-  const { error } = await requireAdmin(req)
-  if (error) return error
+  try {
+    const { error } = await requireAdmin(req)
+    if (error) return error
 
-  const id = req.nextUrl.searchParams.get('id')
-  if (!id) return NextResponse.json({ error: 'id requis' }, { status: 400 })
+    const id = req.nextUrl.searchParams.get('id')
+    if (!id) return NextResponse.json({ error: 'id requis' }, { status: 400 })
 
-  const session = await getSession()
-  const token = session?.githubToken ?? process.env.CMS_GITHUB_TOKEN
-  const { users, sha } = await getUsers(cmsConfig.repo, cmsConfig.branch, token)
+    const session = await getSession()
+    const token = session?.githubToken ?? process.env.CMS_GITHUB_TOKEN
+    const { users, sha } = await getUsers(cmsConfig.repo, cmsConfig.branch, token)
 
-  const filtered = users.filter((u) => u.id !== id)
-  if (filtered.length === users.length) {
-    return NextResponse.json({ error: 'Utilisateur introuvable' }, { status: 404 })
+    const filtered = users.filter((u) => u.id !== id)
+    if (filtered.length === users.length) {
+      return NextResponse.json({ error: 'Utilisateur introuvable' }, { status: 404 })
+    }
+
+    await saveUsers(cmsConfig.repo, cmsConfig.branch, filtered, sha, token)
+    return NextResponse.json({ ok: true })
+  } catch (err) {
+    console.error('[cms/users DELETE]', err)
+    const msg = err instanceof Error ? err.message : 'Erreur serveur'
+    return NextResponse.json({ error: msg }, { status: 500 })
   }
-
-  await saveUsers(cmsConfig.repo, cmsConfig.branch, filtered, sha, token)
-  return NextResponse.json({ ok: true })
 }
