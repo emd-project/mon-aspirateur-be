@@ -106,7 +106,7 @@ export default async function ArticlePage({ params }: PageProps) {
         overflow: 'hidden',
       }}>
         <NoiseOverlay />
-        <div style={{ maxWidth: 740, margin: '0 auto', position: 'relative', zIndex: 1 }}>
+        <div style={{ maxWidth: 814, margin: '0 auto', position: 'relative', zIndex: 1 }}>
           {/* Breadcrumb */}
           <nav aria-label="Fil d'Ariane" style={{ marginBottom: '1rem' }}>
             <ol style={{
@@ -171,7 +171,7 @@ export default async function ArticlePage({ params }: PageProps) {
       </section>
 
       {/* ── ARTICLE BODY ─────────────────────────────────────────── */}
-      <div style={{ maxWidth: 740, margin: '0 auto', padding: '3rem 1.5rem' }}>
+      <div style={{ maxWidth: 814, margin: '0 auto', padding: '3rem 1.5rem' }}>
         <article className="prose-article">
           <MDXRemote source={article.content} components={MDX_COMPONENTS} options={MDX_OPTIONS} />
         </article>

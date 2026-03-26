@@ -205,7 +205,7 @@ body::after {
 }
 
 /* ─── PROSE ─────────────────────────────────────────────────── */
-.prose-article { max-width: 68ch; }
+.prose-article { max-width: 75ch; }
 
 .prose-article h2 {
   font-family: var(--font-playfair), Georgia, serif;
