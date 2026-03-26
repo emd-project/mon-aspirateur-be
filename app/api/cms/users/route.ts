@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
     if (error) return error
 
     const session = await getSession()
-    const token = session?.githubToken ?? process.env.CMS_GITHUB_TOKEN
+    const token = process.env.CMS_GITHUB_TOKEN
     const { users } = await getUsers(cmsConfig.repo, cmsConfig.branch, token)
     const safe = users.map(({ passwordHash: _h, salt: _s, ...u }) => u)
     return NextResponse.json(safe)
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
     if (pwError) return NextResponse.json({ error: pwError }, { status: 400 })
 
     const session = await getSession()
-    const token = session?.githubToken ?? process.env.CMS_GITHUB_TOKEN
+    const token = process.env.CMS_GITHUB_TOKEN
     const { users, sha } = await getUsers(cmsConfig.repo, cmsConfig.branch, token)
 
     if (users.find((u) => u.email === email)) {
@@ -92,7 +92,7 @@ export async function PUT(req: NextRequest) {
     if (!body.id) return NextResponse.json({ error: 'id requis' }, { status: 400 })
 
     const session = await getSession()
-    const token = session?.githubToken ?? process.env.CMS_GITHUB_TOKEN
+    const token = process.env.CMS_GITHUB_TOKEN
     const { users, sha } = await getUsers(cmsConfig.repo, cmsConfig.branch, token)
 
     const idx = users.findIndex((u) => u.id === body.id)
@@ -129,7 +129,7 @@ export async function DELETE(req: NextRequest) {
     if (!id) return NextResponse.json({ error: 'id requis' }, { status: 400 })
 
     const session = await getSession()
-    const token = session?.githubToken ?? process.env.CMS_GITHUB_TOKEN
+    const token = process.env.CMS_GITHUB_TOKEN
     const { users, sha } = await getUsers(cmsConfig.repo, cmsConfig.branch, token)
 
     const filtered = users.filter((u) => u.id !== id)
