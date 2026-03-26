@@ -15,6 +15,15 @@ export default function FaqAccordion({ items, title = 'Questions fréquentes' }:
     setOpenIndex(openIndex === index ? null : index)
   }
 
+  // Normalize: support both {question,answer} and {q,a} formats
+  const normalized = items.map((item) => {
+    const raw = item as Record<string, string>
+    return {
+      question: raw.question ?? raw.q ?? '',
+      answer: raw.answer ?? raw.a ?? '',
+    }
+  }).filter((item) => item.question)
+
   return (
     <section aria-label={title}>
       {/* En-tête */}
@@ -43,7 +52,7 @@ export default function FaqAccordion({ items, title = 'Questions fréquentes' }:
 
       {/* Items */}
       <dl style={{ margin: 0 }}>
-        {items.map((item, index) => {
+        {normalized.map((item, index) => {
           const isOpen = openIndex === index
           return (
             <div
