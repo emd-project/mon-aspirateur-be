@@ -3,7 +3,7 @@ import type { CmsConfig } from '@/packages/cms/types'
 export const cmsConfig: CmsConfig = {
   siteName: 'mon-aspirateur.be',
   repo: 'emd-project/mon-aspirateur-be',
-  branch: 'main',
+  branch: 'claude/analyze-requirements-Ob4Ae',
   collections: {
     articles: {
       label: 'Articles',
