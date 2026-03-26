@@ -120,7 +120,8 @@ export default function Header() {
           {/* Desktop nav */}
           <nav
             aria-label="Navigation principale"
-            style={{ display: 'flex', alignItems: 'center', gap: '.1rem', flex: 1 }}
+            className="nav-desktop"
+            style={{ gap: '.1rem', flex: 1 }}
           >
             {navLinks.map(item => (
               isNavGroup(item) ? (
@@ -253,6 +254,7 @@ export default function Header() {
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label={t('toggleMenu')}
               aria-expanded={menuOpen}
+              className="hamburger-btn"
               style={{
                 width: '36px',
                 height: '36px',
@@ -261,9 +263,6 @@ export default function Header() {
                 background: 'var(--bg-surface)',
                 color: 'var(--text-secondary)',
                 cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
               }}
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">

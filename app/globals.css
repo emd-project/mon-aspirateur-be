@@ -450,6 +450,61 @@ body::after {
   .animate-fade-up, .animate-fade-in { animation: none; }
 }
 
+/* ─── RESPONSIVE ────────────────────────────────────────────── */
+/* Prévention overflow horizontal global */
+html, body { overflow-x: hidden; }
+
+/* Navigation : desktop nav */
+.nav-desktop {
+  display: flex;
+  align-items: center;
+  gap: .1rem;
+  flex: 1;
+}
+
+/* Hamburger : caché par défaut sur grand écran */
+.hamburger-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hero grid responsive */
+.grid-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: center;
+}
+
+/* Grilles auto-fill avec min-width — protect narrow screens */
+.grid-brands {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  /* Masquer nav desktop sur mobile */
+  .nav-desktop { display: none; }
+
+  /* Afficher hamburger sur mobile */
+  .hamburger-btn { display: flex; }
+
+  /* Hero en colonne unique */
+  .grid-hero { grid-template-columns: 1fr; }
+
+  /* Tables horizontalement scrollables sur mobile */
+  .prose-article table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+  .prose-article th,
+  .prose-article td { white-space: nowrap; }
+}
+
 /* ─── UTILITY ────────────────────────────────────────────────── */
 .section-divider {
   height: 1px;

@@ -80,12 +80,7 @@ export default async function HomePage({ params }: Props) {
           position: 'relative',
           zIndex: 1,
         }}>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: 'clamp(2rem, 5vw, 5rem)',
-            alignItems: 'center',
-          }}>
+          <div className="grid-hero">
 
             {/* ── Gauche : texte ─────────────────── */}
             <div className="animate-fade-up">
@@ -384,7 +379,7 @@ export default async function HomePage({ params }: Props) {
               {locale === 'fr' ? 'Toutes les marques →' : 'All brands →'}
             </Link>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
+          <div className="grid-brands">
             {topBrands.map(brand => {
               const top = brand.topProducts?.[0]
               return (
