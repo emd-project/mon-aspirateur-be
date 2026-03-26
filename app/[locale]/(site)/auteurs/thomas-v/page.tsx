@@ -41,7 +41,7 @@ export default async function AuthorPage({ params }: PageProps) {
     '@type': 'Person',
     name: author.name,
     jobTitle: author.title,
-    url: `https://mon-aspirateur.be/auteurs/${author.slug}`,
+    url: `https://www.mon-aspirateur.be/auteurs/${author.slug}`,
     description: author.bioShort,
     sameAs: [],
     knowsAbout: author.knowsAbout,
@@ -58,7 +58,7 @@ export default async function AuthorPage({ params }: PageProps) {
       '@type': 'ListItem',
       position: i + 1,
       name: item.name,
-      url: `https://mon-aspirateur.be${item.url}`,
+      url: `https://www.mon-aspirateur.be${item.url}`,
     })),
   }
 

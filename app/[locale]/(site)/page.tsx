@@ -23,7 +23,7 @@ const jsonLd = {
   '@type': 'WebSite',
   name: 'Mon Aspirateur',
   description: 'Comparatifs aspirateurs, tests terrain et guides d\'achat — pour choisir sans se tromper.',
-  url: 'https://mon-aspirateur.be',
+  url: 'https://www.mon-aspirateur.be',
   publisher: { '@type': 'Organization', name: 'Mon Aspirateur' },
 }
 

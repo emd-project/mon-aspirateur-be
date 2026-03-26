@@ -38,7 +38,7 @@ export function generateStaticParams() {
 }
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env['NEXT_PUBLIC_URL'] ?? 'https://mon-aspirateur.be'),
+  metadataBase: new URL(process.env['NEXT_PUBLIC_URL'] ?? 'https://www.mon-aspirateur.be'),
   icons: {
     icon: '/icons/brand/favicon.svg',
   },

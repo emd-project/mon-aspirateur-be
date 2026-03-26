@@ -3,7 +3,7 @@ import { getGuides } from '@/lib/data/mock/guides'
 import { getComparatifs } from '@/lib/data/mock/comparatifs'
 import { getArticles } from '@/lib/data/mock/articles'
 
-const BASE = 'https://mon-aspirateur.be'
+const BASE = 'https://www.mon-aspirateur.be'
 const LOCALES = ['fr', 'en'] as const
 
 export default function sitemap(): MetadataRoute.Sitemap {

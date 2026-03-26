@@ -78,7 +78,7 @@ export default async function ComparerCategoriePage({ params }: PageProps) {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     name: locale === 'fr' ? `Comparatif ${label}` : `${label} comparison`,
-    url: `https://mon-aspirateur.be/${locale}/comparer/${categorie}`,
+    url: `https://www.mon-aspirateur.be/${locale}/comparer/${categorie}`,
     numberOfItems: topPicks.length,
     itemListElement: topPicks.map((p, i) => ({
       '@type': 'ListItem',
@@ -92,9 +92,9 @@ export default async function ComparerCategoriePage({ params }: PageProps) {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Accueil', item: `https://mon-aspirateur.be/${locale}` },
-      { '@type': 'ListItem', position: 2, name: locale === 'fr' ? 'Comparer' : 'Compare', item: `https://mon-aspirateur.be/${locale}/comparer` },
-      { '@type': 'ListItem', position: 3, name: label, item: `https://mon-aspirateur.be/${locale}/comparer/${categorie}` },
+      { '@type': 'ListItem', position: 1, name: 'Accueil', item: `https://www.mon-aspirateur.be/${locale}` },
+      { '@type': 'ListItem', position: 2, name: locale === 'fr' ? 'Comparer' : 'Compare', item: `https://www.mon-aspirateur.be/${locale}/comparer` },
+      { '@type': 'ListItem', position: 3, name: label, item: `https://www.mon-aspirateur.be/${locale}/comparer/${categorie}` },
     ],
   }
 

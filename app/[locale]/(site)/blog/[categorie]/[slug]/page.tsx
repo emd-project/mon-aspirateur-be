@@ -64,7 +64,7 @@ export default async function ArticlePage({ params }: PageProps) {
     author: {
       '@type': 'Person',
       name: author?.name ?? 'Thomas V.',
-      url: `https://mon-aspirateur.be/${locale}/auteurs/thomas-v`,
+      url: `https://www.mon-aspirateur.be/${locale}/auteurs/thomas-v`,
     },
     publisher: { '@type': 'Organization', name: 'mon-aspirateur.be' },
     description: article.excerpt,
@@ -74,10 +74,10 @@ export default async function ArticlePage({ params }: PageProps) {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: locale === 'fr' ? 'Accueil' : 'Home', item: `https://mon-aspirateur.be/${locale}` },
-      { '@type': 'ListItem', position: 2, name: 'Blog', item: `https://mon-aspirateur.be/${locale}/blog` },
-      { '@type': 'ListItem', position: 3, name: article.category, item: `https://mon-aspirateur.be/${locale}/blog/${article.categorySlug}` },
-      { '@type': 'ListItem', position: 4, name: article.title, item: `https://mon-aspirateur.be/${locale}/blog/${article.categorySlug}/${slug}` },
+      { '@type': 'ListItem', position: 1, name: locale === 'fr' ? 'Accueil' : 'Home', item: `https://www.mon-aspirateur.be/${locale}` },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: `https://www.mon-aspirateur.be/${locale}/blog` },
+      { '@type': 'ListItem', position: 3, name: article.category, item: `https://www.mon-aspirateur.be/${locale}/blog/${article.categorySlug}` },
+      { '@type': 'ListItem', position: 4, name: article.title, item: `https://www.mon-aspirateur.be/${locale}/blog/${article.categorySlug}/${slug}` },
     ],
   }
 

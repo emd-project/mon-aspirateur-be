@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/api/', '/studio/'],
       },
     ],
-    sitemap: 'https://mon-aspirateur.be/sitemap.xml',
+    sitemap: 'https://www.mon-aspirateur.be/sitemap.xml',
   }
 }
