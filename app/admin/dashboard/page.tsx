@@ -5,7 +5,6 @@ import { listFilesRecursive } from '@/packages/cms/lib/github'
 
 const C = {
   surface: '#111111',
-  surface2: '#161616',
   border: '#222222',
   text: '#e5e5e5',
   muted: '#aaaaaa',
@@ -16,7 +15,6 @@ export default async function DashboardPage() {
   const session = await requireSession()
   const token = session.githubToken ?? process.env.CMS_GITHUB_TOKEN
 
-  // Fetch article counts per collection
   const counts: Record<string, number> = {}
   for (const [key, col] of Object.entries(cmsConfig.collections)) {
     try {
@@ -29,6 +27,19 @@ export default async function DashboardPage() {
 
   return (
     <div>
+      <style>{`
+        .dash-card {
+          display: block;
+          background: ${C.surface};
+          border: 1px solid ${C.border};
+          border-radius: 10px;
+          padding: 1.25rem;
+          text-decoration: none;
+          transition: border-color 0.15s;
+        }
+        .dash-card:hover { border-color: #333; }
+      `}</style>
+
       <h1 style={{ margin: '0 0 0.25rem', fontSize: '1.5rem', fontWeight: 700, color: C.text }}>
         Dashboard
       </h1>
@@ -44,21 +55,7 @@ export default async function DashboardPage() {
         }}
       >
         {Object.entries(cmsConfig.collections).map(([key, col]) => (
-          <Link
-            key={key}
-            href={`/admin/${key}`}
-            style={{
-              display: 'block',
-              background: C.surface,
-              border: `1px solid ${C.border}`,
-              borderRadius: 10,
-              padding: '1.25rem',
-              textDecoration: 'none',
-              transition: 'border-color 0.15s',
-            }}
-            onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.borderColor = '#333')}
-            onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.borderColor = C.border)}
-          >
+          <Link key={key} href={`/admin/${key}`} className="dash-card">
             <div style={{ fontSize: '1.75rem', fontWeight: 800, color: C.accent, lineHeight: 1 }}>
               {counts[key] ?? 0}
             </div>
@@ -71,18 +68,7 @@ export default async function DashboardPage() {
           </Link>
         ))}
 
-        {/* Media card */}
-        <Link
-          href="/admin/media"
-          style={{
-            display: 'block',
-            background: C.surface,
-            border: `1px solid ${C.border}`,
-            borderRadius: 10,
-            padding: '1.25rem',
-            textDecoration: 'none',
-          }}
-        >
+        <Link href="/admin/media" className="dash-card">
           <div style={{ fontSize: '1.5rem', lineHeight: 1 }}>🖼</div>
           <div style={{ marginTop: '0.375rem', fontWeight: 600, color: C.text, fontSize: '0.9375rem' }}>
             Médias
@@ -93,17 +79,7 @@ export default async function DashboardPage() {
         </Link>
 
         {session.role === 'admin' && (
-          <Link
-            href="/admin/users"
-            style={{
-              display: 'block',
-              background: C.surface,
-              border: `1px solid ${C.border}`,
-              borderRadius: 10,
-              padding: '1.25rem',
-              textDecoration: 'none',
-            }}
-          >
+          <Link href="/admin/users" className="dash-card">
             <div style={{ fontSize: '1.5rem', lineHeight: 1 }}>👥</div>
             <div style={{ marginTop: '0.375rem', fontWeight: 600, color: C.text, fontSize: '0.9375rem' }}>
               Utilisateurs
