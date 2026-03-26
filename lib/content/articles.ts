@@ -6,6 +6,8 @@ const CONTENT_DIR = path.join(process.cwd(), 'content/articles')
 
 export type ArticleFrontmatter = {
   title: string
+  metaTitle?: string
+  metaDescription?: string
   excerpt: string
   category: string
   categorySlug: string

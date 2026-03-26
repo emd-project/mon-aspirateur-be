@@ -37,8 +37,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const article = getArticleMdx(locale, categorie, slug)
   if (!article) return {}
   return {
-    title: `${article.title} | mon-aspirateur.be`,
-    description: article.excerpt,
+    title: article.metaTitle ? `${article.metaTitle} | mon-aspirateur.be` : `${article.title} | mon-aspirateur.be`,
+    description: article.metaDescription ?? article.excerpt,
     alternates: { canonical: `/${locale}/blog/${article.categorySlug}/${slug}` },
   }
 }
