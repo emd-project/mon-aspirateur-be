@@ -37,6 +37,8 @@ export function MediaBrowser({ files: initialFiles, isAdmin = false, onSelect }:
   }
 
   function getPublicUrl(file: GitHubFile): string {
+    // Vercel Blob: download_url is the full public URL
+    if (file.download_url && file.download_url.startsWith('http')) return file.download_url
     return file.path.replace(/^public\//, '/')
   }
 

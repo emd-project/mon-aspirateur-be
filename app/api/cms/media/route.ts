@@ -1,22 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSession } from '@/packages/cms/lib/get-session'
-import { listFiles, uploadMedia, deleteFile } from '@/packages/cms/lib/github'
+import { put, del, list } from '@vercel/blob'
 import { cmsConfig } from '@/cms.config'
-
-function getToken(): string | undefined {
-  return process.env.CMS_GITHUB_TOKEN
-}
 
 export async function GET(_req: NextRequest) {
   try {
     const session = await getSession()
     if (!session) return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
 
-    const token = getToken()
-    const files = await listFiles(cmsConfig.repo, cmsConfig.media.path, cmsConfig.branch, token)
-    const images = files.filter(
-      (f) => f.type === 'file' && /\.(png|jpg|jpeg|webp|svg|gif)$/i.test(f.name)
-    )
+    const { blobs } = await list({ prefix: 'media/' })
+    const images = blobs
+      .filter((b) => /\.(png|jpg|jpeg|webp|svg|gif)$/i.test(b.pathname))
+      .map((b) => ({
+        name: b.pathname.split('/').pop() ?? b.pathname,
+        path: b.pathname,
+        url: b.url,
+        size: b.size,
+        type: 'file' as const,
+        sha: b.url, // use URL as identifier for delete
+        download_url: b.url,
+      }))
+
     return NextResponse.json(images)
   } catch (err) {
     console.error('[cms/media GET]', err)
@@ -54,13 +58,19 @@ export async function POST(req: NextRequest) {
     }
 
     const safeName = name.replace(/[^a-zA-Z0-9._-]/g, '-').toLowerCase()
-    const filePath = `${cmsConfig.media.path}/${safeName}`
-    const token = getToken()
+    const buffer = Buffer.from(base64, 'base64')
 
-    const result = await uploadMedia(cmsConfig.repo, filePath, cmsConfig.branch, base64, token)
-    const publicUrl = `/${cmsConfig.media.path.replace(/^public\//, '')}/${safeName}`
+    const blob = await put(`media/${safeName}`, buffer, {
+      access: 'public',
+      contentType: mimeType,
+    })
 
-    return NextResponse.json({ ok: true, sha: result.sha, url: publicUrl, path: filePath })
+    return NextResponse.json({
+      ok: true,
+      sha: blob.url,
+      url: blob.url,
+      path: blob.pathname,
+    })
   } catch (err) {
     console.error('[cms/media POST]', err)
     const msg = err instanceof Error ? err.message : 'Erreur upload'
@@ -76,26 +86,20 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: 'Droits insuffisants' }, { status: 403 })
     }
 
-    let body: { path?: string; sha?: string }
+    let body: { url?: string; path?: string; sha?: string }
     try {
       body = (await req.json()) as typeof body
     } catch {
       return NextResponse.json({ error: 'Corps invalide' }, { status: 400 })
     }
 
-    if (!body.path || !body.sha) {
-      return NextResponse.json({ error: 'path et sha requis' }, { status: 400 })
+    // Accept either url or sha (sha stores the blob URL)
+    const blobUrl = body.url ?? body.sha
+    if (!blobUrl) {
+      return NextResponse.json({ error: 'url requis' }, { status: 400 })
     }
 
-    const token = getToken()
-    await deleteFile(
-      cmsConfig.repo,
-      body.path,
-      cmsConfig.branch,
-      body.sha,
-      `cms: delete media ${body.path.split('/').pop()}`,
-      token
-    )
+    await del(blobUrl)
 
     return NextResponse.json({ ok: true })
   } catch (err) {
