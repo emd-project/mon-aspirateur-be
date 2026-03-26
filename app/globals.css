@@ -213,8 +213,15 @@ body::after {
   font-weight: 700;
   margin: 2.5rem 0 1rem;
   color: var(--text-primary);
-  border-bottom: 2px solid var(--border-light);
+  border-bottom: 2px solid var(--accent-1);
   padding-bottom: .5rem;
+}
+
+.prose-article hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-medium), transparent);
+  margin: 2.5rem 0;
 }
 
 .prose-article h3 {
