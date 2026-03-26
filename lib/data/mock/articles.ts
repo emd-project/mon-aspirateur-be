@@ -2,6 +2,73 @@ import type { Article } from '../types'
 
 export const ARTICLES: Article[] = [
   {
+    slug: 'meilleur-aspirateur-laveur',
+    title: 'Meilleur aspirateur laveur 2026 : notre sélection testée en Belgique',
+    excerpt:
+      'Un aspirateur laveur remplace le balayage et le nettoyage au sol en une seule passe. Après 10 semaines de tests sur parquet, carrelage et vinyle, voici les 5 modèles qui tiennent vraiment leurs promesses.',
+    category: 'Guide achat',
+    categorySlug: 'guide-achat',
+    publishedAt: '2026-03-26T09:00:00Z',
+    updatedAt: '2026-03-26T09:00:00Z',
+    readingTimeMin: 14,
+    authorSlug: 'thomas-v',
+    locale: 'fr',
+    body: `## Quels aspirateurs laveurs valent vraiment leur prix en 2026 ?
+
+En pratique, quatre modèles se distinguent du reste après 10 semaines de tests sur un appartement de 80 m² : le **Rowenta X-Clean 7**, le **Rowenta X-Clean 10**, le **Dreame H13 Pro** et le **Bissell CrossWave**. Le critère décisif : le système de séparation eau propre / eau sale.
+
+## Notre sélection complète
+
+### Le Rowenta X-Clean 7 est-il le meilleur aspirateur laveur à moins de 400 € ?
+
+Le **Rowenta X-Clean 7** (**349 €**) combine un réservoir eau propre de 0,6 L, un débit réglable en 3 niveaux et un niveau sonore mesuré à 72 dB. Autonomie réelle : 35 minutes, soit 120 m² couverts en mode entretien.
+
+### Le Rowenta X-Clean 10 vaut-il 150 € de plus ?
+
+Le **Rowenta X-Clean 10** (**499 €**) ajoute une station de nettoyage automatique (30 secondes) et un réservoir de 0,8 L. Pour un usage quotidien ou avec un animal.
+
+## Notre verdict final
+
+Pour 60 à 100 m² de sols durs : le **Rowenta X-Clean 7 à 349 €** est notre recommandation principale.`,
+    faq: [
+      {
+        question: 'Un aspirateur laveur remplace-t-il vraiment le balai et la serpillère ?',
+        answer:
+          "En pratique, oui pour l'entretien quotidien sur sols durs. Sur parquet, carrelage et vinyle, un bon aspirateur laveur aspire et lave en une seule passe — ce que ni le balai ni la serpillère seule ne font.",
+      },
+      {
+        question: 'Peut-on utiliser un aspirateur laveur sur parquet stratifié ?',
+        answer:
+          `Oui, à condition de sélectionner le mode sec ou le débit d'eau minimal. Les modèles comme le Rowenta X-Clean 7 et le Dreame H13 Pro ont un débit réglable qui évite de gorger le stratifié d'eau.`,
+      },
+      {
+        question: 'Quelle contenance de réservoir est suffisante pour 80 m² ?',
+        answer:
+          'Comptez 0,5 à 0,6 L pour couvrir 80 m² sans remplissage intermédiaire. Les réservoirs inférieurs à 0,4 L nécessitent souvent un remplissage à mi-parcours sur un appartement standard.',
+      },
+      {
+        question: `L'auto-nettoyage de la brosse est-il indispensable ?`,
+        answer:
+          `Pas indispensable, mais très utile. Sans auto-nettoyage, la brosse accumule résidus et odeurs — il faut la rincer manuellement après chaque utilisation (2 minutes environ). Avec auto-nettoyage intégré, l'opération est automatisée en 30 secondes.`,
+      },
+      {
+        question: 'Un aspirateur laveur fonctionne-t-il sur tapis ?',
+        answer:
+          "Non — ou très marginalement. Les aspirateurs laveurs sont conçus pour les sols durs. Sur tapis, l'humidité détériore les fibres et l'aspiration seule est insuffisante.",
+      },
+      {
+        question: 'Quelle est la différence entre Rowenta X-Clean 7 et X-Clean 10 ?',
+        answer:
+          `Le X-Clean 10 ajoute une station de vidage et nettoyage automatique, un réservoir plus grand (0,8 L) et une puissance d'aspiration supérieure. Le X-Clean 7 nécessite un rinçage manuel mais coûte 150 € de moins.`,
+      },
+      {
+        question: 'Où acheter un aspirateur laveur en Belgique ?',
+        answer:
+          'Coolblue propose la gamme Rowenta X-Clean complète avec livraison J+1 en Belgique. MediaMarkt et Fnac distribuent les modèles Dreame et Bissell.',
+      },
+    ],
+  },
+  {
     slug: 'robot-aspirateur-moins-de-500-euros',
     title: 'Meilleur robot aspirateur à moins de 500 € en 2026 : notre sélection belge',
     excerpt:
