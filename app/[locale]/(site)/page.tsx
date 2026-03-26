@@ -32,9 +32,9 @@ export default async function HomePage({ params }: Props) {
   const t = await getTranslations({ locale, namespace: 'home' })
   const base = `/${locale}`
 
-  const topBalai = getTopPicksByCategory('balai').slice(0, 2)
-  const topRobot = getTopPicksByCategory('robot').slice(0, 2)
-  const topPicks = [...topBalai, ...topRobot]
+  const topBalai    = getTopPicksByCategory('balai').slice(0, 2)
+  const topTraineau = getTopPicksByCategory('traineau').slice(0, 2)
+  const topPicks    = [...topBalai, ...topTraineau]
   const topBrands = brands.slice(0, 6)
   const articles = getArticlesMdx(locale).slice(0, 5)
   const featuredArticle = articles[0] ?? null
@@ -343,7 +343,9 @@ export default async function HomePage({ params }: Props) {
               <p style={{ fontSize: '.72rem', fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '.35rem' }}>
                 {locale === 'fr' ? 'Sélection' : 'Top picks'}
               </p>
-              <h2 className="typo-h2" style={{ margin: 0 }}>{t('sections.topPicks')}</h2>
+              <h2 className="typo-h2" style={{ margin: 0 }}>
+                {locale === 'fr' ? 'Balai & traîneau — notre sélection' : 'Cordless & canister — our picks'}
+              </h2>
             </div>
             <Link href={`${base}/comparer/balai`} style={{ fontSize: '.875rem', color: 'var(--accent-1)', textDecoration: 'none', fontWeight: 600, whiteSpace: 'nowrap' }}>
               {locale === 'fr' ? 'Voir tous →' : 'See all →'}
@@ -388,6 +390,7 @@ export default async function HomePage({ params }: Props) {
                     width: '100%',
                     padding: '1.25rem 1.5rem',
                     border: '1px solid var(--border-light)',
+                    borderTop: brand.slug === 'rowenta' ? '3px solid var(--accent-1)' : '1px solid var(--border-light)',
                     borderRadius: '6px',
                     background: 'var(--bg-surface)',
                     display: 'flex',
@@ -419,6 +422,24 @@ export default async function HomePage({ params }: Props) {
                         {brand.country}
                       </span>
                     </div>
+
+                    {/* Label éditorial discret Rowenta */}
+                    {brand.slug === 'rowenta' && (
+                      <span style={{
+                        display: 'inline-block',
+                        fontSize: '.65rem',
+                        fontWeight: 700,
+                        letterSpacing: '.1em',
+                        textTransform: 'uppercase',
+                        color: 'var(--accent-1)',
+                        background: 'var(--accent-1-soft)',
+                        borderRadius: '3px',
+                        padding: '.15rem .5rem',
+                        alignSelf: 'flex-start',
+                      }}>
+                        {locale === 'fr' ? 'Notre sélection' : 'Our pick'}
+                      </span>
+                    )}
 
                     {/* Positionnement */}
                     <p style={{ fontSize: '.85rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.55, flex: 1 }}>

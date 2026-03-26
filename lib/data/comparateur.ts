@@ -81,11 +81,11 @@ export const comparateurProducts: ProductSpec[] = [
     modelName: 'Rowenta X-Force Flex 14.60 Animal',
     category: 'balai',
     priceEur: 399,
-    score: 8.2,
+    score: 8.5,
     affiliateUrl: '#',
     specs: {
-      puissance: 530, autonomie: 60, charge: 3.5,
-      poids: 3.1, bac: 0.9, bruit: 78, hepa: true, prix: 399,
+      puissance: 530, autonomie: 65, charge: 3.5,
+      poids: 3.1, bac: 0.9, bruit: 74, hepa: true, prix: 399,
     },
   },
   {
@@ -257,14 +257,14 @@ export const comparateurProducts: ProductSpec[] = [
   {
     productId: 'rowenta-silence-force-ro8371',
     brandSlug: 'rowenta',
-    modelName: 'Rowenta Silence Force RO8371',
+    modelName: 'Rowenta Silence Force Multi-Cyclonic RO8371',
     category: 'traineau',
     priceEur: 299,
-    score: 8.5,
+    score: 8.7,
     affiliateUrl: '#',
     specs: {
       puissance: 750, rayon: 10, capacite: 3.5,
-      bruit: 68, energie: 'B', poids: 8.2, hepa: true, prix: 299,
+      bruit: 65, energie: 'A', poids: 8.2, hepa: true, prix: 299,
     },
   },
   {
@@ -314,11 +314,11 @@ export const comparateurProducts: ProductSpec[] = [
     modelName: 'Rowenta Air Force 360 Aqua',
     category: 'laveur',
     priceEur: 249,
-    score: 7.4,
+    score: 7.7,
     affiliateUrl: '#',
     specs: {
-      combi: true, autonomie: 25, autovidage: false,
-      sechage: false, sols: 'Carrelage, parquet', poids: 4.8, prix: 249,
+      combi: true, autonomie: 28, autovidage: false,
+      sechage: false, sols: 'Carrelage, vinyle, parquet', poids: 4.8, prix: 249,
     },
   },
   {
