@@ -1,7 +1,6 @@
 import { requireSession } from '@/packages/cms/lib/get-session'
-import { listFiles } from '@/packages/cms/lib/github'
+import { list } from '@vercel/blob'
 import { MediaBrowser } from '@/packages/cms/components/MediaBrowser'
-import { cmsConfig } from '@/cms.config'
 import type { GitHubFile } from '@/packages/cms/types'
 
 const C = {
@@ -11,21 +10,23 @@ const C = {
 
 export default async function MediaPage() {
   const session = await requireSession()
-  const token = process.env.CMS_GITHUB_TOKEN
 
   let files: GitHubFile[] = []
   try {
-    const all = await listFiles(
-      cmsConfig.repo,
-      cmsConfig.media.path,
-      cmsConfig.branch,
-      token
-    )
-    files = all.filter(
-      (f) => f.type === 'file' && /\.(png|jpe?g|webp|svg|gif)$/i.test(f.name)
-    )
+    const { blobs } = await list({ prefix: 'media/' })
+    files = blobs
+      .filter((b) => /\.(png|jpe?g|webp|svg|gif)$/i.test(b.pathname))
+      .map((b) => ({
+        name: b.pathname.split('/').pop() ?? b.pathname,
+        path: b.pathname,
+        url: b.url,
+        size: b.size,
+        type: 'file' as const,
+        sha: b.url,
+        download_url: b.url,
+      }))
   } catch {
-    // GitHub API unreachable — show empty state
+    // Blob store unreachable — show empty state
   }
 
   return (
@@ -35,7 +36,7 @@ export default async function MediaPage() {
           Médias
         </h1>
         <p style={{ margin: 0, fontSize: '0.875rem', color: C.muted }}>
-          {files.length} fichier{files.length !== 1 ? 's' : ''} · {cmsConfig.media.path}
+          {files.length} fichier{files.length !== 1 ? 's' : ''} · Vercel Blob
         </p>
       </div>
 
