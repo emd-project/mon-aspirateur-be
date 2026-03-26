@@ -9,6 +9,8 @@ import { getAuthor } from '@/lib/data/mock/authors'
 import AuthorByline from '@/components/ui/AuthorByline'
 import AuthorCard from '@/components/ui/AuthorCard'
 import FaqAccordion from '@/components/ui/FaqAccordion'
+import ReadingProgress from '@/components/ui/ReadingProgress'
+import TableOfContents from '@/components/ui/TableOfContents'
 import NoiseOverlay from '@/components/effects/NoiseOverlay'
 import Tip from '@/components/mdx/Tip'
 import Warning from '@/components/mdx/Warning'
@@ -46,6 +48,26 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 // Extract FAQ items from MDX frontmatter (optional field)
 type ArticleFaq = { faq?: FaqItem[] }
 
+/** Extract H2 headings from raw MDX for table of contents */
+function extractHeadings(content: string): { id: string; text: string }[] {
+  const headings: { id: string; text: string }[] = []
+  const lines = content.split('\n')
+  for (const line of lines) {
+    const match = line.match(/^## (.+)/)
+    if (match && match[1]) {
+      const text = match[1].trim()
+      const id = text
+        .toLowerCase()
+        .replace(/[^a-zà-ÿ0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '')
+      headings.push({ id, text })
+    }
+  }
+  return headings
+}
+
 export default async function ArticlePage({ params }: PageProps) {
   const { locale, categorie, slug } = await params
   const article = getArticleMdx(locale, categorie, slug)
@@ -54,6 +76,7 @@ export default async function ArticlePage({ params }: PageProps) {
   const author = getAuthor(article.authorSlug)
   const faq = (article as ArticleFaq).faq ?? []
   const wordCount = article.content.split(/\s+/).length
+  const headings = extractHeadings(article.content)
 
   const articleJsonLd = {
     '@context': 'https://schema.org',
@@ -97,18 +120,20 @@ export default async function ArticlePage({ params }: PageProps) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       {faqJsonLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />}
 
+      <ReadingProgress />
+
       {/* ── HERO ─────────────────────────────────────────────────── */}
       <section style={{
         position: 'relative',
-        background: 'var(--bg-surface)',
-        padding: '3rem 1.5rem',
+        background: 'linear-gradient(180deg, var(--accent-1-soft) 0%, var(--bg-primary) 100%)',
+        padding: 'clamp(2.5rem, 6vw, 4rem) 1.5rem',
         borderBottom: '1px solid var(--border-light)',
         overflow: 'hidden',
       }}>
         <NoiseOverlay />
         <div style={{ maxWidth: 740, margin: '0 auto', position: 'relative', zIndex: 1 }}>
           {/* Breadcrumb */}
-          <nav aria-label="Fil d'Ariane" style={{ marginBottom: '1rem' }}>
+          <nav aria-label="Fil d'Ariane" style={{ marginBottom: '1.25rem' }}>
             <ol style={{
               listStyle: 'none',
               margin: 0,
@@ -133,14 +158,18 @@ export default async function ArticlePage({ params }: PageProps) {
             </ol>
           </nav>
 
-          {/* Category + reading time */}
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1rem' }}>
+          {/* Category badge + reading time */}
+          <div style={{ display: 'flex', gap: '.75rem', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
             <span style={{
+              display: 'inline-block',
+              padding: '.25rem .7rem',
+              borderRadius: 'var(--radius-pill)',
               fontSize: '.72rem',
               fontWeight: 700,
-              letterSpacing: '.1em',
+              letterSpacing: '.08em',
               textTransform: 'uppercase',
               color: 'var(--accent-1)',
+              background: 'var(--accent-1-soft)',
             }}>
               {article.category}
             </span>
@@ -149,38 +178,56 @@ export default async function ArticlePage({ params }: PageProps) {
             </span>
           </div>
 
-          <h1 className="typo-h1-article" style={{ margin: '0 0 1.25rem' }}>
+          <h1 className="typo-h1-article animate-fade-up" style={{ margin: '0 0 1.25rem' }}>
             {article.title}
           </h1>
 
-          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', lineHeight: 1.65, margin: '0 0 1.5rem' }}>
+          <p className="animate-fade-up delay-100" style={{
+            fontSize: 'clamp(1rem, 2vw, 1.1rem)',
+            color: 'var(--text-secondary)',
+            lineHeight: 1.7,
+            margin: '0 0 1.75rem',
+            maxWidth: '60ch',
+          }}>
             {article.excerpt}
           </p>
 
           {author && (
-            <AuthorByline
-              authorSlug={author.slug}
-              authorName={author.name}
-              publishedAt={article.publishedAt}
-              updatedAt={article.updatedAt}
-              readingTimeMin={article.readingTimeMin}
-              locale={locale}
-            />
+            <div className="animate-fade-up delay-200">
+              <AuthorByline
+                authorSlug={author.slug}
+                authorName={author.name}
+                publishedAt={article.publishedAt}
+                updatedAt={article.updatedAt}
+                readingTimeMin={article.readingTimeMin}
+                locale={locale}
+              />
+            </div>
           )}
         </div>
       </section>
 
       {/* ── ARTICLE BODY ─────────────────────────────────────────── */}
-      <div style={{ maxWidth: 740, margin: '0 auto', padding: '3rem 1.5rem' }}>
+      <div style={{ maxWidth: 740, margin: '0 auto', padding: 'clamp(2rem, 5vw, 3rem) 1.5rem' }}>
+
+        {/* Table of contents */}
+        <TableOfContents items={headings} />
+
         <article className="prose-article">
           <MDXRemote source={article.content} components={MDX_COMPONENTS} options={MDX_OPTIONS} />
         </article>
 
         {/* FAQ */}
         {faq.length > 0 && (
-          <div style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid var(--border-light)' }}>
+          <section style={{
+            marginTop: '3rem',
+            background: 'var(--bg-surface)',
+            border: '1px solid var(--border-light)',
+            borderRadius: 'var(--radius-lg)',
+            padding: 'clamp(1.5rem, 4vw, 2.5rem)',
+          }}>
             <FaqAccordion items={faq} title={locale === 'fr' ? 'Questions fréquentes' : 'FAQ'} />
-          </div>
+          </section>
         )}
 
         {/* Author card */}
@@ -190,7 +237,15 @@ export default async function ArticlePage({ params }: PageProps) {
           </div>
         )}
 
-        <div style={{ marginTop: '2.5rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border-light)' }}>
+        {/* Back link */}
+        <div style={{
+          marginTop: '2.5rem',
+          paddingTop: '1.5rem',
+          borderTop: '1px solid var(--border-light)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}>
           <Link
             href={`/${locale}/blog`}
             style={{
@@ -201,6 +256,17 @@ export default async function ArticlePage({ params }: PageProps) {
             }}
           >
             ← {locale === 'fr' ? 'Tous les articles' : 'All articles'}
+          </Link>
+          <Link
+            href="#"
+            onClick={undefined}
+            style={{
+              color: 'var(--text-muted)',
+              textDecoration: 'none',
+              fontSize: '.8rem',
+            }}
+          >
+            ↑ {locale === 'fr' ? 'Haut de page' : 'Back to top'}
           </Link>
         </div>
       </div>
