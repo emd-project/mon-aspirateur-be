@@ -68,13 +68,53 @@ function extractHeadings(content: string): { id: string; text: string }[] {
   return headings
 }
 
+/** Extract FAQ from body content (## FAQ section with ### questions + paragraph answers) */
+function extractFaqFromBody(content: string): FaqItem[] {
+  const items: FaqItem[] = []
+  const lines = content.split('\n')
+  let inFaqSection = false
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i] ?? ''
+
+    // Detect ## FAQ heading
+    if (/^## FAQ\b/i.test(line)) {
+      inFaqSection = true
+      continue
+    }
+
+    // Exit FAQ section on next ## heading
+    if (inFaqSection && /^## /.test(line) && !/^## FAQ\b/i.test(line)) {
+      break
+    }
+
+    if (inFaqSection && /^### /.test(line)) {
+      const question = line.replace(/^### /, '').trim()
+      // Collect paragraph lines until next heading or end
+      const answerLines: string[] = []
+      for (let j = i + 1; j < lines.length; j++) {
+        const nextLine = lines[j] ?? ''
+        if (/^#{1,3} /.test(nextLine)) break
+        answerLines.push(nextLine)
+      }
+      const answer = answerLines.join('\n').trim()
+      if (question && answer) {
+        items.push({ question, answer })
+      }
+    }
+  }
+  return items
+}
+
 export default async function ArticlePage({ params }: PageProps) {
   const { locale, categorie, slug } = await params
   const article = getArticleMdx(locale, categorie, slug)
   if (!article) notFound()
 
   const author = getAuthor(article.authorSlug)
-  const faq = (article as ArticleFaq).faq ?? []
+  const frontmatterFaq = (article as ArticleFaq).faq ?? []
+  // Use frontmatter FAQ if available, otherwise extract from ## FAQ section in body
+  const faq = frontmatterFaq.length > 0 ? frontmatterFaq : extractFaqFromBody(article.content)
   const wordCount = article.content.split(/\s+/).length
   const headings = extractHeadings(article.content)
 
