@@ -117,8 +117,8 @@ function ImageUrlField({
     setLoading(true)
     try {
       const res = await fetch('/api/cms/media', { credentials: 'include' })
-      const data = await res.json() as { files?: MediaFile[] }
-      setFiles(data.files ?? [])
+      const data = await res.json() as MediaFile[] | { files?: MediaFile[] }
+      setFiles(Array.isArray(data) ? data : (data.files ?? []))
     } catch { /* ignore */ } finally {
       setLoading(false)
     }

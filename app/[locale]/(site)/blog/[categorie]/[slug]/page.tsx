@@ -32,12 +32,19 @@ const MDX_COMPONENTS = { Tip, Warning, Verdict, PullQuote, StatCard, ProConTable
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const MDX_OPTIONS = { mdxOptions: { remarkPlugins: [remarkGfm] as any } }
 
-/** Inject title + articleUrl into every <AISummarize .../> in the MDX source */
+/** Auto-inject <AISummarize> at the top of articles that don't already have one */
+function autoInjectAISummarize(content: string, title: string): string {
+  if (content.includes('<AISummarize')) return content
+  const q = title.replace(/"/g, '&quot;')
+  return `<AISummarize question="${q}" />\n\n${content}`
+}
+
+/** Inject title + articleUrl into every <AISummarize .../> in the MDX source (handles multiline tags) */
 function injectAISummarizeMeta(content: string, title: string, articleUrl: string): string {
   const t = title.replace(/"/g, '&quot;')
   const u = articleUrl.replace(/"/g, '&quot;')
   return content.replace(
-    /(<AISummarize\s)([^>]*?)(\/?>)/g,
+    /(<AISummarize)([\s\S]*?)(\/?>)/g,
     (_m, open, attrs, close) => {
       if (attrs.includes('title=') || attrs.includes('articleUrl=')) return _m
       return `${open}${attrs} title="${t}" articleUrl="${u}"${close}`
@@ -176,7 +183,7 @@ export default async function ArticlePage({ params }: PageProps) {
 
   const author = getAuthor(article.authorSlug)
   const frontmatterFaq = (article as ArticleFaq).faq ?? []
-  const processedContent = autoProductCTA(article.content)
+  const processedContent = autoInjectAISummarize(autoProductCTA(article.content), article.title)
   // Use frontmatter FAQ if available, otherwise extract from ## FAQ section in body
   const faq = frontmatterFaq.length > 0 ? frontmatterFaq : extractFaqFromBody(processedContent)
   const wordCount = processedContent.split(/\s+/).length
