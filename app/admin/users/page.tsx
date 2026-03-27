@@ -4,8 +4,8 @@ import { UsersManager } from '@/packages/cms/components/UsersManager'
 import { cmsConfig } from '@/cms.config'
 
 const C = {
-  text: '#e5e5e5',
-  muted: '#aaaaaa',
+  text: '#1A1714',
+  muted: '#6B5E54',
 }
 
 export default async function UsersPage() {
@@ -13,18 +13,16 @@ export default async function UsersPage() {
   const token = process.env.CMS_GITHUB_TOKEN
 
   const { users } = await getUsers(cmsConfig.repo, cmsConfig.branch, token)
-
-  // Never expose password hashes to the client
   const safe = users.map(({ passwordHash: _h, salt: _s, ...u }) => u)
 
   return (
     <div>
-      <div style={{ marginBottom: '1.5rem' }}>
-        <h1 style={{ margin: '0 0 0.25rem', fontSize: '1.375rem', fontWeight: 700, color: C.text }}>
+      <div style={{ marginBottom: '1.75rem' }}>
+        <h1 style={{ margin: '0 0 0.25rem', fontSize: '1.5rem', fontWeight: 700, color: C.text, letterSpacing: '-0.02em' }}>
           Utilisateurs
         </h1>
         <p style={{ margin: 0, fontSize: '0.875rem', color: C.muted }}>
-          {safe.length} compte{safe.length !== 1 ? 's' : ''} enregistré{safe.length !== 1 ? 's' : ''}
+          {safe.length} compte{safe.length !== 1 ? 's' : ''} · {session.role === 'admin' ? 'Administration' : 'Lecture seule'}
         </p>
       </div>
 

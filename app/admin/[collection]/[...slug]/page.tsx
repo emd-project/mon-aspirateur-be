@@ -5,11 +5,14 @@ import { parseMdx } from '@/packages/cms/lib/parser'
 import { ContentEditor } from '@/packages/cms/components/ContentEditor'
 import { cmsConfig } from '@/cms.config'
 import type { ContentEntry } from '@/packages/cms/types'
+import Link from 'next/link'
 
 const C = {
-  text: '#e5e5e5',
-  muted: '#aaaaaa',
-  border: '#222222',
+  text: '#1A1714',
+  muted: '#6B5E54',
+  dim: '#9C8E84',
+  border: '#EDE5D8',
+  accent: '#C4622D',
 }
 
 export default async function EntryPage({
@@ -18,7 +21,7 @@ export default async function EntryPage({
   params: Promise<{ collection: string; slug: string[] }>
 }) {
   const { collection, slug } = await params
-  const session = await requireSession()
+  await requireSession()
 
   const collectionDef = cmsConfig.collections[collection]
   if (!collectionDef) notFound()
@@ -28,7 +31,6 @@ export default async function EntryPage({
 
   if (!isNew) {
     const token = process.env.CMS_GITHUB_TOKEN
-    // slug is e.g. ['fr', 'guide-achat', 'my-article'] for MDX collections
     const ext = collectionDef.format === 'mdx' ? '.mdx' : '.yaml'
     const filePath = `${collectionDef.path}/${slug.join('/')}${ext}`
 
@@ -45,17 +47,19 @@ export default async function EntryPage({
     }
   }
 
+  const entryLabel = isNew
+    ? 'Nouveau'
+    : String(entry?.frontmatter.title ?? entry?.frontmatter.hero_headline ?? slug.join('/'))
+
   return (
     <div>
       {/* Breadcrumb */}
-      <nav style={{ marginBottom: '1.5rem', fontSize: '0.8125rem', color: C.muted }}>
-        <a href={`/admin/${collection}`} style={{ color: C.muted, textDecoration: 'none' }}>
+      <nav style={{ marginBottom: '1.75rem', fontSize: '0.8125rem', color: C.muted, display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
+        <Link href={`/admin/${collection}`} style={{ color: C.muted, textDecoration: 'none' }}>
           {collectionDef.label}
-        </a>
-        <span style={{ margin: '0 0.5rem', color: C.border }}>/</span>
-        <span style={{ color: C.text }}>
-          {isNew ? 'Nouvel article' : (entry?.frontmatter.title as string | undefined) ?? slug.join('/')}
-        </span>
+        </Link>
+        <span style={{ color: C.dim }}>/</span>
+        <span style={{ color: C.text, fontWeight: 500 }}>{entryLabel}</span>
       </nav>
 
       <ContentEditor

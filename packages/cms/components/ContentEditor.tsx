@@ -6,20 +6,29 @@ import { titleToSlug, importMarkdownFile } from '../lib/parser'
 import { extractMdxBlocks, reinsertMdxBlocks, markdownToHtml, htmlToMarkdown } from '../lib/html-md'
 import { WysiwygEditor, type WysiwygEditorRef } from './WysiwygEditor'
 
-// ─── Palette ─────────────────────────────────────────────────────────────────
+// ─── Design tokens ────────────────────────────────────────────────────────────
 const C = {
-  bg: '#0a0a0a',
-  surface: '#111111',
-  surface2: '#161616',
-  border: '#222222',
-  borderHover: '#333333',
-  text: '#e5e5e5',
-  muted: '#aaaaaa',
-  dim: '#666666',
-  accent: '#ff3d57',
-  success: '#22c55e',
-  warning: '#f59e0b',
-  error: '#ef4444',
+  bg: '#FAF7F2',
+  surface: '#FFFFFF',
+  surface2: '#F0EBE3',
+  border: '#EDE5D8',
+  borderFocus: '#C4622D',
+  text: '#1A1714',
+  muted: '#6B5E54',
+  dim: '#9C8E84',
+  accent: '#C4622D',
+  accentSoft: 'rgba(196,98,45,.1)',
+  accentBorder: 'rgba(196,98,45,.3)',
+  success: '#6B8F71',
+  successSoft: 'rgba(107,143,113,.1)',
+  successBorder: 'rgba(107,143,113,.3)',
+  warning: '#C49A2D',
+  warningSoft: 'rgba(196,154,45,.1)',
+  warningBorder: 'rgba(196,154,45,.25)',
+  error: '#B91C1C',
+  errorSoft: 'rgba(185,28,28,.07)',
+  errorBorder: 'rgba(185,28,28,.2)',
+  inputBg: '#F5F0E8',
 }
 
 // ─── Toast ────────────────────────────────────────────────────────────────────
@@ -37,14 +46,14 @@ function Toast({ message, type, onDone }: { message: string; type: 'success' | '
         bottom: '1.5rem',
         right: '1.5rem',
         padding: '0.625rem 1rem',
-        borderRadius: 8,
-        background: type === 'success' ? 'rgba(34,197,94,.12)' : 'rgba(239,68,68,.12)',
-        border: `1px solid ${type === 'success' ? 'rgba(34,197,94,.3)' : 'rgba(239,68,68,.3)'}`,
+        borderRadius: 10,
+        background: type === 'success' ? C.successSoft : C.errorSoft,
+        border: `1px solid ${type === 'success' ? C.successBorder : C.errorBorder}`,
         color: type === 'success' ? C.success : C.error,
         fontSize: '0.875rem',
         fontWeight: 500,
         zIndex: 9999,
-        boxShadow: '0 4px 16px rgba(0,0,0,.4)',
+        boxShadow: '0 4px 16px rgba(26,23,20,.1)',
       }}
     >
       {message}
@@ -52,17 +61,9 @@ function Toast({ message, type, onDone }: { message: string; type: 'success' | '
   )
 }
 
-// ─── Field components ────────────────────────────────────────────────────────
+// ─── Field components ─────────────────────────────────────────────────────────
 
-function TextField({
-  field,
-  value,
-  onChange,
-}: {
-  field: FieldDef & { key: string }
-  value: string
-  onChange: (v: string) => void
-}) {
+function TextField({ field, value, onChange }: { field: FieldDef & { key: string }; value: string; onChange: (v: string) => void }) {
   return (
     <input
       type="text"
@@ -75,15 +76,7 @@ function TextField({
   )
 }
 
-function TextareaField({
-  field,
-  value,
-  onChange,
-}: {
-  field: FieldDef & { key: string }
-  value: string
-  onChange: (v: string) => void
-}) {
+function TextareaField({ field, value, onChange }: { field: FieldDef & { key: string }; value: string; onChange: (v: string) => void }) {
   return (
     <textarea
       value={value}
@@ -98,15 +91,7 @@ function TextareaField({
 
 type MediaFile = { name: string; sha: string; download_url: string | null }
 
-function ImageUrlField({
-  field,
-  value,
-  onChange,
-}: {
-  field: FieldDef & { key: string }
-  value: string
-  onChange: (v: string) => void
-}) {
+function ImageUrlField({ field, value, onChange }: { field: FieldDef & { key: string }; value: string; onChange: (v: string) => void }) {
   const [open, setOpen] = useState(false)
   const [files, setFiles] = useState<MediaFile[]>([])
   const [loading, setLoading] = useState(false)
@@ -140,14 +125,15 @@ function ImageUrlField({
           type="button"
           onClick={openBrowser}
           style={{
-            padding: '0 0.75rem',
+            padding: '0 0.875rem',
             background: C.surface2,
             border: `1px solid ${C.border}`,
-            borderRadius: 6,
+            borderRadius: 7,
             color: C.muted,
-            fontSize: '0.75rem',
+            fontSize: '0.8125rem',
             cursor: 'pointer',
             whiteSpace: 'nowrap',
+            fontWeight: 500,
           }}
         >
           Médiathèque
@@ -156,23 +142,24 @@ function ImageUrlField({
           <button
             type="button"
             onClick={() => onChange('')}
-            style={{ padding: '0 0.5rem', background: 'transparent', border: `1px solid ${C.border}`, borderRadius: 6, color: C.dim, cursor: 'pointer', fontSize: '0.75rem' }}
+            style={{ padding: '0 0.5rem', background: 'transparent', border: `1px solid ${C.border}`, borderRadius: 7, color: C.dim, cursor: 'pointer', fontSize: '0.75rem' }}
           >
             ✕
           </button>
         )}
       </div>
       {value && (
-        <img src={value} alt="" style={{ maxHeight: 80, maxWidth: 160, borderRadius: 4, border: `1px solid ${C.border}`, objectFit: 'cover' }} />
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={value} alt="" style={{ maxHeight: 80, maxWidth: 160, borderRadius: 6, border: `1px solid ${C.border}`, objectFit: 'cover' }} />
       )}
       {open && (
-        <div style={{ border: `1px solid ${C.border}`, borderRadius: 8, background: C.surface, padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div style={{ border: `1px solid ${C.border}`, borderRadius: 10, background: C.surface, padding: '0.875rem', display: 'flex', flexDirection: 'column', gap: 8, boxShadow: '0 4px 16px rgba(26,23,20,.08)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.75rem', color: C.muted }}>Sélectionner une image</span>
+            <span style={{ fontSize: '0.8125rem', color: C.muted, fontWeight: 500 }}>Sélectionner une image</span>
             <button type="button" onClick={() => setOpen(false)} style={{ background: 'transparent', border: 'none', color: C.dim, cursor: 'pointer', fontSize: '1rem' }}>✕</button>
           </div>
-          {loading && <span style={{ fontSize: '0.75rem', color: C.dim }}>Chargement…</span>}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, maxHeight: 200, overflowY: 'auto' }}>
+          {loading && <span style={{ fontSize: '0.8125rem', color: C.dim }}>Chargement…</span>}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, maxHeight: 220, overflowY: 'auto' }}>
             {files.map((f) => {
               const url = f.download_url ?? ''
               return (
@@ -181,14 +168,15 @@ function ImageUrlField({
                   type="button"
                   onClick={() => select(url)}
                   title={f.name}
-                  style={{ padding: 4, background: value === url ? C.accent : C.surface2, border: `1px solid ${value === url ? C.accent : C.border}`, borderRadius: 6, cursor: 'pointer' }}
+                  style={{ padding: 4, background: value === url ? C.accentSoft : C.surface2, border: `1px solid ${value === url ? C.accent : C.border}`, borderRadius: 7, cursor: 'pointer' }}
                 >
-                  <img src={url} alt={f.name} style={{ width: 56, height: 56, objectFit: 'cover', borderRadius: 4, display: 'block' }} />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={url} alt={f.name} style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 4, display: 'block' }} />
                 </button>
               )
             })}
             {!loading && files.length === 0 && (
-              <span style={{ fontSize: '0.75rem', color: C.dim }}>Aucune image dans la médiathèque.</span>
+              <span style={{ fontSize: '0.8125rem', color: C.dim }}>Aucune image dans la médiathèque.</span>
             )}
           </div>
         </div>
@@ -197,22 +185,12 @@ function ImageUrlField({
   )
 }
 
-function SelectField({
-  field,
-  value,
-  onChange,
-}: {
-  field: FieldDef & { key: string }
-  value: string
-  onChange: (v: string) => void
-}) {
+function SelectField({ field, value, onChange }: { field: FieldDef & { key: string }; value: string; onChange: (v: string) => void }) {
   return (
     <select value={value} onChange={(e) => onChange(e.target.value)} style={inputStyle}>
       <option value="">— choisir —</option>
       {(field.options ?? []).map((opt) => (
-        <option key={opt.value} value={opt.value}>
-          {opt.label}
-        </option>
+        <option key={opt.value} value={opt.value}>{opt.label}</option>
       ))}
     </select>
   )
@@ -237,26 +215,14 @@ function TagsField({ value, onChange }: { value: string[]; onChange: (v: string[
       {value.map((tag) => (
         <span
           key={tag}
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 4,
-            padding: '2px 8px',
-            borderRadius: 20,
-            background: 'rgba(255,61,87,.15)',
-            border: `1px solid rgba(255,61,87,.3)`,
-            color: C.accent,
-            fontSize: '0.8125rem',
-          }}
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 8px', borderRadius: 20, background: C.accentSoft, border: `1px solid ${C.accentBorder}`, color: C.accent, fontSize: '0.8125rem' }}
         >
           {tag}
           <button
             type="button"
             onClick={() => onChange(value.filter((t) => t !== tag))}
             style={{ background: 'none', border: 'none', color: C.accent, cursor: 'pointer', padding: 0, lineHeight: 1, fontSize: 14 }}
-          >
-            ×
-          </button>
+          >×</button>
         </span>
       ))}
       <input
@@ -271,15 +237,7 @@ function TagsField({ value, onChange }: { value: string[]; onChange: (v: string[
   )
 }
 
-function RepeaterField({
-  field,
-  value,
-  onChange,
-}: {
-  field: FieldDef & { key: string }
-  value: Record<string, string>[]
-  onChange: (v: Record<string, string>[]) => void
-}) {
+function RepeaterField({ field, value, onChange }: { field: FieldDef & { key: string }; value: Record<string, string>[]; onChange: (v: Record<string, string>[]) => void }) {
   function updateItem(idx: number, key: string, val: string) {
     const next = [...value]
     next[idx] = { ...next[idx], [key]: val }
@@ -300,23 +258,11 @@ function RepeaterField({
       {value.map((item, idx) => (
         <div
           key={idx}
-          style={{
-            background: C.surface2,
-            border: `1px solid ${C.border}`,
-            borderRadius: 8,
-            padding: '0.75rem',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 8,
-          }}
+          style={{ background: C.surface2, border: `1px solid ${C.border}`, borderRadius: 10, padding: '0.875rem', display: 'flex', flexDirection: 'column', gap: 8 }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.8125rem', color: C.muted }}>#{idx + 1}</span>
-            <button
-              type="button"
-              onClick={() => removeItem(idx)}
-              style={{ background: 'none', border: 'none', color: C.error, cursor: 'pointer', fontSize: '0.8125rem' }}
-            >
+            <span style={{ fontSize: '0.8125rem', color: C.muted, fontWeight: 500 }}>#{idx + 1}</span>
+            <button type="button" onClick={() => removeItem(idx)} style={{ background: 'none', border: 'none', color: C.error, cursor: 'pointer', fontSize: '0.8125rem' }}>
               Supprimer
             </button>
           </div>
@@ -355,9 +301,9 @@ function RepeaterField({
 const inputStyle: React.CSSProperties = {
   width: '100%',
   padding: '0.5625rem 0.75rem',
-  background: '#0d0d0d',
+  background: C.inputBg,
   border: `1px solid ${C.border}`,
-  borderRadius: 7,
+  borderRadius: 8,
   color: C.text,
   fontSize: '0.875rem',
   outline: 'none',
@@ -369,15 +315,16 @@ const labelStyle: React.CSSProperties = {
   display: 'block',
   marginBottom: '0.375rem',
   fontSize: '0.8125rem',
-  fontWeight: 500,
+  fontWeight: 600,
   color: C.muted,
+  letterSpacing: '.01em',
 }
 
 const ghostBtnStyle: React.CSSProperties = {
   padding: '0.5rem 0.875rem',
   background: 'transparent',
   border: `1px dashed ${C.border}`,
-  borderRadius: 7,
+  borderRadius: 8,
   color: C.muted,
   fontSize: '0.8125rem',
   cursor: 'pointer',
@@ -406,7 +353,9 @@ export function ContentEditor({ collection, collectionDef, entry, onSaved }: Con
   const [wysiwygHtml, setWysiwygHtml] = useState('')
   const [dirty, setDirty] = useState(false)
 
-  // Init WYSIWYG from entry body
+  const isFlatPath = collectionDef.flatPath ?? false
+  const isReadOnly = collectionDef.readOnly ?? false
+
   useEffect(() => {
     if (entry?.body) {
       const { cleaned, blocks } = extractMdxBlocks(entry.body)
@@ -417,10 +366,8 @@ export function ContentEditor({ collection, collectionDef, entry, onSaved }: Con
     }
   }, [entry])
 
-  // Dirty tracking
   useEffect(() => { setDirty(true) }, [fields, slug, sourceBody])
 
-  // Warn on unload if dirty
   useEffect(() => {
     const handler = (e: BeforeUnloadEvent) => {
       if (dirty) { e.preventDefault(); e.returnValue = '' }
@@ -429,7 +376,6 @@ export function ContentEditor({ collection, collectionDef, entry, onSaved }: Con
     return () => window.removeEventListener('beforeunload', handler)
   }, [dirty])
 
-  // Ctrl+S to save
   useEffect(() => {
     const handler = (e: globalThis.KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); void handleSave() }
@@ -441,10 +387,7 @@ export function ContentEditor({ collection, collectionDef, entry, onSaved }: Con
   function setField(key: string, value: unknown) {
     setFields((prev) => {
       const next = { ...prev, [key]: value }
-      // Auto-slug from title
-      if (key === 'title' && !slugLocked) {
-        setSlug(titleToSlug(String(value)))
-      }
+      if (key === 'title' && !slugLocked) setSlug(titleToSlug(String(value)))
       return next
     })
   }
@@ -496,13 +439,24 @@ export function ContentEditor({ collection, collectionDef, entry, onSaved }: Con
     if (saving) return
     setSaving(true)
 
-    const locale = String(fields.locale ?? 'fr')
-    const categorySlug = String(fields.categorySlug ?? 'guide-achat')
-    const filePath = `${collectionDef.path}/${locale}/${categorySlug}/${slug}.mdx`
+    const ext = collectionDef.format === 'mdx' ? '.mdx' : '.yaml'
     const body = getCurrentBody()
 
+    // Build file path and API URL depending on collection type
+    let filePath: string
+    let apiUrl: string
+    if (isFlatPath) {
+      filePath = `${collectionDef.path}/${slug}${ext}`
+      apiUrl = `/api/cms/content/${collection}/${slug}`
+    } else {
+      const locale = String(fields.locale ?? 'fr')
+      const categorySlug = String(fields.categorySlug ?? 'guide-achat')
+      filePath = `${collectionDef.path}/${locale}/${categorySlug}/${slug}.mdx`
+      apiUrl = `/api/cms/content/${collection}/${locale}/${categorySlug}/${slug}`
+    }
+
     try {
-      const res = await fetch(`/api/cms/content/${collection}/${locale}/${categorySlug}/${slug}`, {
+      const res = await fetch(apiUrl, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ filePath, frontmatter: fields, body, sha: entry?.sha }),
@@ -510,7 +464,7 @@ export function ContentEditor({ collection, collectionDef, entry, onSaved }: Con
       const data = (await res.json()) as { ok?: boolean; sha?: string; error?: string }
       if (!res.ok) throw new Error(data.error ?? 'Erreur de sauvegarde')
 
-      setToast({ message: 'Article sauvegardé ✓', type: 'success' })
+      setToast({ message: 'Sauvegardé ✓', type: 'success' })
       setDirty(false)
       onSaved?.({ slug, filePath, frontmatter: fields, body, sha: data.sha })
     } catch (err) {
@@ -539,43 +493,46 @@ export function ContentEditor({ collection, collectionDef, entry, onSaved }: Con
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <span style={{ fontSize: '0.875rem', color: C.muted }}>
-            {entry?.slug ? `Modifier — ${entry.slug}` : 'Nouvel article'}
+            {entry?.slug ? `Modifier — ${entry.slug}` : 'Nouveau'}
           </span>
           {dirty && (
-            <span style={{ fontSize: '0.75rem', color: C.warning, background: 'rgba(245,158,11,.1)', padding: '2px 8px', borderRadius: 12 }}>
+            <span style={{ fontSize: '0.75rem', color: C.warning, background: C.warningSoft, padding: '2px 8px', borderRadius: 12, border: `1px solid ${C.warningBorder}` }}>
               Non sauvegardé
             </span>
           )}
         </div>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <label
-            style={{
-              padding: '0.5rem 0.75rem',
-              background: 'transparent',
-              border: `1px solid ${C.border}`,
-              borderRadius: 7,
-              color: C.muted,
-              fontSize: '0.8125rem',
-              cursor: 'pointer',
-            }}
-          >
-            Importer .md
-            <input type="file" accept=".md,.mdx" onChange={handleImport} style={{ display: 'none' }} />
-          </label>
+          {collectionDef.format === 'mdx' && !isReadOnly && (
+            <label
+              style={{
+                padding: '0.5rem 0.75rem',
+                background: 'transparent',
+                border: `1px solid ${C.border}`,
+                borderRadius: 8,
+                color: C.muted,
+                fontSize: '0.8125rem',
+                cursor: 'pointer',
+              }}
+            >
+              Importer .md
+              <input type="file" accept=".md,.mdx" onChange={handleImport} style={{ display: 'none' }} />
+            </label>
+          )}
           <button
             type="button"
             onClick={handleSave}
             disabled={saving}
             style={{
-              padding: '0.5rem 1rem',
-              background: saving ? '#2a0a0d' : C.accent,
+              padding: '0.5rem 1.125rem',
+              background: saving ? '#D4845C' : C.accent,
               border: 'none',
-              borderRadius: 7,
+              borderRadius: 8,
               color: '#fff',
               fontWeight: 600,
               fontSize: '0.8125rem',
               cursor: saving ? 'not-allowed' : 'pointer',
-              opacity: saving ? 0.7 : 1,
+              opacity: saving ? 0.75 : 1,
+              letterSpacing: '-0.01em',
             }}
           >
             {saving ? 'Sauvegarde…' : 'Sauvegarder (Ctrl+S)'}
@@ -583,28 +540,30 @@ export function ContentEditor({ collection, collectionDef, entry, onSaved }: Con
         </div>
       </div>
 
-      {/* Slug */}
-      <div>
-        <label style={labelStyle}>
-          Slug
-          {slugLocked && (
-            <button
-              type="button"
-              onClick={() => setSlugLocked(false)}
-              style={{ marginLeft: 8, background: 'none', border: 'none', color: C.accent, cursor: 'pointer', fontSize: '0.75rem' }}
-            >
-              Modifier
-            </button>
-          )}
-        </label>
-        <input
-          type="text"
-          value={slug}
-          onChange={(e) => setSlug(e.target.value)}
-          readOnly={slugLocked}
-          style={{ ...inputStyle, color: slugLocked ? C.dim : C.text }}
-        />
-      </div>
+      {/* Slug — hidden for flat/readOnly collections (slug is fixed) */}
+      {!isFlatPath && (
+        <div>
+          <label style={labelStyle}>
+            Slug
+            {slugLocked && (
+              <button
+                type="button"
+                onClick={() => setSlugLocked(false)}
+                style={{ marginLeft: 8, background: 'none', border: 'none', color: C.accent, cursor: 'pointer', fontSize: '0.75rem' }}
+              >
+                Modifier
+              </button>
+            )}
+          </label>
+          <input
+            type="text"
+            value={slug}
+            onChange={(e) => setSlug(e.target.value)}
+            readOnly={slugLocked}
+            style={{ ...inputStyle, color: slugLocked ? C.dim : C.text }}
+          />
+        </div>
+      )}
 
       {/* Dynamic fields */}
       {Object.entries(collectionDef.fields).map(([key, field]) => (
@@ -615,25 +574,13 @@ export function ContentEditor({ collection, collectionDef, entry, onSaved }: Con
           </label>
 
           {field.type === 'image' && (
-            <ImageUrlField
-              field={{ ...field, key }}
-              value={String(fields[key] ?? '')}
-              onChange={(v) => setField(key, v)}
-            />
+            <ImageUrlField field={{ ...field, key }} value={String(fields[key] ?? '')} onChange={(v) => setField(key, v)} />
           )}
           {(field.type === 'text' || field.type === 'slug') && (
-            <TextField
-              field={{ ...field, key }}
-              value={String(fields[key] ?? '')}
-              onChange={(v) => setField(key, v)}
-            />
+            <TextField field={{ ...field, key }} value={String(fields[key] ?? '')} onChange={(v) => setField(key, v)} />
           )}
           {field.type === 'textarea' && (
-            <TextareaField
-              field={{ ...field, key }}
-              value={String(fields[key] ?? '')}
-              onChange={(v) => setField(key, v)}
-            />
+            <TextareaField field={{ ...field, key }} value={String(fields[key] ?? '')} onChange={(v) => setField(key, v)} />
           )}
           {field.type === 'number' && (
             <input
@@ -652,17 +599,10 @@ export function ContentEditor({ collection, collectionDef, entry, onSaved }: Con
             />
           )}
           {field.type === 'select' && (
-            <SelectField
-              field={{ ...field, key }}
-              value={String(fields[key] ?? '')}
-              onChange={(v) => setField(key, v)}
-            />
+            <SelectField field={{ ...field, key }} value={String(fields[key] ?? '')} onChange={(v) => setField(key, v)} />
           )}
           {field.type === 'tags' && (
-            <TagsField
-              value={Array.isArray(fields[key]) ? (fields[key] as string[]) : []}
-              onChange={(v) => setField(key, v)}
-            />
+            <TagsField value={Array.isArray(fields[key]) ? (fields[key] as string[]) : []} onChange={(v) => setField(key, v)} />
           )}
           {field.type === 'repeater' && (
             <RepeaterField
@@ -674,61 +614,38 @@ export function ContentEditor({ collection, collectionDef, entry, onSaved }: Con
         </div>
       ))}
 
-      {/* Body editor */}
+      {/* Body editor — only for MDX articles */}
       {collectionDef.format === 'mdx' && (
         <div>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
             <label style={{ ...labelStyle, marginBottom: 0 }}>Corps de l&apos;article</label>
             <div style={{ display: 'flex', gap: 4 }}>
-              <button
-                type="button"
-                onClick={switchToWysiwyg}
-                style={{
-                  padding: '0.3125rem 0.625rem',
-                  borderRadius: 6,
-                  border: `1px solid ${C.border}`,
-                  background: bodyMode === 'wysiwyg' ? C.accent : 'transparent',
-                  color: bodyMode === 'wysiwyg' ? '#fff' : C.muted,
-                  fontSize: '0.75rem',
-                  cursor: 'pointer',
-                  fontWeight: 500,
-                }}
-              >
-                WYSIWYG
-              </button>
-              <button
-                type="button"
-                onClick={switchToSource}
-                style={{
-                  padding: '0.3125rem 0.625rem',
-                  borderRadius: 6,
-                  border: `1px solid ${C.border}`,
-                  background: bodyMode === 'source' ? C.accent : 'transparent',
-                  color: bodyMode === 'source' ? '#fff' : C.muted,
-                  fontSize: '0.75rem',
-                  cursor: 'pointer',
-                  fontWeight: 500,
-                }}
-              >
-                Source MDX
-              </button>
+              {['wysiwyg', 'source'].map((mode) => (
+                <button
+                  key={mode}
+                  type="button"
+                  onClick={mode === 'wysiwyg' ? switchToWysiwyg : switchToSource}
+                  style={{
+                    padding: '0.3125rem 0.625rem',
+                    borderRadius: 7,
+                    border: `1px solid ${bodyMode === mode ? C.accentBorder : C.border}`,
+                    background: bodyMode === mode ? C.accentSoft : 'transparent',
+                    color: bodyMode === mode ? C.accent : C.muted,
+                    fontSize: '0.75rem',
+                    cursor: 'pointer',
+                    fontWeight: 500,
+                  }}
+                >
+                  {mode === 'wysiwyg' ? 'WYSIWYG' : 'Source MDX'}
+                </button>
+              ))}
             </div>
           </div>
 
           {bodyMode === 'wysiwyg' ? (
             <>
               {Object.keys(mdxBlocks).length > 0 && (
-                <div
-                  style={{
-                    marginBottom: '0.5rem',
-                    padding: '0.5rem 0.75rem',
-                    background: 'rgba(245,158,11,.08)',
-                    border: `1px solid rgba(245,158,11,.25)`,
-                    borderRadius: 7,
-                    fontSize: '0.8125rem',
-                    color: C.warning,
-                  }}
-                >
+                <div style={{ marginBottom: '0.5rem', padding: '0.5rem 0.75rem', background: C.warningSoft, border: `1px solid ${C.warningBorder}`, borderRadius: 8, fontSize: '0.8125rem', color: C.warning }}>
                   {Object.keys(mdxBlocks).length} composant(s) MDX préservé(s) — passez en mode Source pour les modifier.
                 </div>
               )}
