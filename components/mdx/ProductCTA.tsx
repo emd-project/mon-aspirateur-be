@@ -1,3 +1,5 @@
+'use client'
+
 // ProductCTA — Bloc CTA produit pour articles de blog
 // Usage:
 //   <ProductCTA
