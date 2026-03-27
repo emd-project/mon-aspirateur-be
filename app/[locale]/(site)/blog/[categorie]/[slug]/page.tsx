@@ -1,4 +1,5 @@
 // ISR 1800s — Article blog · MDX + JSON-LD Article + FAQPage
+import React from 'react'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
@@ -28,9 +29,15 @@ export const revalidate = 1800
 
 type PageProps = { params: Promise<{ locale: string; categorie: string; slug: string }> }
 
-const MDX_COMPONENTS = { Tip, Warning, Verdict, PullQuote, StatCard, ProConTable, AISummarize, TLDRBox, ProductCTA, ArticleImage }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const MDX_OPTIONS = { mdxOptions: { remarkPlugins: [remarkGfm] as any } }
+
+function makeMdxComponents(title: string, articleUrl: string) {
+  const AISummarizeWithMeta = (props: React.ComponentProps<typeof AISummarize>) => (
+    <AISummarize {...props} title={title} articleUrl={articleUrl} />
+  )
+  return { Tip, Warning, Verdict, PullQuote, StatCard, ProConTable, AISummarize: AISummarizeWithMeta, TLDRBox, ProductCTA, ArticleImage }
+}
 
 export async function generateStaticParams() {
   return getAllArticleParams()
@@ -79,6 +86,23 @@ function splitContentIntoChunks(content: string): [string, string, string] {
   const chunk2 = blocks.slice(split1 + 1, split2 + 1).join('\n\n')
   const chunk3 = blocks.slice(split2 + 1).join('\n\n')
   return [chunk1, chunk2, chunk3]
+}
+
+/**
+ * Replace standalone affiliate link lines with <ProductCTA> JSX.
+ * Matches: [Voir le/la/l'/les X sur Y](url) on its own paragraph line.
+ * Captures product name from link text (after "Voir le/la...").
+ */
+function autoProductCTA(content: string): string {
+  // Matches a line that is ONLY a markdown link whose text starts with "Voir"
+  return content.replace(
+    /^(\[Voir (?:le |la |les |l')?([^\]]+?) sur ([^\]]+)\])\(([^)]+)\)\s*$/gm,
+    (_match, _full, productName, domain, url) => {
+      const name = productName.trim()
+      const label = `Voir sur ${domain.trim()}`
+      return `<ProductCTA name="${name}" url="${url}" label="${label}" />`
+    },
+  )
 }
 
 /** Extract H2 headings from raw MDX for table of contents */
@@ -146,11 +170,14 @@ export default async function ArticlePage({ params }: PageProps) {
 
   const author = getAuthor(article.authorSlug)
   const frontmatterFaq = (article as ArticleFaq).faq ?? []
+  const processedContent = autoProductCTA(article.content)
   // Use frontmatter FAQ if available, otherwise extract from ## FAQ section in body
-  const faq = frontmatterFaq.length > 0 ? frontmatterFaq : extractFaqFromBody(article.content)
-  const wordCount = article.content.split(/\s+/).length
-  const headings = extractHeadings(article.content)
-  const [chunk1, chunk2, chunk3] = splitContentIntoChunks(article.content)
+  const faq = frontmatterFaq.length > 0 ? frontmatterFaq : extractFaqFromBody(processedContent)
+  const wordCount = processedContent.split(/\s+/).length
+  const headings = extractHeadings(processedContent)
+  const [chunk1, chunk2, chunk3] = splitContentIntoChunks(processedContent)
+  const articleUrl = `https://www.mon-aspirateur.be/${locale}/blog/${categorie}/${slug}`
+  const MDX_COMPONENTS = makeMdxComponents(article.title, articleUrl)
 
   const articleJsonLd = {
     '@context': 'https://schema.org',
