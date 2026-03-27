@@ -1,4 +1,5 @@
 // ISR 1800s — Article blog · MDX + JSON-LD Article + FAQPage
+import React from 'react'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
@@ -28,9 +29,15 @@ export const revalidate = 1800
 
 type PageProps = { params: Promise<{ locale: string; categorie: string; slug: string }> }
 
-const MDX_COMPONENTS = { Tip, Warning, Verdict, PullQuote, StatCard, ProConTable, AISummarize, TLDRBox, ProductCTA, ArticleImage }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const MDX_OPTIONS = { mdxOptions: { remarkPlugins: [remarkGfm] as any } }
+
+function makeMdxComponents(title: string, articleUrl: string) {
+  const AISummarizeWithMeta = (props: React.ComponentProps<typeof AISummarize>) => (
+    <AISummarize {...props} title={title} articleUrl={articleUrl} />
+  )
+  return { Tip, Warning, Verdict, PullQuote, StatCard, ProConTable, AISummarize: AISummarizeWithMeta, TLDRBox, ProductCTA, ArticleImage }
+}
 
 export async function generateStaticParams() {
   return getAllArticleParams()
@@ -169,6 +176,8 @@ export default async function ArticlePage({ params }: PageProps) {
   const wordCount = processedContent.split(/\s+/).length
   const headings = extractHeadings(processedContent)
   const [chunk1, chunk2, chunk3] = splitContentIntoChunks(processedContent)
+  const articleUrl = `https://www.mon-aspirateur.be/${locale}/blog/${categorie}/${slug}`
+  const MDX_COMPONENTS = makeMdxComponents(article.title, articleUrl)
 
   const articleJsonLd = {
     '@context': 'https://schema.org',
