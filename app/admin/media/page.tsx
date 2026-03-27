@@ -4,8 +4,8 @@ import { MediaBrowser } from '@/packages/cms/components/MediaBrowser'
 import type { GitHubFile } from '@/packages/cms/types'
 
 const C = {
-  text: '#e5e5e5',
-  muted: '#aaaaaa',
+  text: '#1A1714',
+  muted: '#6B5E54',
 }
 
 export default async function MediaPage() {
@@ -26,13 +26,13 @@ export default async function MediaPage() {
         download_url: b.url,
       }))
   } catch {
-    // Blob store unreachable — show empty state
+    // Blob store unreachable
   }
 
   return (
     <div>
-      <div style={{ marginBottom: '1.5rem' }}>
-        <h1 style={{ margin: '0 0 0.25rem', fontSize: '1.375rem', fontWeight: 700, color: C.text }}>
+      <div style={{ marginBottom: '1.75rem' }}>
+        <h1 style={{ margin: '0 0 0.25rem', fontSize: '1.5rem', fontWeight: 700, color: C.text, letterSpacing: '-0.02em' }}>
           Médias
         </h1>
         <p style={{ margin: 0, fontSize: '0.875rem', color: C.muted }}>

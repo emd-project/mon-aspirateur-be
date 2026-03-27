@@ -4,11 +4,14 @@ import { cmsConfig } from '@/cms.config'
 import { listFilesRecursive } from '@/packages/cms/lib/github'
 
 const C = {
-  surface: '#111111',
-  border: '#222222',
-  text: '#e5e5e5',
-  muted: '#aaaaaa',
-  accent: '#ff3d57',
+  surface: '#FFFFFF',
+  border: '#EDE5D8',
+  text: '#1A1714',
+  muted: '#6B5E54',
+  dim: '#9C8E84',
+  accent: '#C4622D',
+  accentSoft: 'rgba(196,98,45,.08)',
+  accentBorder: 'rgba(196,98,45,.2)',
 }
 
 export default async function DashboardPage() {
@@ -25,6 +28,8 @@ export default async function DashboardPage() {
     }
   }
 
+  const username = session.userId.replace('github:', '')
+
   return (
     <div>
       <style>{`
@@ -32,61 +37,79 @@ export default async function DashboardPage() {
           display: block;
           background: ${C.surface};
           border: 1px solid ${C.border};
-          border-radius: 10px;
-          padding: 1.25rem;
+          border-radius: 12px;
+          padding: 1.375rem 1.25rem;
           text-decoration: none;
-          transition: border-color 0.15s;
+          transition: border-color 0.15s, box-shadow 0.15s;
         }
-        .dash-card:hover { border-color: #333; }
+        .dash-card:hover {
+          border-color: #D9CEBC;
+          box-shadow: 0 4px 12px rgba(26,23,20,.06);
+        }
       `}</style>
 
-      <h1 style={{ margin: '0 0 0.25rem', fontSize: '1.5rem', fontWeight: 700, color: C.text }}>
-        Dashboard
-      </h1>
-      <p style={{ margin: '0 0 2rem', color: C.muted, fontSize: '0.875rem' }}>
-        Bienvenue, {session.userId.replace('github:', '')}
-      </p>
+      <div style={{ marginBottom: '2.5rem' }}>
+        <h1 style={{ margin: '0 0 0.25rem', fontSize: '1.625rem', fontWeight: 700, color: C.text, letterSpacing: '-0.02em' }}>
+          Bonjour, {username}
+        </h1>
+        <p style={{ margin: 0, color: C.muted, fontSize: '0.9375rem' }}>
+          {cmsConfig.siteName} — tableau de bord
+        </p>
+      </div>
 
+      <p style={{ margin: '0 0 0.875rem', fontSize: '0.75rem', fontWeight: 600, color: C.dim, textTransform: 'uppercase', letterSpacing: '.08em' }}>
+        Collections
+      </p>
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-          gap: '1rem',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(190px, 1fr))',
+          gap: '0.875rem',
+          marginBottom: '2rem',
         }}
       >
         {Object.entries(cmsConfig.collections).map(([key, col]) => (
           <Link key={key} href={`/admin/${key}`} className="dash-card">
-            <div style={{ fontSize: '1.75rem', fontWeight: 800, color: C.accent, lineHeight: 1 }}>
+            <div style={{ fontSize: '2rem', fontWeight: 800, color: C.accent, lineHeight: 1, letterSpacing: '-0.04em' }}>
               {counts[key] ?? 0}
             </div>
-            <div style={{ marginTop: '0.375rem', fontWeight: 600, color: C.text, fontSize: '0.9375rem' }}>
+            <div style={{ marginTop: '0.5rem', fontWeight: 600, color: C.text, fontSize: '0.9375rem', letterSpacing: '-0.01em' }}>
               {col.label}
             </div>
-            <div style={{ marginTop: '0.25rem', fontSize: '0.8125rem', color: C.muted }}>
-              Voir tous →
+            <div style={{ marginTop: '0.25rem', fontSize: '0.8125rem', color: C.dim }}>
+              {col.readOnly ? 'Modifier →' : 'Gérer →'}
             </div>
           </Link>
         ))}
+      </div>
 
+      <p style={{ margin: '0 0 0.875rem', fontSize: '0.75rem', fontWeight: 600, color: C.dim, textTransform: 'uppercase', letterSpacing: '.08em' }}>
+        Outils
+      </p>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(190px, 1fr))', gap: '0.875rem' }}>
         <Link href="/admin/media" className="dash-card">
-          <div style={{ fontSize: '1.5rem', lineHeight: 1 }}>🖼</div>
-          <div style={{ marginTop: '0.375rem', fontWeight: 600, color: C.text, fontSize: '0.9375rem' }}>
-            Médias
+          <div style={{ width: 36, height: 36, borderRadius: 9, background: C.accentSoft, border: `1px solid ${C.accentBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.625rem' }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <rect x="2" y="4" width="20" height="16" rx="2" stroke={C.accent} strokeWidth="1.5"/>
+              <path d="M2 16l5-5 4 4 3-3 5 4" stroke={C.accent} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <circle cx="8" cy="9" r="1.5" fill={C.accent}/>
+            </svg>
           </div>
-          <div style={{ marginTop: '0.25rem', fontSize: '0.8125rem', color: C.muted }}>
-            Images, SVG →
-          </div>
+          <div style={{ fontWeight: 600, color: C.text, fontSize: '0.9375rem', letterSpacing: '-0.01em' }}>Médias</div>
+          <div style={{ marginTop: '0.25rem', fontSize: '0.8125rem', color: C.dim }}>Images, SVG →</div>
         </Link>
 
         {session.role === 'admin' && (
           <Link href="/admin/users" className="dash-card">
-            <div style={{ fontSize: '1.5rem', lineHeight: 1 }}>👥</div>
-            <div style={{ marginTop: '0.375rem', fontWeight: 600, color: C.text, fontSize: '0.9375rem' }}>
-              Utilisateurs
+            <div style={{ width: 36, height: 36, borderRadius: 9, background: C.accentSoft, border: `1px solid ${C.accentBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.625rem' }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+                <circle cx="9" cy="7" r="3" stroke={C.accent} strokeWidth="1.5"/>
+                <path d="M3 19a6 6 0 0112 0" stroke={C.accent} strokeWidth="1.5" strokeLinecap="round"/>
+                <path d="M16 3c1.66 0 3 1.34 3 3s-1.34 3-3 3M19 19a4 4 0 00-4-4" stroke={C.accent} strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
             </div>
-            <div style={{ marginTop: '0.25rem', fontSize: '0.8125rem', color: C.muted }}>
-              Gestion accès →
-            </div>
+            <div style={{ fontWeight: 600, color: C.text, fontSize: '0.9375rem', letterSpacing: '-0.01em' }}>Utilisateurs</div>
+            <div style={{ marginTop: '0.25rem', fontSize: '0.8125rem', color: C.dim }}>Gestion accès →</div>
           </Link>
         )}
       </div>

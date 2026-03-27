@@ -6,9 +6,9 @@ import { CollectionList } from '@/packages/cms/components/CollectionList'
 import { cmsConfig } from '@/cms.config'
 
 const C = {
-  text: '#e5e5e5',
-  muted: '#aaaaaa',
-  accent: '#ff3d57',
+  text: '#1A1714',
+  muted: '#6B5E54',
+  accent: '#C4622D',
 }
 
 export default async function CollectionPage({
@@ -32,15 +32,8 @@ export default async function CollectionPage({
   }[] = []
 
   try {
-    const files = await listFilesRecursive(
-      cmsConfig.repo,
-      collectionDef.path,
-      cmsConfig.branch,
-      token
-    )
-    const mdxFiles = files.filter(
-      (f) => f.name.endsWith('.mdx') || f.name.endsWith('.yaml')
-    )
+    const files = await listFilesRecursive(cmsConfig.repo, collectionDef.path, cmsConfig.branch, token)
+    const mdxFiles = files.filter((f) => f.name.endsWith('.mdx') || f.name.endsWith('.yaml'))
 
     const parsed = await Promise.all(
       mdxFiles.map(async (f) => {
@@ -63,13 +56,15 @@ export default async function CollectionPage({
 
   return (
     <div>
-      <div style={{ marginBottom: '1.5rem' }}>
-        <h1 style={{ margin: '0 0 0.25rem', fontSize: '1.375rem', fontWeight: 700, color: C.text }}>
-          {collectionDef.label}
-        </h1>
-        <p style={{ margin: 0, fontSize: '0.875rem', color: C.muted }}>
-          {entries.length} entrée{entries.length !== 1 ? 's' : ''}
-        </p>
+      <div style={{ marginBottom: '1.75rem', display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '1rem' }}>
+        <div>
+          <h1 style={{ margin: '0 0 0.25rem', fontSize: '1.5rem', fontWeight: 700, color: C.text, letterSpacing: '-0.02em' }}>
+            {collectionDef.label}
+          </h1>
+          <p style={{ margin: 0, fontSize: '0.875rem', color: C.muted }}>
+            {entries.length} entrée{entries.length !== 1 ? 's' : ''}
+          </p>
+        </div>
       </div>
 
       <CollectionList

@@ -32,6 +32,10 @@ export interface CollectionDef {
   format: 'mdx' | 'yaml' | 'json'
   singleton?: boolean
   slug?: string
+  /** No locale/category subdirectory — path is {collection.path}/{slug}.ext */
+  flatPath?: boolean
+  /** Hide "New" button and delete actions — for fixed-slug collections like pages */
+  readOnly?: boolean
   fields: Record<string, FieldDef>
 }
 
