@@ -1,5 +1,4 @@
 // ISR 1800s — Article blog · MDX + JSON-LD Article + FAQPage
-import React from 'react'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
@@ -29,14 +28,21 @@ export const revalidate = 1800
 
 type PageProps = { params: Promise<{ locale: string; categorie: string; slug: string }> }
 
+const MDX_COMPONENTS = { Tip, Warning, Verdict, PullQuote, StatCard, ProConTable, AISummarize, TLDRBox, ProductCTA, ArticleImage }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const MDX_OPTIONS = { mdxOptions: { remarkPlugins: [remarkGfm] as any } }
 
-function makeMdxComponents(title: string, articleUrl: string) {
-  const AISummarizeWithMeta = (props: React.ComponentProps<typeof AISummarize>) => (
-    <AISummarize {...props} title={title} articleUrl={articleUrl} />
+/** Inject title + articleUrl into every <AISummarize .../> in the MDX source */
+function injectAISummarizeMeta(content: string, title: string, articleUrl: string): string {
+  const t = title.replace(/"/g, '&quot;')
+  const u = articleUrl.replace(/"/g, '&quot;')
+  return content.replace(
+    /(<AISummarize\s)([^>]*?)(\/?>)/g,
+    (_m, open, attrs, close) => {
+      if (attrs.includes('title=') || attrs.includes('articleUrl=')) return _m
+      return `${open}${attrs} title="${t}" articleUrl="${u}"${close}`
+    },
   )
-  return { Tip, Warning, Verdict, PullQuote, StatCard, ProConTable, AISummarize: AISummarizeWithMeta, TLDRBox, ProductCTA, ArticleImage }
 }
 
 export async function generateStaticParams() {
@@ -175,9 +181,9 @@ export default async function ArticlePage({ params }: PageProps) {
   const faq = frontmatterFaq.length > 0 ? frontmatterFaq : extractFaqFromBody(processedContent)
   const wordCount = processedContent.split(/\s+/).length
   const headings = extractHeadings(processedContent)
-  const [chunk1, chunk2, chunk3] = splitContentIntoChunks(processedContent)
   const articleUrl = `https://www.mon-aspirateur.be/${locale}/blog/${categorie}/${slug}`
-  const MDX_COMPONENTS = makeMdxComponents(article.title, articleUrl)
+  const finalContent = injectAISummarizeMeta(processedContent, article.title, articleUrl)
+  const [chunk1, chunk2, chunk3] = splitContentIntoChunks(finalContent)
 
   const articleJsonLd = {
     '@context': 'https://schema.org',
