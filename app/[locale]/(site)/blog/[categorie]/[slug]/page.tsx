@@ -81,6 +81,23 @@ function splitContentIntoChunks(content: string): [string, string, string] {
   return [chunk1, chunk2, chunk3]
 }
 
+/**
+ * Replace standalone affiliate link lines with <ProductCTA> JSX.
+ * Matches: [Voir le/la/l'/les X sur Y](url) on its own paragraph line.
+ * Captures product name from link text (after "Voir le/la...").
+ */
+function autoProductCTA(content: string): string {
+  // Matches a line that is ONLY a markdown link whose text starts with "Voir"
+  return content.replace(
+    /^(\[Voir (?:le |la |les |l')?([^\]]+?) sur ([^\]]+)\])\(([^)]+)\)\s*$/gm,
+    (_match, _full, productName, domain, url) => {
+      const name = productName.trim()
+      const label = `Voir sur ${domain.trim()}`
+      return `<ProductCTA name="${name}" url="${url}" label="${label}" />`
+    },
+  )
+}
+
 /** Extract H2 headings from raw MDX for table of contents */
 function extractHeadings(content: string): { id: string; text: string }[] {
   const headings: { id: string; text: string }[] = []
@@ -146,11 +163,12 @@ export default async function ArticlePage({ params }: PageProps) {
 
   const author = getAuthor(article.authorSlug)
   const frontmatterFaq = (article as ArticleFaq).faq ?? []
+  const processedContent = autoProductCTA(article.content)
   // Use frontmatter FAQ if available, otherwise extract from ## FAQ section in body
-  const faq = frontmatterFaq.length > 0 ? frontmatterFaq : extractFaqFromBody(article.content)
-  const wordCount = article.content.split(/\s+/).length
-  const headings = extractHeadings(article.content)
-  const [chunk1, chunk2, chunk3] = splitContentIntoChunks(article.content)
+  const faq = frontmatterFaq.length > 0 ? frontmatterFaq : extractFaqFromBody(processedContent)
+  const wordCount = processedContent.split(/\s+/).length
+  const headings = extractHeadings(processedContent)
+  const [chunk1, chunk2, chunk3] = splitContentIntoChunks(processedContent)
 
   const articleJsonLd = {
     '@context': 'https://schema.org',

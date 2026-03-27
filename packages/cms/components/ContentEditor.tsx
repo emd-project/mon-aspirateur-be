@@ -96,6 +96,107 @@ function TextareaField({
   )
 }
 
+type MediaFile = { name: string; sha: string; download_url: string | null }
+
+function ImageUrlField({
+  field,
+  value,
+  onChange,
+}: {
+  field: FieldDef & { key: string }
+  value: string
+  onChange: (v: string) => void
+}) {
+  const [open, setOpen] = useState(false)
+  const [files, setFiles] = useState<MediaFile[]>([])
+  const [loading, setLoading] = useState(false)
+
+  async function openBrowser() {
+    setOpen(true)
+    if (files.length > 0) return
+    setLoading(true)
+    try {
+      const res = await fetch('/api/cms/media', { credentials: 'include' })
+      const data = await res.json() as { files?: MediaFile[] }
+      setFiles(data.files ?? [])
+    } catch { /* ignore */ } finally {
+      setLoading(false)
+    }
+  }
+
+  function select(url: string) { onChange(url); setOpen(false) }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <div style={{ display: 'flex', gap: 6 }}>
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={field.label}
+          style={{ ...inputStyle, flex: 1 }}
+        />
+        <button
+          type="button"
+          onClick={openBrowser}
+          style={{
+            padding: '0 0.75rem',
+            background: C.surface2,
+            border: `1px solid ${C.border}`,
+            borderRadius: 6,
+            color: C.muted,
+            fontSize: '0.75rem',
+            cursor: 'pointer',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          Médiathèque
+        </button>
+        {value && (
+          <button
+            type="button"
+            onClick={() => onChange('')}
+            style={{ padding: '0 0.5rem', background: 'transparent', border: `1px solid ${C.border}`, borderRadius: 6, color: C.dim, cursor: 'pointer', fontSize: '0.75rem' }}
+          >
+            ✕
+          </button>
+        )}
+      </div>
+      {value && (
+        <img src={value} alt="" style={{ maxHeight: 80, maxWidth: 160, borderRadius: 4, border: `1px solid ${C.border}`, objectFit: 'cover' }} />
+      )}
+      {open && (
+        <div style={{ border: `1px solid ${C.border}`, borderRadius: 8, background: C.surface, padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: '0.75rem', color: C.muted }}>Sélectionner une image</span>
+            <button type="button" onClick={() => setOpen(false)} style={{ background: 'transparent', border: 'none', color: C.dim, cursor: 'pointer', fontSize: '1rem' }}>✕</button>
+          </div>
+          {loading && <span style={{ fontSize: '0.75rem', color: C.dim }}>Chargement…</span>}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, maxHeight: 200, overflowY: 'auto' }}>
+            {files.map((f) => {
+              const url = f.download_url ?? ''
+              return (
+                <button
+                  key={f.sha}
+                  type="button"
+                  onClick={() => select(url)}
+                  title={f.name}
+                  style={{ padding: 4, background: value === url ? C.accent : C.surface2, border: `1px solid ${value === url ? C.accent : C.border}`, borderRadius: 6, cursor: 'pointer' }}
+                >
+                  <img src={url} alt={f.name} style={{ width: 56, height: 56, objectFit: 'cover', borderRadius: 4, display: 'block' }} />
+                </button>
+              )
+            })}
+            {!loading && files.length === 0 && (
+              <span style={{ fontSize: '0.75rem', color: C.dim }}>Aucune image dans la médiathèque.</span>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 function SelectField({
   field,
   value,
@@ -513,6 +614,13 @@ export function ContentEditor({ collection, collectionDef, entry, onSaved }: Con
             {field.required && <span style={{ color: C.accent, marginLeft: 2 }}>*</span>}
           </label>
 
+          {field.type === 'image' && (
+            <ImageUrlField
+              field={{ ...field, key }}
+              value={String(fields[key] ?? '')}
+              onChange={(v) => setField(key, v)}
+            />
+          )}
           {(field.type === 'text' || field.type === 'slug') && (
             <TextField
               field={{ ...field, key }}
