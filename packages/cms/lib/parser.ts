@@ -58,7 +58,7 @@ function parseYamlFrontmatter(yaml: string): Record<string, unknown> {
               const objLine = lines[i]
               if (objLine === undefined) break
               const objIndent = objLine.match(/^(\s*)/)?.[1]?.length ?? 0
-              if (objIndent <= childIndent && objLine.trim() && !/^\s+-/.test(objLine)) break
+              if (objIndent <= childIndent && objLine.trim()) break
               const objKv = objLine.match(/^\s+([^:]+):\s*(.*)$/)
               if (objKv != null && !/^\s+-/.test(objLine)) {
                 obj[(objKv[1] ?? '').trim()] = parseYamlValue(objKv[2] ?? '')

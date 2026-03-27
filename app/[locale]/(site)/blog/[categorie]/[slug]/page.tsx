@@ -18,15 +18,17 @@ import Verdict from '@/components/mdx/Verdict'
 import PullQuote from '@/components/mdx/PullQuote'
 import StatCard from '@/components/mdx/StatCard'
 import ProConTable from '@/components/mdx/ProConTable'
+import ProductCTA from '@/components/mdx/ProductCTA'
 import AISummarize from '@/components/mdx/AISummarize'
 import TLDRBox from '@/components/mdx/TLDRBox'
+import ArticleImage from '@/components/mdx/ArticleImage'
 import type { FaqItem } from '@/lib/data/types'
 
 export const revalidate = 1800
 
 type PageProps = { params: Promise<{ locale: string; categorie: string; slug: string }> }
 
-const MDX_COMPONENTS = { Tip, Warning, Verdict, PullQuote, StatCard, ProConTable, AISummarize, TLDRBox }
+const MDX_COMPONENTS = { Tip, Warning, Verdict, PullQuote, StatCard, ProConTable, AISummarize, TLDRBox, ProductCTA, ArticleImage }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const MDX_OPTIONS = { mdxOptions: { remarkPlugins: [remarkGfm] as any } }
 
@@ -47,6 +49,37 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 // Extract FAQ items from MDX frontmatter (optional field)
 type ArticleFaq = { faq?: FaqItem[] }
+
+/**
+ * Split MDX content into up to 3 chunks at paragraph boundaries,
+ * targeting the 1/3 and 2/3 word-count marks.
+ * Returns [chunk1, chunk2, chunk3] — chunk2 and chunk3 may be empty strings.
+ */
+function splitContentIntoChunks(content: string): [string, string, string] {
+  const blocks = content.split(/\n{2,}/)
+  if (blocks.length < 3) return [content, '', '']
+
+  const totalWords = content.split(/\s+/).length
+  const target1 = Math.floor(totalWords / 3)
+  const target2 = Math.floor((totalWords * 2) / 3)
+
+  let wordsSoFar = 0
+  let split1 = -1
+  let split2 = -1
+
+  for (let i = 0; i < blocks.length; i++) {
+    wordsSoFar += (blocks[i] ?? '').split(/\s+/).length
+    if (split1 === -1 && wordsSoFar >= target1) split1 = i
+    if (split2 === -1 && wordsSoFar >= target2) { split2 = i; break }
+  }
+
+  if (split1 === -1 || split2 === -1 || split1 >= split2) return [content, '', '']
+
+  const chunk1 = blocks.slice(0, split1 + 1).join('\n\n')
+  const chunk2 = blocks.slice(split1 + 1, split2 + 1).join('\n\n')
+  const chunk3 = blocks.slice(split2 + 1).join('\n\n')
+  return [chunk1, chunk2, chunk3]
+}
 
 /** Extract H2 headings from raw MDX for table of contents */
 function extractHeadings(content: string): { id: string; text: string }[] {
@@ -117,6 +150,7 @@ export default async function ArticlePage({ params }: PageProps) {
   const faq = frontmatterFaq.length > 0 ? frontmatterFaq : extractFaqFromBody(article.content)
   const wordCount = article.content.split(/\s+/).length
   const headings = extractHeadings(article.content)
+  const [chunk1, chunk2, chunk3] = splitContentIntoChunks(article.content)
 
   const articleJsonLd = {
     '@context': 'https://schema.org',
@@ -254,7 +288,18 @@ export default async function ArticlePage({ params }: PageProps) {
         <TableOfContents items={headings} />
 
         <article className="prose-article">
-          <MDXRemote source={article.content} components={MDX_COMPONENTS} options={MDX_OPTIONS} />
+          <MDXRemote source={chunk1} components={MDX_COMPONENTS} options={MDX_OPTIONS} />
+          {article.image1 && (
+            <ArticleImage src={article.image1} alt={article.image1Alt} caption={article.image1Caption} />
+          )}
+          {chunk2 && <MDXRemote source={chunk2} components={MDX_COMPONENTS} options={MDX_OPTIONS} />}
+          {article.image2 && (
+            <ArticleImage src={article.image2} alt={article.image2Alt} caption={article.image2Caption} />
+          )}
+          {chunk3 && <MDXRemote source={chunk3} components={MDX_COMPONENTS} options={MDX_OPTIONS} />}
+          {article.image3 && (
+            <ArticleImage src={article.image3} alt={article.image3Alt} caption={article.image3Caption} />
+          )}
         </article>
 
         {/* FAQ */}

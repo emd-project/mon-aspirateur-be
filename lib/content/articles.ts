@@ -16,6 +16,15 @@ export type ArticleFrontmatter = {
   readingTimeMin: number
   authorSlug: string
   locale: string
+  image1?: string
+  image1Alt?: string
+  image1Caption?: string
+  image2?: string
+  image2Alt?: string
+  image2Caption?: string
+  image3?: string
+  image3Alt?: string
+  image3Caption?: string
 }
 
 export type ArticleWithContent = ArticleFrontmatter & {
