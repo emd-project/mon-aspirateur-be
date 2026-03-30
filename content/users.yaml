@@ -10,3 +10,9 @@
   role: editor
   passwordHash: 424bdc1e219550fac413669ee33f95f3b99d3f0cddab42b087a19655ee8d8e84
   salt: 35a54b46777c675e137ad23e97a2dace
+- id: 18e717801dd54597
+  name: Martin
+  email: martin.andre@mentionlab.io
+  role: editor
+  passwordHash: 7f9accebaa8b64abc078517ddff05afd036632f6c3b71f38fa773a604bf4fd5e
+  salt: 0bdcbcd562efaa016bc7ae8216627bf4
