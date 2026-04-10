@@ -28,7 +28,9 @@ export default async function DashboardPage() {
     }
   }
 
-  const username = session.userId.replace('github:', '')
+  const displayName = session.name ?? session.userId.replace('github:', '')
+  const firstName = displayName.split(' ')[0] ?? displayName
+  const initial = firstName[0]?.toUpperCase() ?? '?'
 
   return (
     <div>
@@ -48,13 +50,32 @@ export default async function DashboardPage() {
         }
       `}</style>
 
-      <div style={{ marginBottom: '2.5rem' }}>
-        <h1 style={{ margin: '0 0 0.25rem', fontSize: '1.625rem', fontWeight: 700, color: C.text, letterSpacing: '-0.02em' }}>
-          Bonjour, {username}
-        </h1>
-        <p style={{ margin: 0, color: C.muted, fontSize: '0.9375rem' }}>
-          {cmsConfig.siteName} — tableau de bord
-        </p>
+      <div style={{ marginBottom: '2.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <div style={{
+          width: 52,
+          height: 52,
+          borderRadius: '50%',
+          background: C.accent,
+          flexShrink: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '1.375rem',
+          fontWeight: 700,
+          color: '#fff',
+          userSelect: 'none',
+          letterSpacing: 0,
+        }}>
+          {initial}
+        </div>
+        <div>
+          <h1 style={{ margin: '0 0 0.2rem', fontSize: '1.625rem', fontWeight: 700, color: C.text, letterSpacing: '-0.02em' }}>
+            Bonjour, {firstName}
+          </h1>
+          <p style={{ margin: 0, color: C.muted, fontSize: '0.9375rem' }}>
+            {cmsConfig.siteName} — tableau de bord
+          </p>
+        </div>
       </div>
 
       <p style={{ margin: '0 0 0.875rem', fontSize: '0.75rem', fontWeight: 600, color: C.dim, textTransform: 'uppercase', letterSpacing: '.08em' }}>

@@ -133,8 +133,33 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
 
               {/* Footer */}
               <div style={{ padding: '0.875rem 1rem', borderTop: `1px solid ${S.sidebarBorder}` }}>
-                <div style={{ fontSize: '0.75rem', color: S.sidebarMuted, marginBottom: '0.5rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {session.userId.replace('github:', '')}
+                {/* Avatar + name */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', marginBottom: '0.75rem' }}>
+                  <div style={{
+                    width: 34,
+                    height: 34,
+                    borderRadius: '50%',
+                    background: S.accent,
+                    flexShrink: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '0.9375rem',
+                    fontWeight: 700,
+                    color: '#fff',
+                    letterSpacing: 0,
+                    userSelect: 'none',
+                  }}>
+                    {(session.name ?? session.userId.replace('github:', ''))[0]?.toUpperCase() ?? '?'}
+                  </div>
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontSize: '0.875rem', fontWeight: 600, color: S.sidebarText, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {session.name ?? session.userId.replace('github:', '')}
+                    </div>
+                    <div style={{ fontSize: '0.6875rem', color: S.sidebarMuted, textTransform: 'capitalize', marginTop: 1 }}>
+                      {session.role === 'admin' ? 'Administrateur' : 'Rédacteur'}
+                    </div>
+                  </div>
                 </div>
                 {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
                 <a

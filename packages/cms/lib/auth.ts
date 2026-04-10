@@ -13,7 +13,7 @@ export function generateOAuthState(): string {
   return randomBytes(16).toString('hex')
 }
 
-export async function exchangeGithubCode(code: string): Promise<{ login: string; token: string }> {
+export async function exchangeGithubCode(code: string): Promise<{ login: string; name: string; token: string }> {
   const res = await fetch('https://github.com/login/oauth/access_token', {
     method: 'POST',
     headers: {
@@ -42,8 +42,8 @@ export async function exchangeGithubCode(code: string): Promise<{ login: string;
   })
   if (!userRes.ok) throw new Error('Failed to fetch GitHub user')
 
-  const user = (await userRes.json()) as { login: string }
-  return { login: user.login, token: data.access_token }
+  const user = (await userRes.json()) as { login: string; name?: string }
+  return { login: user.login, name: user.name ?? user.login, token: data.access_token }
 }
 
 export function isAllowedGithubUser(login: string): boolean {
