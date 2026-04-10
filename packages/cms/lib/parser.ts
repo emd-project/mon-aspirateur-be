@@ -138,6 +138,13 @@ export function stringifyYaml(obj: Record<string, unknown>, indent = 0): string 
   return lines.join('\n')
 }
 
+// ─── Plain YAML (no --- delimiters) ─────────────────────────────────────────
+
+/** Parse a plain YAML file (no frontmatter delimiters) into an object. */
+export function parseYaml(raw: string): Record<string, unknown> {
+  return parseYamlFrontmatter(raw)
+}
+
 // ─── MDX frontmatter ────────────────────────────────────────────────────────
 
 export function parseMdx(raw: string): ContentEntry {
