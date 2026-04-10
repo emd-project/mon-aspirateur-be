@@ -1,4 +1,5 @@
 import { requireSession } from '@/packages/cms/lib/get-session'
+import { getUsers } from '@/packages/cms/lib/users'
 import Link from 'next/link'
 import { cmsConfig } from '@/cms.config'
 import { listFilesRecursive } from '@/packages/cms/lib/github'
@@ -28,7 +29,20 @@ export default async function DashboardPage() {
     }
   }
 
-  const displayName = session.name ?? session.userId.replace('github:', '')
+  let displayName = session.name
+  if (!displayName) {
+    if (session.userId.startsWith('github:')) {
+      displayName = session.userId.replace('github:', '')
+    } else {
+      try {
+        const token = process.env.CMS_GITHUB_TOKEN
+        const { users } = await getUsers(cmsConfig.repo, cmsConfig.branch, token)
+        displayName = users.find((u) => u.id === session.userId)?.name ?? session.userId
+      } catch {
+        displayName = session.userId
+      }
+    }
+  }
   const firstName = displayName.split(' ')[0] ?? displayName
   const initial = firstName[0]?.toUpperCase() ?? '?'
 

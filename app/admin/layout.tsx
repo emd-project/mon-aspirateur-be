@@ -1,4 +1,5 @@
 import { getSession } from '@/packages/cms/lib/get-session'
+import { getUsers } from '@/packages/cms/lib/users'
 import Link from 'next/link'
 import { cmsConfig } from '@/cms.config'
 
@@ -22,8 +23,23 @@ interface AdminLayoutProps {
   children: React.ReactNode
 }
 
+async function resolveDisplayName(session: NonNullable<Awaited<ReturnType<typeof getSession>>>): Promise<string> {
+  if (session.name) return session.name
+  if (session.userId.startsWith('github:')) return session.userId.replace('github:', '')
+  try {
+    const token = process.env.CMS_GITHUB_TOKEN
+    const { users } = await getUsers(cmsConfig.repo, cmsConfig.branch, token)
+    return users.find((u) => u.id === session.userId)?.name ?? session.userId
+  } catch {
+    return session.userId
+  }
+}
+
 export default async function AdminLayout({ children }: AdminLayoutProps) {
   const session = await getSession()
+
+  const displayName = session ? await resolveDisplayName(session) : ''
+  const initial = (displayName[0] ?? '?').toUpperCase()
 
   return (
     <html lang="fr">
@@ -150,11 +166,11 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
                     letterSpacing: 0,
                     userSelect: 'none',
                   }}>
-                    {(session.name ?? session.userId.replace('github:', ''))[0]?.toUpperCase() ?? '?'}
+                    {initial}
                   </div>
                   <div style={{ minWidth: 0 }}>
                     <div style={{ fontSize: '0.875rem', fontWeight: 600, color: S.sidebarText, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {session.name ?? session.userId.replace('github:', '')}
+                      {displayName}
                     </div>
                     <div style={{ fontSize: '0.6875rem', color: S.sidebarMuted, textTransform: 'capitalize', marginTop: 1 }}>
                       {session.role === 'admin' ? 'Administrateur' : 'Rédacteur'}
