@@ -382,9 +382,6 @@ export function ContentEditor({ collection, collectionDef, entry, shortcode, onS
   const [wysiwygHtml, setWysiwygHtml] = useState('')
   const [dirty, setDirty] = useState(false)
   const [shortcodeCopied, setShortcodeCopied] = useState(false)
-  const [showProductPicker, setShowProductPicker] = useState(false)
-  const [productList, setProductList] = useState<{ slug: string; name: string }[] | null>(null)
-  const [productPickerLoading, setProductPickerLoading] = useState(false)
 
   const isFlatPath = collectionDef.flatPath ?? false
   const isReadOnly = collectionDef.readOnly ?? false
@@ -422,38 +419,6 @@ export function ContentEditor({ collection, collectionDef, entry, shortcode, onS
     void navigator.clipboard.writeText(shortcode)
     setShortcodeCopied(true)
     setTimeout(() => setShortcodeCopied(false), 2000)
-  }
-
-  async function openProductPicker() {
-    setShowProductPicker(true)
-    if (productList !== null) return
-    setProductPickerLoading(true)
-    try {
-      const res = await fetch('/api/cms/content/products', { credentials: 'include' })
-      const data = (await res.json()) as { slug: string; frontmatter?: { name?: string } }[]
-      setProductList(
-        Array.isArray(data)
-          ? data.map((d) => ({ slug: d.slug, name: String(d.frontmatter?.name ?? d.slug) }))
-          : []
-      )
-    } catch {
-      setProductList([])
-    } finally {
-      setProductPickerLoading(false)
-    }
-  }
-
-  function insertProduct(productSlug: string) {
-    const block = `<ProductCard slug="${productSlug}" />`
-    if (bodyMode === 'source') {
-      setSourceBody((prev) => prev.trimEnd() + '\n\n' + block + '\n\n')
-    } else {
-      const html = editorRef.current?.getHTML() ?? wysiwygHtml
-      const md = htmlToMarkdown(html)
-      setSourceBody(reinsertMdxBlocks(md, mdxBlocks).trimEnd() + '\n\n' + block + '\n\n')
-      setBodyMode('source')
-    }
-    setShowProductPicker(false)
   }
 
   function setField(key: string, value: unknown) {
@@ -709,17 +674,9 @@ export function ContentEditor({ collection, collectionDef, entry, shortcode, onS
       {/* Body editor — only for MDX articles */}
       {collectionDef.format === 'mdx' && (
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
             <label style={{ ...labelStyle, marginBottom: 0 }}>Corps de l&apos;article</label>
-            <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-              <button
-                type="button"
-                onClick={openProductPicker}
-                style={{ padding: '0.3125rem 0.625rem', borderRadius: 7, border: `1px solid ${C.border}`, background: 'transparent', color: C.muted, fontSize: '0.75rem', cursor: 'pointer', fontWeight: 500, whiteSpace: 'nowrap' }}
-              >
-                ⊞ Insérer produit
-              </button>
-              <div style={{ width: 1, background: C.border, alignSelf: 'stretch', margin: '0 2px' }} />
+            <div style={{ display: 'flex', gap: 4 }}>
               {(['wysiwyg', 'source'] as const).map((mode) => (
                 <button
                   key={mode}
@@ -732,38 +689,6 @@ export function ContentEditor({ collection, collectionDef, entry, shortcode, onS
               ))}
             </div>
           </div>
-
-          {/* Product picker modal */}
-          {showProductPicker && (
-            <div style={{ position: 'fixed', inset: 0, background: 'rgba(26,23,20,.45)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }} onClick={() => setShowProductPicker(false)}>
-              <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 14, padding: '1.25rem', width: '100%', maxWidth: 420, maxHeight: '70vh', display: 'flex', flexDirection: 'column', gap: '0.75rem', boxShadow: '0 8px 40px rgba(26,23,20,.18)' }} onClick={(e) => e.stopPropagation()}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontWeight: 600, fontSize: '0.9375rem', color: C.text }}>Insérer un produit</span>
-                  <button type="button" onClick={() => setShowProductPicker(false)} style={{ background: 'none', border: 'none', color: C.dim, cursor: 'pointer', fontSize: '1.125rem', lineHeight: 1 }}>✕</button>
-                </div>
-                <div style={{ overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 4 }}>
-                  {productPickerLoading && <span style={{ color: C.dim, fontSize: '0.875rem', padding: '0.5rem 0' }}>Chargement…</span>}
-                  {!productPickerLoading && productList?.length === 0 && (
-                    <span style={{ color: C.dim, fontSize: '0.875rem', padding: '0.5rem 0' }}>Aucun produit — créez-en depuis la section Produits.</span>
-                  )}
-                  {productList?.map((p) => (
-                    <button
-                      key={p.slug}
-                      type="button"
-                      onClick={() => insertProduct(p.slug)}
-                      style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', padding: '0.625rem 0.75rem', background: 'transparent', border: `1px solid ${C.border}`, borderRadius: 8, cursor: 'pointer', textAlign: 'left' }}
-                      onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.background = C.surface2)}
-                      onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.background = 'transparent')}
-                    >
-                      <span style={{ fontWeight: 500, color: C.text, fontSize: '0.875rem' }}>{p.name}</span>
-                      <code style={{ fontSize: '0.75rem', color: C.dim, background: C.surface2, padding: '2px 6px', borderRadius: 4, whiteSpace: 'nowrap' }}>{p.slug}</code>
-                    </button>
-                  ))}
-                </div>
-                <p style={{ margin: 0, fontSize: '0.75rem', color: C.dim }}>Insère <code style={{ background: C.surface2, padding: '1px 4px', borderRadius: 3 }}>&lt;ProductCard slug=&quot;…&quot; /&gt;</code> en mode Source MDX.</p>
-              </div>
-            </div>
-          )}
 
           {bodyMode === 'wysiwyg' ? (
             <>
