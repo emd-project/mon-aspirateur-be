@@ -424,7 +424,7 @@ export function ContentEditor({ collection, collectionDef, entry, shortcode, onS
   function setField(key: string, value: unknown) {
     setFields((prev) => {
       const next = { ...prev, [key]: value }
-      if (key === 'title' && !slugLocked) setSlug(titleToSlug(String(value)))
+      if ((key === 'title' || key === 'name') && !slugLocked) setSlug(titleToSlug(String(value)))
       return next
     })
   }
@@ -594,8 +594,8 @@ export function ContentEditor({ collection, collectionDef, entry, shortcode, onS
         </div>
       )}
 
-      {/* Slug — hidden for flat/readOnly collections (slug is fixed) */}
-      {!isFlatPath && (
+      {/* Slug — hidden only for readOnly collections (pages with fixed slugs) */}
+      {!isReadOnly && (
         <div>
           <label style={labelStyle}>
             Slug
