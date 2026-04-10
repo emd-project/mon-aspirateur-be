@@ -1,0 +1,23 @@
+name: Balai Robot Léo 3000
+brand: Marque
+type: Balai
+description: Description courteDescription courteDescription courteDescription courteDescription courteDescription courteDescription courte
+price: 299
+affiliateUrl: "https://www.rowenta.be/fr"
+rating: 8.5
+weight: 3.4
+dimensions: 25×18×110 cm
+noiseLevelDb: 68
+suctionPower: 200
+batteryMinutes: 45
+pros:
+  - Silencieux
+  - Bonne autonomie
+cons:
+  - Prix
+image1: 
+image1Alt: 
+image2: 
+image2Alt: 
+image3: 
+image3Alt: 
