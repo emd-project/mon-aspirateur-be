@@ -1,0 +1,10 @@
+name: TEST 1
+brand: Rowenta
+type: Balai
+description: Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
+price: 109
+rating: 7.5
+weight: 3
+dimensions: 25×18×110 cm
+noiseLevelDb: -26
+image1: "https://5nufmpe2r6g9ythw.public.blob.vercel-storage.com/media/127258-1.jpg"
