@@ -24,8 +24,9 @@ function parseYaml(raw: string): Record<string, unknown> {
     const kv = line.match(/^(\w+):\s*(.*)$/)
     if (kv) {
       currentList = null
-      const [, key, raw] = kv
-      const v = (raw ?? '').trim().replace(/^['"]|['"]$/g, '')
+      const key = kv[1]
+      const v = (kv[2] ?? '').trim().replace(/^['"]|['"]$/g, '')
+      if (!key) continue
       if (v === '' || v === '[]') {
         const list: string[] = []
         result[key] = list
