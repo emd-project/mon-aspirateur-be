@@ -1,4 +1,5 @@
 import { getSession } from '@/packages/cms/lib/get-session'
+import { PublishBar } from '@/packages/cms/components/PublishBar'
 import Link from 'next/link'
 import { cmsConfig } from '@/cms.config'
 
@@ -139,6 +140,9 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
                   </Link>
                 )}
               </div>
+
+              {/* Publish */}
+              <PublishBar />
 
               {/* Footer */}
               <div style={{ padding: '0.875rem 1rem', borderTop: `1px solid ${S.sidebarBorder}` }}>
