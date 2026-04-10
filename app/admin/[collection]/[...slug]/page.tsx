@@ -1,7 +1,7 @@
 import { requireSession } from '@/packages/cms/lib/get-session'
 import { notFound } from 'next/navigation'
 import { getFile } from '@/packages/cms/lib/github'
-import { parseMdx } from '@/packages/cms/lib/parser'
+import { parseMdx, parseYaml } from '@/packages/cms/lib/parser'
 import { ContentEditor } from '@/packages/cms/components/ContentEditor'
 import { cmsConfig } from '@/cms.config'
 import type { ContentEntry } from '@/packages/cms/types'
@@ -37,19 +37,28 @@ export default async function EntryPage({
     const file = await getFile(cmsConfig.repo, filePath, cmsConfig.branch, token)
     if (!file) notFound()
 
-    const parsed = parseMdx(file.content)
+    const frontmatter =
+      collectionDef.format === 'yaml'
+        ? parseYaml(file.content)
+        : parseMdx(file.content).frontmatter
+    const body = collectionDef.format === 'yaml' ? '' : parseMdx(file.content).body
+
     entry = {
       slug: slug[slug.length - 1] ?? '',
       filePath,
-      frontmatter: parsed.frontmatter,
-      body: parsed.body,
+      frontmatter,
+      body,
       sha: file.sha,
     }
   }
 
   const entryLabel = isNew
     ? 'Nouveau'
-    : String(entry?.frontmatter.title ?? entry?.frontmatter.hero_headline ?? slug.join('/'))
+    : String(entry?.frontmatter.title ?? entry?.frontmatter.name ?? entry?.frontmatter.hero_headline ?? slug.join('/'))
+
+  const shortcode = collectionDef.shortcode && entry?.slug
+    ? collectionDef.shortcode.replace('{{slug}}', entry.slug)
+    : undefined
 
   return (
     <div>
@@ -66,6 +75,7 @@ export default async function EntryPage({
         collection={collection}
         collectionDef={collectionDef}
         entry={entry}
+        shortcode={shortcode}
       />
     </div>
   )

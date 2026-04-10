@@ -237,6 +237,34 @@ function TagsField({ value, onChange }: { value: string[]; onChange: (v: string[
   )
 }
 
+function ListField({ field, value, onChange }: { field: FieldDef & { key: string }; value: string[]; onChange: (v: string[]) => void }) {
+  const [input, setInput] = useState('')
+
+  function add() {
+    const item = input.trim()
+    if (item) { onChange([...value, item]); setInput('') }
+  }
+
+  function handleKey(e: KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter') { e.preventDefault(); add() }
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      {value.map((item, idx) => (
+        <div key={idx} style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+          <span style={{ flex: 1, ...inputStyle, display: 'flex', alignItems: 'center', height: 'auto', padding: '0.375rem 0.75rem', fontSize: '0.875rem' }}>{item}</span>
+          <button type="button" onClick={() => onChange(value.filter((_, i) => i !== idx))} style={{ padding: '0 0.5rem', height: 36, background: 'transparent', border: `1px solid ${C.border}`, borderRadius: 7, color: C.error, cursor: 'pointer', fontSize: '0.875rem' }}>✕</button>
+        </div>
+      ))}
+      <div style={{ display: 'flex', gap: 6 }}>
+        <input value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKey} placeholder={`Ajouter — ${field.label}…`} style={{ ...inputStyle, flex: 1 }} />
+        <button type="button" onClick={add} style={{ ...ghostBtnStyle, border: `1px solid ${C.border}`, whiteSpace: 'nowrap' }}>+ Ajouter</button>
+      </div>
+    </div>
+  )
+}
+
 function RepeaterField({ field, value, onChange }: { field: FieldDef & { key: string }; value: Record<string, string>[]; onChange: (v: Record<string, string>[]) => void }) {
   function updateItem(idx: number, key: string, val: string) {
     const next = [...value]
@@ -337,10 +365,11 @@ interface ContentEditorProps {
   collection: string
   collectionDef: CollectionDef
   entry?: ContentEntry
+  shortcode?: string
   onSaved?: (entry: ContentEntry) => void
 }
 
-export function ContentEditor({ collection, collectionDef, entry, onSaved }: ContentEditorProps) {
+export function ContentEditor({ collection, collectionDef, entry, shortcode, onSaved }: ContentEditorProps) {
   const [fields, setFields] = useState<Record<string, unknown>>(() => entry?.frontmatter ?? {})
   const [slug, setSlug] = useState(entry?.slug ?? '')
   const [slugLocked, setSlugLocked] = useState(!!entry?.slug)
@@ -352,6 +381,10 @@ export function ContentEditor({ collection, collectionDef, entry, onSaved }: Con
   const editorRef = useRef<WysiwygEditorRef>(null)
   const [wysiwygHtml, setWysiwygHtml] = useState('')
   const [dirty, setDirty] = useState(false)
+  const [shortcodeCopied, setShortcodeCopied] = useState(false)
+  const [showProductPicker, setShowProductPicker] = useState(false)
+  const [productList, setProductList] = useState<{ slug: string; name: string }[] | null>(null)
+  const [productPickerLoading, setProductPickerLoading] = useState(false)
 
   const isFlatPath = collectionDef.flatPath ?? false
   const isReadOnly = collectionDef.readOnly ?? false
@@ -383,6 +416,45 @@ export function ContentEditor({ collection, collectionDef, entry, onSaved }: Con
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
   })
+
+  function copyShortcode() {
+    if (!shortcode) return
+    void navigator.clipboard.writeText(shortcode)
+    setShortcodeCopied(true)
+    setTimeout(() => setShortcodeCopied(false), 2000)
+  }
+
+  async function openProductPicker() {
+    setShowProductPicker(true)
+    if (productList !== null) return
+    setProductPickerLoading(true)
+    try {
+      const res = await fetch('/api/cms/content/products', { credentials: 'include' })
+      const data = (await res.json()) as { slug: string; frontmatter?: { name?: string } }[]
+      setProductList(
+        Array.isArray(data)
+          ? data.map((d) => ({ slug: d.slug, name: String(d.frontmatter?.name ?? d.slug) }))
+          : []
+      )
+    } catch {
+      setProductList([])
+    } finally {
+      setProductPickerLoading(false)
+    }
+  }
+
+  function insertProduct(productSlug: string) {
+    const block = `<ProductCard slug="${productSlug}" />`
+    if (bodyMode === 'source') {
+      setSourceBody((prev) => prev.trimEnd() + '\n\n' + block + '\n\n')
+    } else {
+      const html = editorRef.current?.getHTML() ?? wysiwygHtml
+      const md = htmlToMarkdown(html)
+      setSourceBody(reinsertMdxBlocks(md, mdxBlocks).trimEnd() + '\n\n' + block + '\n\n')
+      setBodyMode('source')
+    }
+    setShowProductPicker(false)
+  }
 
   function setField(key: string, value: unknown) {
     setFields((prev) => {
@@ -540,6 +612,23 @@ export function ContentEditor({ collection, collectionDef, entry, onSaved }: Con
         </div>
       </div>
 
+      {/* Shortcode box — shown when collection has a shortcode template and entry is saved */}
+      {shortcode && entry?.slug && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.625rem 0.875rem', background: C.surface, border: `1px solid ${C.border}`, borderRadius: 10 }}>
+          <span style={{ fontSize: '0.8125rem', color: C.muted, fontWeight: 600, whiteSpace: 'nowrap' }}>Shortcode</span>
+          <code style={{ flex: 1, fontFamily: 'JetBrains Mono, Consolas, monospace', fontSize: '0.8125rem', color: C.text, background: C.surface2, padding: '0.25rem 0.5rem', borderRadius: 5, overflow: 'auto', whiteSpace: 'nowrap' }}>
+            {shortcode}
+          </code>
+          <button
+            type="button"
+            onClick={copyShortcode}
+            style={{ padding: '0.375rem 0.75rem', background: shortcodeCopied ? C.success : C.surface2, border: `1px solid ${shortcodeCopied ? C.successBorder : C.border}`, borderRadius: 7, color: shortcodeCopied ? C.success : C.muted, fontSize: '0.8125rem', cursor: 'pointer', whiteSpace: 'nowrap', fontWeight: 500, transition: 'all 0.15s' }}
+          >
+            {shortcodeCopied ? 'Copié ✓' : 'Copier'}
+          </button>
+        </div>
+      )}
+
       {/* Slug — hidden for flat/readOnly collections (slug is fixed) */}
       {!isFlatPath && (
         <div>
@@ -604,6 +693,9 @@ export function ContentEditor({ collection, collectionDef, entry, onSaved }: Con
           {field.type === 'tags' && (
             <TagsField value={Array.isArray(fields[key]) ? (fields[key] as string[]) : []} onChange={(v) => setField(key, v)} />
           )}
+          {field.type === 'list' && (
+            <ListField field={{ ...field, key }} value={Array.isArray(fields[key]) ? (fields[key] as string[]) : []} onChange={(v) => setField(key, v)} />
+          )}
           {field.type === 'repeater' && (
             <RepeaterField
               field={{ ...field, key }}
@@ -617,30 +709,61 @@ export function ContentEditor({ collection, collectionDef, entry, onSaved }: Con
       {/* Body editor — only for MDX articles */}
       {collectionDef.format === 'mdx' && (
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem', flexWrap: 'wrap', gap: '0.5rem' }}>
             <label style={{ ...labelStyle, marginBottom: 0 }}>Corps de l&apos;article</label>
-            <div style={{ display: 'flex', gap: 4 }}>
-              {['wysiwyg', 'source'].map((mode) => (
+            <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+              <button
+                type="button"
+                onClick={openProductPicker}
+                style={{ padding: '0.3125rem 0.625rem', borderRadius: 7, border: `1px solid ${C.border}`, background: 'transparent', color: C.muted, fontSize: '0.75rem', cursor: 'pointer', fontWeight: 500, whiteSpace: 'nowrap' }}
+              >
+                ⊞ Insérer produit
+              </button>
+              <div style={{ width: 1, background: C.border, alignSelf: 'stretch', margin: '0 2px' }} />
+              {(['wysiwyg', 'source'] as const).map((mode) => (
                 <button
                   key={mode}
                   type="button"
                   onClick={mode === 'wysiwyg' ? switchToWysiwyg : switchToSource}
-                  style={{
-                    padding: '0.3125rem 0.625rem',
-                    borderRadius: 7,
-                    border: `1px solid ${bodyMode === mode ? C.accentBorder : C.border}`,
-                    background: bodyMode === mode ? C.accentSoft : 'transparent',
-                    color: bodyMode === mode ? C.accent : C.muted,
-                    fontSize: '0.75rem',
-                    cursor: 'pointer',
-                    fontWeight: 500,
-                  }}
+                  style={{ padding: '0.3125rem 0.625rem', borderRadius: 7, border: `1px solid ${bodyMode === mode ? C.accentBorder : C.border}`, background: bodyMode === mode ? C.accentSoft : 'transparent', color: bodyMode === mode ? C.accent : C.muted, fontSize: '0.75rem', cursor: 'pointer', fontWeight: 500 }}
                 >
                   {mode === 'wysiwyg' ? 'WYSIWYG' : 'Source MDX'}
                 </button>
               ))}
             </div>
           </div>
+
+          {/* Product picker modal */}
+          {showProductPicker && (
+            <div style={{ position: 'fixed', inset: 0, background: 'rgba(26,23,20,.45)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }} onClick={() => setShowProductPicker(false)}>
+              <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 14, padding: '1.25rem', width: '100%', maxWidth: 420, maxHeight: '70vh', display: 'flex', flexDirection: 'column', gap: '0.75rem', boxShadow: '0 8px 40px rgba(26,23,20,.18)' }} onClick={(e) => e.stopPropagation()}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontWeight: 600, fontSize: '0.9375rem', color: C.text }}>Insérer un produit</span>
+                  <button type="button" onClick={() => setShowProductPicker(false)} style={{ background: 'none', border: 'none', color: C.dim, cursor: 'pointer', fontSize: '1.125rem', lineHeight: 1 }}>✕</button>
+                </div>
+                <div style={{ overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  {productPickerLoading && <span style={{ color: C.dim, fontSize: '0.875rem', padding: '0.5rem 0' }}>Chargement…</span>}
+                  {!productPickerLoading && productList?.length === 0 && (
+                    <span style={{ color: C.dim, fontSize: '0.875rem', padding: '0.5rem 0' }}>Aucun produit — créez-en depuis la section Produits.</span>
+                  )}
+                  {productList?.map((p) => (
+                    <button
+                      key={p.slug}
+                      type="button"
+                      onClick={() => insertProduct(p.slug)}
+                      style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', padding: '0.625rem 0.75rem', background: 'transparent', border: `1px solid ${C.border}`, borderRadius: 8, cursor: 'pointer', textAlign: 'left' }}
+                      onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.background = C.surface2)}
+                      onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.background = 'transparent')}
+                    >
+                      <span style={{ fontWeight: 500, color: C.text, fontSize: '0.875rem' }}>{p.name}</span>
+                      <code style={{ fontSize: '0.75rem', color: C.dim, background: C.surface2, padding: '2px 6px', borderRadius: 4, whiteSpace: 'nowrap' }}>{p.slug}</code>
+                    </button>
+                  ))}
+                </div>
+                <p style={{ margin: 0, fontSize: '0.75rem', color: C.dim }}>Insère <code style={{ background: C.surface2, padding: '1px 4px', borderRadius: 3 }}>&lt;ProductCard slug=&quot;…&quot; /&gt;</code> en mode Source MDX.</p>
+              </div>
+            </div>
+          )}
 
           {bodyMode === 'wysiwyg' ? (
             <>

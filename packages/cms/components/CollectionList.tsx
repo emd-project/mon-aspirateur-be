@@ -95,9 +95,9 @@ export function CollectionList({
       const q = search.toLowerCase()
       list = list.filter(
         (e) =>
-          String(e.frontmatter.title ?? '').toLowerCase().includes(q) ||
+          String(e.frontmatter.title ?? e.frontmatter.name ?? '').toLowerCase().includes(q) ||
           e.slug.toLowerCase().includes(q) ||
-          String(e.frontmatter.category ?? '').toLowerCase().includes(q)
+          String(e.frontmatter.category ?? e.frontmatter.brand ?? '').toLowerCase().includes(q)
       )
     }
     if (filter === 'live') list = list.filter((e) => !e.frontmatter.draft || e.frontmatter.draft === 'false')
@@ -125,7 +125,7 @@ export function CollectionList({
 
   async function handleDelete(entry: EntryRow) {
     if (!isAdmin || isReadOnly) return
-    if (!window.confirm(`Supprimer "${entry.frontmatter.title ?? entry.slug}" ?`)) return
+    if (!window.confirm(`Supprimer "${entry.frontmatter.title ?? entry.frontmatter.name ?? entry.slug}" ?`)) return
     setDeleting(entry.slug)
     try {
       const res = await fetch(`/api/cms/content/${collection}/${entry.filePath.replace(`${collectionDef.path}/`, '')}`, {
@@ -269,7 +269,7 @@ export function CollectionList({
                 >
                   <td style={{ padding: '0.875rem' }}>
                     <Link href={editPath} style={{ color: C.text, textDecoration: 'none', fontWeight: 500 }}>
-                      {String(entry.frontmatter.title ?? entry.frontmatter.hero_headline ?? entry.slug)}
+                      {String(entry.frontmatter.title ?? entry.frontmatter.name ?? entry.frontmatter.hero_headline ?? entry.slug)}
                     </Link>
                     <div style={{ fontSize: '0.75rem', color: C.dim, marginTop: 2 }}>{entry.slug}</div>
                   </td>
@@ -277,9 +277,9 @@ export function CollectionList({
                     {relativeDate(dateStr)}
                   </td>
                   <td style={{ padding: '0.875rem' }}>
-                    {!!entry.frontmatter.category && (
+                    {!!(entry.frontmatter.category ?? entry.frontmatter.brand) && (
                       <span style={{ padding: '2px 8px', borderRadius: 12, background: C.accentSoft, border: `1px solid ${C.accentBorder}`, color: C.accent, fontSize: '0.75rem' }}>
-                        {String(entry.frontmatter.category)}
+                        {String(entry.frontmatter.category ?? entry.frontmatter.brand)}
                       </span>
                     )}
                   </td>
