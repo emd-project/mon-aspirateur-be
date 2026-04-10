@@ -2,10 +2,7 @@ import { NextResponse } from 'next/server'
 import { requireSession } from '@/packages/cms/lib/get-session'
 
 export async function POST() {
-  const session = await requireSession()
-  if (session.role !== 'admin') {
-    return NextResponse.json({ error: 'Accès refusé' }, { status: 403 })
-  }
+  await requireSession()
 
   const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
   if (!hookUrl) {

@@ -142,7 +142,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
               </div>
 
               {/* Publish */}
-              {session.role === 'admin' && <PublishBar />}
+              <PublishBar />
 
               {/* Footer */}
               <div style={{ padding: '0.875rem 1rem', borderTop: `1px solid ${S.sidebarBorder}` }}>
