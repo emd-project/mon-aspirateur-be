@@ -86,8 +86,18 @@ export function CollectionList({
   const [page, setPage] = useState(1)
   const [deleting, setDeleting] = useState<string | null>(null)
   const [toast, setToast] = useState<string | null>(null)
+  const [copiedSlug, setCopiedSlug] = useState<string | null>(null)
 
   const isReadOnly = collectionDef.readOnly ?? false
+  const hasShortcode = !!collectionDef.shortcode
+
+  function copyShortcode(slug: string) {
+    const sc = collectionDef.shortcode!.replace('{{slug}}', slug)
+    navigator.clipboard.writeText(sc).then(() => {
+      setCopiedSlug(slug)
+      setTimeout(() => setCopiedSlug(null), 2000)
+    })
+  }
 
   const filtered = useMemo(() => {
     let list = [...entries]
@@ -243,13 +253,16 @@ export function CollectionList({
               {!isReadOnly && (
                 <th style={{ padding: '0.625rem 0.875rem', textAlign: 'left', color: C.muted, fontWeight: 600, fontSize: '0.8125rem' }}>Statut</th>
               )}
+              {hasShortcode && (
+                <th style={{ padding: '0.625rem 0.875rem', textAlign: 'left', color: C.muted, fontWeight: 600, fontSize: '0.8125rem' }}>Shortcode</th>
+              )}
               <th style={{ padding: '0.625rem 0.875rem' }} />
             </tr>
           </thead>
           <tbody>
             {paginated.length === 0 && (
               <tr>
-                <td colSpan={isReadOnly ? 4 : 5} style={{ padding: '3rem', textAlign: 'center', color: C.dim }}>
+                <td colSpan={(isReadOnly ? 4 : 5) + (hasShortcode ? 1 : 0)} style={{ padding: '3rem', textAlign: 'center', color: C.dim }}>
                   Aucun résultat
                 </td>
               </tr>
@@ -296,6 +309,34 @@ export function CollectionList({
                       }}>
                         {isDraft ? 'Brouillon' : 'Live'}
                       </span>
+                    </td>
+                  )}
+                  {hasShortcode && (
+                    <td style={{ padding: '0.875rem' }}>
+                      <button
+                        type="button"
+                        onClick={() => copyShortcode(entry.slug)}
+                        title={collectionDef.shortcode!.replace('{{slug}}', entry.slug)}
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '0.25rem',
+                          padding: '3px 8px',
+                          borderRadius: 6,
+                          border: `1px solid ${copiedSlug === entry.slug ? C.successBorder : C.accentBorder}`,
+                          background: copiedSlug === entry.slug ? C.successSoft : C.accentSoft,
+                          color: copiedSlug === entry.slug ? C.success : C.accent,
+                          fontSize: '0.75rem',
+                          fontFamily: 'monospace',
+                          cursor: 'pointer',
+                          whiteSpace: 'nowrap',
+                          maxWidth: 200,
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                        }}
+                      >
+                        {copiedSlug === entry.slug ? '✓ Copié' : collectionDef.shortcode!.replace('{{slug}}', entry.slug)}
+                      </button>
                     </td>
                   )}
                   <td style={{ padding: '0.875rem', textAlign: 'right', whiteSpace: 'nowrap' }}>

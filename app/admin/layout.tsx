@@ -1,5 +1,4 @@
 import { getSession } from '@/packages/cms/lib/get-session'
-import { getUsers } from '@/packages/cms/lib/users'
 import Link from 'next/link'
 import { cmsConfig } from '@/cms.config'
 
@@ -23,22 +22,16 @@ interface AdminLayoutProps {
   children: React.ReactNode
 }
 
-async function resolveDisplayName(session: NonNullable<Awaited<ReturnType<typeof getSession>>>): Promise<string> {
+function resolveDisplayName(session: NonNullable<Awaited<ReturnType<typeof getSession>>>): string {
   if (session.name) return session.name
   if (session.userId.startsWith('github:')) return session.userId.replace('github:', '')
-  try {
-    const token = process.env.CMS_GITHUB_TOKEN
-    const { users } = await getUsers(cmsConfig.repo, cmsConfig.branch, token)
-    return users.find((u) => u.id === session.userId)?.name ?? session.userId
-  } catch {
-    return session.userId
-  }
+  return session.userId
 }
 
 export default async function AdminLayout({ children }: AdminLayoutProps) {
   const session = await getSession()
 
-  const displayName = session ? await resolveDisplayName(session) : ''
+  const displayName = session ? resolveDisplayName(session) : ''
   const initial = (displayName[0] ?? '?').toUpperCase()
 
   return (
