@@ -25,7 +25,7 @@ function parseYaml(raw: string): Record<string, unknown> {
     if (kv) {
       currentList = null
       const [, key, raw] = kv
-      const v = raw.trim().replace(/^['"]|['"]$/g, '')
+      const v = (raw ?? '').trim().replace(/^['"]|['"]$/g, '')
       if (v === '' || v === '[]') {
         const list: string[] = []
         result[key] = list
