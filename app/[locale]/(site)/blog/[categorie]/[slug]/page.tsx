@@ -22,13 +22,14 @@ import ProductCTA from '@/components/mdx/ProductCTA'
 import AISummarize from '@/components/mdx/AISummarize'
 import TLDRBox from '@/components/mdx/TLDRBox'
 import ArticleImage from '@/components/mdx/ArticleImage'
+import ProductCard from '@/components/mdx/ProductCard'
 import type { FaqItem } from '@/lib/data/types'
 
 export const revalidate = 1800
 
 type PageProps = { params: Promise<{ locale: string; categorie: string; slug: string }> }
 
-const MDX_COMPONENTS = { Tip, Warning, Verdict, PullQuote, StatCard, ProConTable, AISummarize, TLDRBox, ProductCTA, ArticleImage }
+const MDX_COMPONENTS = { Tip, Warning, Verdict, PullQuote, StatCard, ProConTable, AISummarize, TLDRBox, ProductCTA, ArticleImage, ProductCard }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const MDX_OPTIONS = { mdxOptions: { remarkPlugins: [remarkGfm] as any } }
 
