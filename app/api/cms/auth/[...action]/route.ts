@@ -47,12 +47,13 @@ export async function GET(
       }
 
       try {
-        const { login, token } = await exchangeGithubCode(code)
+        const { login, name, token } = await exchangeGithubCode(code)
         if (!isAllowedGithubUser(login)) {
           return NextResponse.redirect(new URL('/admin?error=unauthorized', req.url))
         }
         const sessionToken = encryptSession({
           userId: `github:${login}`,
+          name,
           role: 'admin',
           loginMethod: 'github',
           githubToken: token,
@@ -138,6 +139,7 @@ export async function POST(
 
       const sessionToken = encryptSession({
         userId: user.id,
+        name: user.name,
         role: user.role,
         loginMethod: 'password',
       })

@@ -70,6 +70,7 @@ export interface CmsUser {
 
 export interface CmsSession {
   userId: string
+  name?: string
   role: UserRole
   loginMethod: 'github' | 'password'
   githubToken?: string
