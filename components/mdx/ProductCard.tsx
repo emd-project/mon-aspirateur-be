@@ -58,13 +58,15 @@ export default async function ProductCard({ slug }: Props) {
   const affiliateUrl = data.affiliateUrl ? String(data.affiliateUrl) : null
   const batteryMinutes = data.batteryMinutes != null ? Number(data.batteryMinutes) : null
   const noiseLevelDb = data.noiseLevelDb != null ? Number(data.noiseLevelDb) : null
+  const image1 = data.image1 ? String(data.image1) : null
+  const image1Alt = data.image1Alt ? String(data.image1Alt) : (brand ? `${brand} ${name}` : name)
 
   return (
     <aside
       aria-label={`Produit : ${brand ? `${brand} ` : ''}${name}`}
       style={{
         display: 'flex',
-        alignItems: 'flex-start',
+        alignItems: 'center',
         justifyContent: 'space-between',
         gap: '1.25rem',
         flexWrap: 'wrap',
@@ -75,6 +77,21 @@ export default async function ProductCard({ slug }: Props) {
         margin: '1.75rem 0',
       }}
     >
+      {image1 && (
+        /* eslint-disable-next-line @next/next/no-img-element */
+        <img
+          src={image1}
+          alt={image1Alt}
+          style={{
+            width: 80,
+            height: 80,
+            objectFit: 'contain',
+            borderRadius: 8,
+            flexShrink: 0,
+            background: '#F5F0E8',
+          }}
+        />
+      )}
       <div style={{ flex: 1, minWidth: 0 }}>
         <p style={{
           margin: '0 0 .25rem',
