@@ -17,7 +17,7 @@ function parseYaml(raw: string): Record<string, unknown> {
 
   for (const line of lines) {
     const listItem = line.match(/^\s*-\s+(.+)$/)
-    if (listItem) {
+    if (listItem && listItem[1]) {
       currentList?.push(listItem[1].trim())
       continue
     }
