@@ -1,0 +1,25 @@
+name: X-Clean 10 GZ7035
+brand: Rowenta
+type: Aspirateur laveur
+description: "Aspirateur laveur 2-en-1 avec rouleau autopropulsé Narwal, design plat 180°, auto-nettoyage et séchage à 65°C. 60 min d'autonomie."
+price: 449
+affiliateUrl: "https://www.rowenta.be/fr/p/x-clean-10-gz7035-aspirateur-laveur-2-en-1-60-min-dautonomie-nettoyage-et-sechage-automatique/2211401362"
+rating: 9.2
+weight: 4.1 kg
+dimensions: 27×23×116 cm
+noiseLevelDb: 76
+suctionPower: 0
+batteryMinutes: 60
+pros:
+  - Rouleau autopropulsé Narwal
+  - Design plat à 180°
+  - Auto-séchage à 65°C
+cons:
+  - Prix élevé
+  - Poids global important
+image1: /images/x-clean-10.jpg
+image1Alt: X-Clean 10 — Aspirateur laveur Rowenta
+image2: /images/x-clean-10.jpg
+image2Alt: X-Clean 10 — Détail tête de nettoyage
+image3: /images/x-clean-10.jpg
+image3Alt: X-Clean 10 — Station de charge
