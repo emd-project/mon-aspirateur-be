@@ -36,9 +36,9 @@ describe('processShortcodes', () => {
   })
 
   it('laisse les placeholders MDX_BLOCK intacts', () => {
-    const input = '[[MDX_BLOCK_0]] et [[MDX_BLOCK_1]]'
+    const input = '[[MDXBLOCK0]] et [[MDXBLOCK1]]'
     const out = processShortcodes(input)
-    expect(out).toBe('[[MDX_BLOCK_0]] et [[MDX_BLOCK_1]]')
+    expect(out).toBe('[[MDXBLOCK0]] et [[MDXBLOCK1]]')
   })
 
   it('ignore les alias inconnus', () => {
