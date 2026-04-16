@@ -1,0 +1,25 @@
+name: X-Clean 7 GZ5735
+brand: Rowenta
+type: Aspirateur laveur
+description: "Aspirateur laveur sans fil 2-en-1, moteur digital 200 W, design plat 180° avec LED, auto-nettoyage et séchage 60°C. 50 min d'autonomie."
+price: 349
+affiliateUrl: "https://www.rowenta.be/fr/p/x-clean-7-gz5735e0-aspirateur-laveur-2-en-1-50-min-dautonomie-nettoyage-et-sechage-automatique/7211005392"
+rating: 8.5
+weight: 4.2 kg
+dimensions: 21×28×116 cm
+noiseLevelDb: 76
+suctionPower: 0
+batteryMinutes: 50
+pros:
+  - Rouleau autopropulsé
+  - Design plat 180° avec LED
+  - Auto-nettoyage et séchage à chaud
+cons:
+  - Prix élevé
+  - Réservoirs de capacité limitée
+image1: /images/x-clean-7.jpg
+image1Alt: X-Clean 7 — Aspirateur laveur Rowenta
+image2: /images/x-clean-7.jpg
+image2Alt: X-Clean 7 — Détail tête de nettoyage
+image3: /images/x-clean-7.jpg
+image3Alt: X-Clean 7 — Station de charge
