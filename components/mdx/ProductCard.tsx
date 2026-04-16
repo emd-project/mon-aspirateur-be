@@ -52,30 +52,35 @@ export default async function ProductCard({ slug }: Props) {
       aria-label={`Produit : ${brand ? `${brand} ` : ''}${name}`}
       style={{
         display: 'flex', alignItems: 'stretch',
-        background: 'var(--bg-surface)', border: '1px solid var(--border-light, #EDE5D8)',
-        borderRadius: 'var(--radius-md, 10px)', overflow: 'hidden', margin: '1.75rem 0',
+        background: 'var(--bg-surface)', border: '1px solid var(--border-light)',
+        borderRadius: 'var(--radius-md)', overflow: 'hidden', margin: '1.75rem 0',
       }}
     >
       {image && (
-        <div style={{ flexShrink: 0, width: 150, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-muted, #F5F1EB)', padding: '1rem' }}>
+        <div style={{
+          flexShrink: 0, width: 180,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: 'var(--bg-raised)', borderRight: '1px solid var(--border-light)',
+          padding: '1.25rem',
+        }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={image} alt={imageAlt} loading="lazy" decoding="async" style={{ maxWidth: '100%', maxHeight: 130, objectFit: 'contain' }} />
+          <img src={image} alt={imageAlt} loading="lazy" decoding="async" style={{ maxWidth: '100%', maxHeight: 140, objectFit: 'contain' }} />
         </div>
       )}
 
-      <div style={{ flex: 1, minWidth: 0, padding: '1.125rem 1.375rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '.25rem' }}>
+      <div style={{ flex: 1, minWidth: 0, padding: '1.25rem 1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '.3rem' }}>
         <p style={{ margin: 0, fontSize: '.65rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--accent-1)' }}>
           Produit recommandé
         </p>
-        <p style={{ margin: 0, fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.3 }}>
+        <p style={{ margin: 0, fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.3 }}>
           {brand ? `${brand} ` : ''}{name}
         </p>
         {description && (
-          <p style={{ margin: '.125rem 0 0', fontSize: '.8rem', color: 'var(--text-muted)', lineHeight: 1.55 }}>
+          <p style={{ margin: '.125rem 0 0', fontSize: '.82rem', color: 'var(--text-muted)', lineHeight: 1.55 }}>
             {description}
           </p>
         )}
-        <div style={{ display: 'flex', gap: '.875rem', flexWrap: 'wrap', fontSize: '.8rem', color: 'var(--text-muted)', marginTop: '.375rem' }}>
+        <div style={{ display: 'flex', gap: '.875rem', flexWrap: 'wrap', fontSize: '.8125rem', color: 'var(--text-muted)', marginTop: '.5rem' }}>
           {price != null && !isNaN(price) && <span>Prix&nbsp;: <strong style={{ color: 'var(--accent-1)' }}>{price}&nbsp;€</strong></span>}
           {rating != null && !isNaN(rating) && <span>Note&nbsp;: <strong>{rating}/10</strong></span>}
           {batteryMinutes != null && !isNaN(batteryMinutes) && <span>Autonomie&nbsp;: <strong>{batteryMinutes}&nbsp;min</strong></span>}
@@ -84,8 +89,8 @@ export default async function ProductCard({ slug }: Props) {
       </div>
 
       {affiliateUrl && (
-        <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', padding: '1rem 1.25rem 1rem 0' }}>
-          <a href={affiliateUrl} target="_blank" rel="noopener noreferrer sponsored" style={{ display: 'inline-flex', alignItems: 'center', gap: '.3rem', padding: '.5rem 1rem', borderRadius: 'var(--radius-sm, 6px)', border: '1px solid var(--accent-1)', color: 'var(--accent-1)', background: 'transparent', fontWeight: 600, fontSize: '.82rem', textDecoration: 'none', whiteSpace: 'nowrap', transition: 'background .15s, color .15s' }}>
+        <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', padding: '1rem 1.5rem 1rem 0' }}>
+          <a href={affiliateUrl} target="_blank" rel="noopener noreferrer sponsored" style={{ display: 'inline-flex', alignItems: 'center', gap: '.3rem', padding: '.55rem 1.1rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--accent-1)', color: 'var(--accent-1)', background: 'transparent', fontWeight: 600, fontSize: '.85rem', textDecoration: 'none', whiteSpace: 'nowrap' }}>
             Voir le prix →
           </a>
         </div>
