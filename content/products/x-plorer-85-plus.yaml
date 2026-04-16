@@ -1,0 +1,25 @@
+name: X-Plorer Serie 85+ RR87D5
+brand: Rowenta
+type: Aspirateur robot
+description: "Robot aspirateur laveur 6000 Pa avec station de vidage automatique (60 jours d'autonomie) et détection laser LiDAR 360°. Autonomie jusqu'à 270 min."
+price: 333
+affiliateUrl: "https://www.rowenta.be/fr/p/x-plorer-serie-85-plus-rr87d5-aspirateur-robot-avec-station-de-vidage-automatique/2211401375"
+rating: 8.7
+weight: 
+dimensions: 32.5×32.5×9.7 cm
+noiseLevelDb: 
+suctionPower: 0
+batteryMinutes: 270
+pros:
+  - Station de vidage automatique 60 j
+  - LiDAR 360°
+  - Autonomie 270 min
+cons:
+  - "Pas d'auto-nettoyage de la serpillière"
+  - "Bac d'eau modéré"
+image1: /images/x-plorer-85-plus.jpg
+image1Alt: X-Plorer 85+ — Robot aspirateur laveur
+image2: /images/x-plorer-85-plus.jpg
+image2Alt: X-Plorer 85+ — Station de vidage
+image3: /images/x-plorer-85-plus.jpg
+image3Alt: X-Plorer 85+ — Navigation LiDAR
