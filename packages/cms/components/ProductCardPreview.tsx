@@ -2,6 +2,7 @@
 
 const C = {
   surface: '#FAF7F2',
+  imageBg: '#F0EBE3',
   border: '#EDE5D8',
   accent: '#C4622D',
   text: '#1A1714',
@@ -33,89 +34,35 @@ export function ProductCardPreview({ fields }: Props) {
   }
 
   return (
-    <aside
-      style={{
-        display: 'flex',
-        alignItems: 'flex-start',
-        justifyContent: 'space-between',
-        gap: '1.25rem',
-        flexWrap: 'wrap',
-        borderLeft: `3px solid ${C.accent}`,
-        background: C.surface,
-        borderRadius: '0 8px 8px 0',
-        padding: '1rem 1.25rem',
-      }}
-    >
+    <aside style={{ display: 'flex', alignItems: 'stretch', background: C.surface, border: `1px solid ${C.border}`, borderRadius: 10, overflow: 'hidden' }}>
       {image1 && (
-        <div style={{ flexShrink: 0, alignSelf: 'center' }}>
+        <div style={{ flexShrink: 0, width: 120, display: 'flex', alignItems: 'center', justifyContent: 'center', background: C.imageBg, padding: '.75rem' }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={image1} alt={image1Alt} style={{ width: 80, height: 80, objectFit: 'contain', borderRadius: 4 }} />
+          <img src={image1} alt={image1Alt} style={{ maxWidth: '100%', maxHeight: 100, objectFit: 'contain' }} />
         </div>
       )}
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <p style={{
-          margin: '0 0 .25rem',
-          fontSize: '.68rem',
-          fontWeight: 700,
-          letterSpacing: '.1em',
-          textTransform: 'uppercase',
-          color: C.accent,
-        }}>
+      <div style={{ flex: 1, minWidth: 0, padding: '1rem 1.125rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '.2rem' }}>
+        <p style={{ margin: 0, fontSize: '.65rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: C.accent }}>
           Produit recommandé
         </p>
-        <p style={{
-          margin: '0 0 .375rem',
-          fontFamily: 'Georgia, serif',
-          fontSize: '1.05rem',
-          fontWeight: 700,
-          color: C.text,
-          lineHeight: 1.3,
-        }}>
+        <p style={{ margin: 0, fontFamily: 'Georgia, serif', fontSize: '1.05rem', fontWeight: 700, color: C.text, lineHeight: 1.3 }}>
           {brand ? `${brand} ` : ''}{name}
         </p>
         {description && (
-          <p style={{
-            margin: '0 0 .5rem',
-            fontSize: '.8rem',
-            color: C.muted,
-            lineHeight: 1.5,
-          }}>
+          <p style={{ margin: '.125rem 0 0', fontSize: '.8rem', color: C.muted, lineHeight: 1.5 }}>
             {description}
           </p>
         )}
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', fontSize: '.8125rem', color: C.muted }}>
-          {price != null && !isNaN(price) && price > 0 && (
-            <span>Prix&nbsp;: <strong style={{ color: C.accent }}>{price} €</strong></span>
-          )}
-          {rating != null && !isNaN(rating) && rating > 0 && (
-            <span>Note&nbsp;: <strong>{rating}/10</strong></span>
-          )}
-          {batteryMinutes != null && !isNaN(batteryMinutes) && batteryMinutes > 0 && (
-            <span>Autonomie&nbsp;: <strong>{batteryMinutes} min</strong></span>
-          )}
-          {noiseLevelDb != null && !isNaN(noiseLevelDb) && noiseLevelDb > 0 && (
-            <span>Bruit&nbsp;: <strong>{noiseLevelDb} dB</strong></span>
-          )}
+        <div style={{ display: 'flex', gap: '.875rem', flexWrap: 'wrap', fontSize: '.8rem', color: C.muted, marginTop: '.3rem' }}>
+          {price != null && !isNaN(price) && price > 0 && <span>Prix&nbsp;: <strong style={{ color: C.accent }}>{price}&nbsp;€</strong></span>}
+          {rating != null && !isNaN(rating) && rating > 0 && <span>Note&nbsp;: <strong>{rating}/10</strong></span>}
+          {batteryMinutes != null && !isNaN(batteryMinutes) && batteryMinutes > 0 && <span>Autonomie&nbsp;: <strong>{batteryMinutes}&nbsp;min</strong></span>}
+          {noiseLevelDb != null && !isNaN(noiseLevelDb) && noiseLevelDb > 0 && <span>Bruit&nbsp;: <strong>{noiseLevelDb}&nbsp;dB</strong></span>}
         </div>
       </div>
-
       {affiliateUrl && (
-        <div style={{ flexShrink: 0, alignSelf: 'center' }}>
-          <span
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '.3rem',
-              padding: '.45rem .9rem',
-              borderRadius: 6,
-              border: `1px solid ${C.accent}`,
-              color: C.accent,
-              background: 'transparent',
-              fontWeight: 600,
-              fontSize: '.82rem',
-              whiteSpace: 'nowrap',
-            }}
-          >
+        <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', padding: '1rem 1.125rem 1rem 0' }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '.3rem', padding: '.5rem 1rem', borderRadius: 6, border: `1px solid ${C.accent}`, color: C.accent, background: 'transparent', fontWeight: 600, fontSize: '.82rem', whiteSpace: 'nowrap' }}>
             Voir le prix →
           </span>
         </div>
