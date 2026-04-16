@@ -246,6 +246,21 @@ export default async function ArticlePage({ params }: PageProps) {
         borderBottom: '1px solid var(--border-light)',
         overflow: 'hidden',
       }}>
+        {article.image1 && (
+          <div
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              inset: 0,
+              backgroundImage: `url(${article.image1})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              opacity: 0.07,
+              mixBlendMode: 'multiply',
+              pointerEvents: 'none',
+            }}
+          />
+        )}
         <NoiseOverlay />
         <div style={{ maxWidth: 740, margin: '0 auto', position: 'relative', zIndex: 1 }}>
           {/* Breadcrumb */}
