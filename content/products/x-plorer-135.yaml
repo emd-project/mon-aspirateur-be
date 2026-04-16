@@ -1,0 +1,25 @@
+name: X-Plorer Serie 135 RR91C5
+brand: Rowenta
+type: Aspirateur robot
+description: Robot aspirateur laveur 5000 Pa, technologie caméra + laser à 360°, double capteur pour éviter les obstacles. Smart Aqua Power pour un lavage adapté.
+price: 329
+affiliateUrl: "https://www.rowenta.be/fr/p/x-plorer-serie-135-rr91c5-aspirateur-robot/2211401359"
+rating: 8.3
+weight: 
+dimensions: 34.2×34.2×9.5 cm
+noiseLevelDb: 
+suctionPower: 0
+batteryMinutes: 120
+pros:
+  - Navigation laser 360°
+  - Smart Aqua Power
+  - Évite jouets et câbles
+cons:
+  - Pas de station de vidage
+  - Autonomie moyenne
+image1: /images/x-plorer-135.jpg
+image1Alt: X-Plorer 135 — Robot aspirateur laveur
+image2: /images/x-plorer-135.jpg
+image2Alt: X-Plorer 135 — Navigation laser
+image3: /images/x-plorer-135.jpg
+image3Alt: X-Plorer 135 — Smart Aqua Power
