@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import type { ShortcodeDoc } from '@/lib/content/shortcodes'
+import { SHORTCODE_PREVIEWS, CopyButton } from './ShortcodePreviews'
 
 const C = {
   surface: '#FFFFFF',
@@ -13,8 +14,6 @@ const C = {
   accent: '#C4622D',
   accentSoft: 'rgba(196,98,45,.08)',
   accentBorder: 'rgba(196,98,45,.2)',
-  success: '#6B8F71',
-  successBorder: 'rgba(107,143,113,.3)',
 }
 
 const TYPE_LABELS: Record<ShortcodeDoc['type'], string> = {
@@ -23,38 +22,9 @@ const TYPE_LABELS: Record<ShortcodeDoc['type'], string> = {
   block: 'Bloc',
 }
 
-function CopyButton({ text }: { text: string }) {
-  const [copied, setCopied] = useState(false)
-
-  function copy() {
-    void navigator.clipboard.writeText(text)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
-
-  return (
-    <button
-      type="button"
-      onClick={copy}
-      style={{
-        padding: '0.375rem 0.75rem',
-        background: copied ? C.accentSoft : C.surface2,
-        border: `1px solid ${copied ? C.successBorder : C.border}`,
-        borderRadius: 7,
-        color: copied ? C.success : C.muted,
-        fontSize: '0.75rem',
-        cursor: 'pointer',
-        whiteSpace: 'nowrap',
-        fontWeight: 500,
-        fontFamily: 'inherit',
-      }}
-    >
-      {copied ? 'Copié ✓' : 'Copier'}
-    </button>
-  )
-}
-
 export function ShortcodesReference({ docs }: { docs: ShortcodeDoc[] }) {
+  const [openPreview, setOpenPreview] = useState<string | null>(null)
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
       <div style={{ padding: '1rem 1.125rem', background: C.accentSoft, border: `1px solid ${C.accentBorder}`, borderRadius: 10, color: C.text }}>
@@ -91,20 +61,43 @@ export function ShortcodesReference({ docs }: { docs: ShortcodeDoc[] }) {
                 {doc.description}
               </p>
             </div>
-            <span style={{
-              padding: '2px 8px',
-              borderRadius: 12,
-              background: C.surface2,
-              border: `1px solid ${C.border}`,
-              fontSize: '0.6875rem',
-              fontWeight: 600,
-              color: C.muted,
-              letterSpacing: '.04em',
-              textTransform: 'uppercase',
-              whiteSpace: 'nowrap',
-            }}>
-              {TYPE_LABELS[doc.type]}
-            </span>
+            <div style={{ display: 'flex', gap: '0.375rem', alignItems: 'center' }}>
+              {SHORTCODE_PREVIEWS[doc.alias] && (
+                <button
+                  type="button"
+                  onClick={() => setOpenPreview(openPreview === doc.alias ? null : doc.alias)}
+                  style={{
+                    padding: '2px 8px',
+                    borderRadius: 12,
+                    background: openPreview === doc.alias ? C.accentSoft : C.surface2,
+                    border: `1px solid ${openPreview === doc.alias ? C.accentBorder : C.border}`,
+                    fontSize: '0.6875rem',
+                    fontWeight: 600,
+                    color: openPreview === doc.alias ? C.accent : C.muted,
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                    letterSpacing: '.04em',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  {openPreview === doc.alias ? 'Masquer' : 'Aperçu'}
+                </button>
+              )}
+              <span style={{
+                padding: '2px 8px',
+                borderRadius: 12,
+                background: C.surface2,
+                border: `1px solid ${C.border}`,
+                fontSize: '0.6875rem',
+                fontWeight: 600,
+                color: C.muted,
+                letterSpacing: '.04em',
+                textTransform: 'uppercase',
+                whiteSpace: 'nowrap',
+              }}>
+                {TYPE_LABELS[doc.type]}
+              </span>
+            </div>
           </header>
 
           <div style={{ display: 'flex', alignItems: 'stretch', gap: '0.5rem', marginTop: '0.75rem' }}>
@@ -126,6 +119,15 @@ export function ShortcodesReference({ docs }: { docs: ShortcodeDoc[] }) {
             </pre>
             <CopyButton text={doc.example} />
           </div>
+
+          {openPreview === doc.alias && SHORTCODE_PREVIEWS[doc.alias] && (
+            <div style={{ marginTop: '0.75rem', padding: '0.75rem', background: '#FDFCFA', border: `1px dashed ${C.border}`, borderRadius: 8 }}>
+              <p style={{ margin: '0 0 0.5rem', fontSize: '0.6875rem', fontWeight: 600, color: C.dim, textTransform: 'uppercase', letterSpacing: '.06em' }}>
+                Rendu dans l&apos;article
+              </p>
+              {SHORTCODE_PREVIEWS[doc.alias]}
+            </div>
+          )}
         </article>
       ))}
 

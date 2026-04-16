@@ -5,6 +5,7 @@ import type { CollectionDef, FieldDef, ContentEntry } from '../types'
 import { titleToSlug, importMarkdownFile } from '../lib/parser'
 import { extractMdxBlocks, reinsertMdxBlocks, markdownToHtml, htmlToMarkdown } from '../lib/html-md'
 import { WysiwygEditor, type WysiwygEditorRef } from './WysiwygEditor'
+import { ProductCardPreview } from './ProductCardPreview'
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
 const C = {
@@ -665,6 +666,16 @@ export function ContentEditor({ collection, collectionDef, entry, shortcode, onS
           >
             {shortcodeCopied ? 'Copié ✓' : 'Copier'}
           </button>
+        </div>
+      )}
+
+      {/* Live preview — product collections */}
+      {collection === 'products' && (
+        <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 10, padding: '0.875rem 1rem' }}>
+          <p style={{ margin: '0 0 0.625rem', fontSize: '0.75rem', fontWeight: 600, color: C.dim, textTransform: 'uppercase', letterSpacing: '.06em' }}>
+            Aperçu dans l&apos;article
+          </p>
+          <ProductCardPreview fields={fields} />
         </div>
       )}
 
