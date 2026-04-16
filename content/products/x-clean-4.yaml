@@ -1,0 +1,25 @@
+name: X-Clean 4 GZ5037
+brand: Rowenta
+type: Aspirateur laveur
+description: "Aspirateur laveur 2-en-1 avec détection automatique de saleté et auto-nettoyage de la brosse. 50 min d'autonomie pour nettoyer jusqu'à 350 m²."
+price: 269
+affiliateUrl: "https://www.rowenta.be/fr/p/x-clean-4-gz5037-aspirateur-laveur-2-en-1-50-min-dautonomie-nettoyage-automatique/2211401351"
+rating: 8
+weight: 5.4 kg
+dimensions: 31.5×30.5×118 cm
+noiseLevelDb: 
+suctionPower: 0
+batteryMinutes: 50
+pros:
+  - Détection automatique de saleté
+  - Auto-nettoyage de la brosse
+  - Bon rapport qualité-prix
+cons:
+  - Poids élevé
+  - Pas de séchage automatique
+image1: /images/x-clean-4.jpg
+image1Alt: X-Clean 4 — Aspirateur laveur Rowenta
+image2: /images/x-clean-4.jpg
+image2Alt: X-Clean 4 — Détail tête de nettoyage
+image3: /images/x-clean-4.jpg
+image3Alt: X-Clean 4 — Station de charge
