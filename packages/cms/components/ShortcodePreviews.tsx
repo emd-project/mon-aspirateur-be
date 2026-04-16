@@ -69,18 +69,22 @@ export const SHORTCODE_PREVIEWS: Record<string, React.ReactNode> = {
     </div>
   ),
   product: (
-    <aside style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1.25rem', flexWrap: 'wrap', borderLeft: `3px solid ${C.accent}`, background: C.surface2, borderRadius: '0 8px 8px 0', padding: '0.875rem 1rem' }}>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <p style={{ margin: '0 0 .2rem', fontSize: '.65rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: C.accent }}>Produit recommandé</p>
-        <p style={{ margin: '0 0 .3rem', fontFamily: 'Georgia, serif', fontSize: '.95rem', fontWeight: 700, color: C.text }}>Rowenta X-Clean 4</p>
-        <p style={{ margin: '0 0 .4rem', fontSize: '.75rem', color: C.muted, lineHeight: 1.4 }}>Aspirateur laveur 2 en 1, 50 min d&apos;autonomie</p>
-        <div style={{ display: 'flex', gap: '.75rem', fontSize: '.75rem', color: C.muted }}>
+    <aside style={{ display: 'flex', alignItems: 'stretch', background: C.surface, border: `1px solid ${C.border}`, borderRadius: 10, overflow: 'hidden' }}>
+      <div style={{ flexShrink: 0, width: 90, display: 'flex', alignItems: 'center', justifyContent: 'center', background: C.surface2, padding: '.5rem' }}>
+        <div style={{ width: 50, height: 50, borderRadius: 6, background: C.border, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '.6rem', color: C.muted }}>img</div>
+      </div>
+      <div style={{ flex: 1, minWidth: 0, padding: '.75rem .875rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '.15rem' }}>
+        <p style={{ margin: 0, fontSize: '.6rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: C.accent }}>Produit recommandé</p>
+        <p style={{ margin: 0, fontFamily: 'Georgia, serif', fontSize: '.9rem', fontWeight: 700, color: C.text }}>Rowenta X-Clean 4</p>
+        <p style={{ margin: 0, fontSize: '.72rem', color: C.muted, lineHeight: 1.4 }}>Aspirateur laveur 2 en 1, 50 min d&apos;autonomie</p>
+        <div style={{ display: 'flex', gap: '.625rem', fontSize: '.72rem', color: C.muted, marginTop: '.15rem' }}>
           <span>Prix : <strong style={{ color: C.accent }}>249 €</strong></span>
           <span>Note : <strong>8.5/10</strong></span>
-          <span>Autonomie : <strong>50 min</strong></span>
         </div>
       </div>
-      <span style={{ padding: '.4rem .75rem', borderRadius: 6, border: `1px solid ${C.accent}`, color: C.accent, fontWeight: 600, fontSize: '.78rem', whiteSpace: 'nowrap' }}>Voir le prix →</span>
+      <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', padding: '.75rem .75rem .75rem 0' }}>
+        <span style={{ padding: '.35rem .7rem', borderRadius: 6, border: `1px solid ${C.accent}`, color: C.accent, fontWeight: 600, fontSize: '.72rem', whiteSpace: 'nowrap' }}>Voir le prix →</span>
+      </div>
     </aside>
   ),
   tip: (
