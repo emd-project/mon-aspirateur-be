@@ -1,0 +1,25 @@
+name: X-Plorer Serie 65 RR8L65
+brand: Rowenta
+type: Aspirateur robot
+description: "Robot aspirateur laveur ultra-fin (7.8 cm) avec navigation laser et nettoyage méthodique. Double action aspiration + lavage avec réglage électronique du niveau d'eau."
+price: 179
+affiliateUrl: "https://www.rowenta.be/fr/p/x-plorer-serie-65-rr8l65wh-aspirateur-robot/2211401306"
+rating: 8.2
+weight: 
+dimensions: 34.2×34.2×7.8 cm
+noiseLevelDb: 70
+suctionPower: 0
+batteryMinutes: 168
+pros:
+  - Ultra-fin 7.8 cm
+  - Navigation laser méthodique
+  - Prix accessible
+cons:
+  - Sans station de vidage
+  - Puissance modérée
+image1: /images/x-plorer-65.jpg
+image1Alt: X-Plorer 65 — Robot aspirateur laveur
+image2: /images/x-plorer-65.jpg
+image2Alt: X-Plorer 65 — Design ultra-fin
+image3: /images/x-plorer-65.jpg
+image3Alt: X-Plorer 65 — Navigation laser
