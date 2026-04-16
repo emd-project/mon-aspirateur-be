@@ -75,7 +75,7 @@ export const cmsConfig: CmsConfig = {
       path: 'content/products',
       format: 'yaml',
       flatPath: true,
-      shortcode: '<ProductCard slug="{{slug}}" />',
+      shortcode: '[[product:{{slug}}]]',
       csvEnabled: true,
       fields: {
         name: { type: 'text', label: 'Nom du produit', required: true },
