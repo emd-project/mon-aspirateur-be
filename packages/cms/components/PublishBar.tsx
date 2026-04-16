@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { getPendingChanges, clearPendingChanges } from './ContentEditor'
 
-const STORAGE_KEY = 'cms_last_deploy'
+const LAST_DEPLOY_KEY = 'cms_last_deploy'
 
 const C = {
   accent: '#C4622D',
@@ -13,6 +14,11 @@ const C = {
   accentBorder: 'rgba(196,98,45,.25)',
   sidebarBorder: '#2E2A27',
   sidebarMuted: '#C4B5A5',
+  sidebarText: '#F5EFE7',
+  dim: '#4A4540',
+  error: '#B91C1C',
+  errorSoft: 'rgba(185,28,28,.08)',
+  errorBorder: 'rgba(185,28,28,.35)',
 }
 
 function relativeTime(ts: number): string {
@@ -28,26 +34,49 @@ function relativeTime(ts: number): string {
 
 export function PublishBar() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
+  const [pendingCount, setPendingCount] = useState(0)
   const [lastDeploy, setLastDeploy] = useState<number | null>(null)
   const [errorMsg, setErrorMsg] = useState('')
 
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    if (stored) setLastDeploy(Number(stored))
+  const refreshPending = useCallback(() => {
+    setPendingCount(getPendingChanges().length)
   }, [])
 
+  useEffect(() => {
+    const stored = localStorage.getItem(LAST_DEPLOY_KEY)
+    if (stored) setLastDeploy(Number(stored))
+    refreshPending()
+    window.addEventListener('cms_pending_update', refreshPending)
+    return () => window.removeEventListener('cms_pending_update', refreshPending)
+  }, [refreshPending])
+
   async function publish() {
+    const pending = getPendingChanges()
+    if (pending.length === 0) {
+      setErrorMsg('Aucune modification en attente')
+      setStatus('error')
+      setTimeout(() => setStatus('idle'), 3000)
+      return
+    }
+
     setStatus('loading')
     setErrorMsg('')
     try {
-      const res = await fetch('/api/cms/deploy', { method: 'POST' })
+      const res = await fetch('/api/cms/batch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ changes: pending }),
+      })
       if (!res.ok) {
         const data = (await res.json()) as { error?: string }
         throw new Error(data.error ?? `Erreur ${res.status}`)
       }
+
+      clearPendingChanges()
       const now = Date.now()
-      localStorage.setItem(STORAGE_KEY, String(now))
+      localStorage.setItem(LAST_DEPLOY_KEY, String(now))
       setLastDeploy(now)
+      setPendingCount(0)
       setStatus('done')
       setTimeout(() => setStatus('idle'), 4000)
     } catch (err) {
@@ -63,10 +92,22 @@ export function PublishBar() {
 
   return (
     <div style={{ padding: '0.75rem 1rem', borderBottom: `1px solid ${C.sidebarBorder}` }}>
+      {pendingCount > 0 && status !== 'done' && (
+        <p style={{
+          margin: '0 0 0.5rem',
+          fontSize: '0.75rem',
+          color: C.accent,
+          fontWeight: 600,
+          textAlign: 'center',
+        }}>
+          {pendingCount} modification{pendingCount > 1 ? 's' : ''} en attente
+        </p>
+      )}
+
       <button
         type="button"
         onClick={publish}
-        disabled={isLoading}
+        disabled={isLoading || (pendingCount === 0 && status === 'idle')}
         style={{
           width: '100%',
           display: 'flex',
@@ -75,14 +116,14 @@ export function PublishBar() {
           gap: '0.4rem',
           padding: '0.5rem 0.75rem',
           borderRadius: 8,
-          border: `1px solid ${isDone ? C.successBorder : isError ? 'rgba(185,28,28,.35)' : C.accentBorder}`,
-          background: isDone ? C.successSoft : isError ? 'rgba(185,28,28,.08)' : C.accentSoft,
-          color: isDone ? C.success : isError ? '#B91C1C' : C.accent,
+          border: `1px solid ${isDone ? C.successBorder : isError ? C.errorBorder : C.accentBorder}`,
+          background: isDone ? C.successSoft : isError ? C.errorSoft : C.accentSoft,
+          color: isDone ? C.success : isError ? C.error : C.accent,
           fontSize: '0.8125rem',
           fontWeight: 600,
-          cursor: isLoading ? 'wait' : 'pointer',
+          cursor: isLoading || (pendingCount === 0 && status === 'idle') ? 'not-allowed' : 'pointer',
           transition: 'opacity 0.15s',
-          opacity: isLoading ? 0.7 : 1,
+          opacity: isLoading ? 0.7 : pendingCount === 0 && status === 'idle' ? 0.5 : 1,
           letterSpacing: '-0.01em',
         }}
       >
@@ -94,17 +135,25 @@ export function PublishBar() {
           </svg>
         )}
         {isDone && '✓ '}
-        {isLoading ? 'Déploiement…' : isDone ? 'Mis en ligne !' : isError ? 'Échec' : 'Mettre en ligne'}
+        {isLoading
+          ? 'Publication…'
+          : isDone
+            ? 'Mis en ligne !'
+            : isError
+              ? 'Échec'
+              : pendingCount === 0
+                ? 'Rien à publier'
+                : 'Mettre en ligne'}
       </button>
 
       {isError && errorMsg && (
-        <p style={{ margin: '0.375rem 0 0', fontSize: '0.7rem', color: '#B91C1C', lineHeight: 1.4 }}>
+        <p style={{ margin: '0.375rem 0 0', fontSize: '0.7rem', color: C.error, lineHeight: 1.4 }}>
           {errorMsg}
         </p>
       )}
 
       {lastDeploy && !isError && (
-        <p style={{ margin: '0.375rem 0 0', fontSize: '0.7rem', color: '#4A4540', textAlign: 'center' }}>
+        <p style={{ margin: '0.375rem 0 0', fontSize: '0.7rem', color: C.dim, textAlign: 'center' }}>
           Dernière mise en ligne : {relativeTime(lastDeploy)}
         </p>
       )}

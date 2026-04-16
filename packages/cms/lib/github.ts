@@ -125,6 +125,78 @@ export async function deleteFile(
   if (!res.ok) throw new Error(`GitHub deleteFile failed: ${res.status} ${await res.text()}`)
 }
 
+export interface BatchFileChange {
+  path: string
+  content: string
+}
+
+export async function batchPutFiles(
+  repo: string,
+  branch: string,
+  files: BatchFileChange[],
+  message: string,
+  token?: string
+): Promise<{ commitSha: string }> {
+  if (files.length === 0) throw new Error('No files to commit')
+  const tok = getToken(token)
+  const h = headers(tok)
+
+  const refRes = await fetch(
+    `${GITHUB_API}/repos/${repo}/git/ref/heads/${branch}`,
+    { headers: h }
+  )
+  if (!refRes.ok) throw new Error(`git/ref failed: ${refRes.status}`)
+  const refData = (await refRes.json()) as { object: { sha: string } }
+  const baseCommitSha = refData.object.sha
+
+  const commitRes = await fetch(
+    `${GITHUB_API}/repos/${repo}/git/commits/${baseCommitSha}`,
+    { headers: h }
+  )
+  if (!commitRes.ok) throw new Error(`git/commits failed: ${commitRes.status}`)
+  const commitData = (await commitRes.json()) as { tree: { sha: string } }
+  const baseTreeSha = commitData.tree.sha
+
+  const treeEntries = files.map((f) => ({
+    path: f.path,
+    mode: '100644' as const,
+    type: 'blob' as const,
+    content: f.content,
+  }))
+
+  const treeRes = await fetch(`${GITHUB_API}/repos/${repo}/git/trees`, {
+    method: 'POST',
+    headers: h,
+    body: JSON.stringify({ base_tree: baseTreeSha, tree: treeEntries }),
+  })
+  if (!treeRes.ok) throw new Error(`git/trees failed: ${treeRes.status} ${await treeRes.text()}`)
+  const treeData = (await treeRes.json()) as { sha: string }
+
+  const newCommitRes = await fetch(`${GITHUB_API}/repos/${repo}/git/commits`, {
+    method: 'POST',
+    headers: h,
+    body: JSON.stringify({
+      message,
+      tree: treeData.sha,
+      parents: [baseCommitSha],
+    }),
+  })
+  if (!newCommitRes.ok) throw new Error(`git/commits create failed: ${newCommitRes.status}`)
+  const newCommitData = (await newCommitRes.json()) as { sha: string }
+
+  const updateRefRes = await fetch(
+    `${GITHUB_API}/repos/${repo}/git/refs/heads/${branch}`,
+    {
+      method: 'PATCH',
+      headers: h,
+      body: JSON.stringify({ sha: newCommitData.sha }),
+    }
+  )
+  if (!updateRefRes.ok) throw new Error(`git/refs update failed: ${updateRefRes.status}`)
+
+  return { commitSha: newCommitData.sha }
+}
+
 export async function uploadMedia(
   repo: string,
   path: string,

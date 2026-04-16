@@ -369,6 +369,43 @@ interface ContentEditorProps {
   onSaved?: (entry: ContentEntry) => void
 }
 
+const PENDING_STORAGE_KEY = 'cms_pending_changes'
+
+export interface PendingChange {
+  collection: string
+  filePath: string
+  slug: string
+  frontmatter: Record<string, unknown>
+  body: string
+  timestamp: number
+  label: string
+}
+
+export function getPendingChanges(): PendingChange[] {
+  if (typeof window === 'undefined') return []
+  try {
+    return JSON.parse(localStorage.getItem(PENDING_STORAGE_KEY) ?? '[]') as PendingChange[]
+  } catch { return [] }
+}
+
+function setPendingChanges(changes: PendingChange[]) {
+  localStorage.setItem(PENDING_STORAGE_KEY, JSON.stringify(changes))
+  window.dispatchEvent(new Event('cms_pending_update'))
+}
+
+export function clearPendingChanges() {
+  localStorage.removeItem(PENDING_STORAGE_KEY)
+  window.dispatchEvent(new Event('cms_pending_update'))
+}
+
+function addPendingChange(change: PendingChange) {
+  const current = getPendingChanges()
+  const idx = current.findIndex((c) => c.filePath === change.filePath)
+  if (idx >= 0) current[idx] = change
+  else current.push(change)
+  setPendingChanges(current)
+}
+
 export function ContentEditor({ collection, collectionDef, entry, shortcode, onSaved }: ContentEditorProps) {
   const [fields, setFields] = useState<Record<string, unknown>>(() => entry?.frontmatter ?? {})
   const [slug, setSlug] = useState(entry?.slug ?? '')
@@ -382,11 +419,41 @@ export function ContentEditor({ collection, collectionDef, entry, shortcode, onS
   const [wysiwygHtml, setWysiwygHtml] = useState('')
   const [dirty, setDirty] = useState(false)
   const [shortcodeCopied, setShortcodeCopied] = useState(false)
+  const [hasPending, setHasPending] = useState(false)
 
   const isFlatPath = collectionDef.flatPath ?? false
   const isReadOnly = collectionDef.readOnly ?? false
 
+  // Restore pending changes from localStorage on mount
   useEffect(() => {
+    const pending = getPendingChanges()
+    const ext = collectionDef.format === 'mdx' ? '.mdx' : '.yaml'
+    const currentSlug = entry?.slug ?? slug
+    if (!currentSlug) return
+
+    let expectedPath: string
+    if (isFlatPath) {
+      expectedPath = `${collectionDef.path}/${currentSlug}${ext}`
+    } else {
+      const locale = String(entry?.frontmatter?.locale ?? fields.locale ?? 'fr')
+      const catSlug = String(entry?.frontmatter?.categorySlug ?? fields.categorySlug ?? 'guide-achat')
+      expectedPath = `${collectionDef.path}/${locale}/${catSlug}/${currentSlug}.mdx`
+    }
+
+    const match = pending.find((c) => c.filePath === expectedPath)
+    if (match) {
+      setFields(match.frontmatter)
+      if (collectionDef.format === 'mdx') {
+        const { cleaned, blocks } = extractMdxBlocks(match.body)
+        setMdxBlocks(blocks)
+        setSourceBody(match.body)
+        setWysiwygHtml(markdownToHtml(cleaned))
+      }
+      setHasPending(true)
+      setDirty(false)
+      return
+    }
+
     if (entry?.body) {
       const { cleaned, blocks } = extractMdxBlocks(entry.body)
       setMdxBlocks(blocks)
@@ -394,6 +461,7 @@ export function ContentEditor({ collection, collectionDef, entry, shortcode, onS
       const html = markdownToHtml(cleaned)
       setWysiwygHtml(html)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [entry])
 
   useEffect(() => { setDirty(true) }, [fields, slug, sourceBody])
@@ -472,38 +540,39 @@ export function ContentEditor({ collection, collectionDef, entry, shortcode, onS
     e.target.value = ''
   }
 
-  async function handleSave() {
+  function handleSave() {
     if (saving) return
     setSaving(true)
 
-    const ext = collectionDef.format === 'mdx' ? '.mdx' : '.yaml'
-    const body = getCurrentBody()
-
-    // Build file path and API URL depending on collection type
-    let filePath: string
-    let apiUrl: string
-    if (isFlatPath) {
-      filePath = `${collectionDef.path}/${slug}${ext}`
-      apiUrl = `/api/cms/content/${collection}/${slug}`
-    } else {
-      const locale = String(fields.locale ?? 'fr')
-      const categorySlug = String(fields.categorySlug ?? 'guide-achat')
-      filePath = `${collectionDef.path}/${locale}/${categorySlug}/${slug}.mdx`
-      apiUrl = `/api/cms/content/${collection}/${locale}/${categorySlug}/${slug}`
-    }
-
     try {
-      const res = await fetch(apiUrl, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filePath, frontmatter: fields, body, sha: entry?.sha }),
-      })
-      const data = (await res.json()) as { ok?: boolean; sha?: string; error?: string }
-      if (!res.ok) throw new Error(data.error ?? 'Erreur de sauvegarde')
+      const ext = collectionDef.format === 'mdx' ? '.mdx' : '.yaml'
+      const body = getCurrentBody()
 
-      setToast({ message: 'Sauvegardé ✓', type: 'success' })
+      let filePath: string
+      if (isFlatPath) {
+        filePath = `${collectionDef.path}/${slug}${ext}`
+      } else {
+        const locale = String(fields.locale ?? 'fr')
+        const categorySlug = String(fields.categorySlug ?? 'guide-achat')
+        filePath = `${collectionDef.path}/${locale}/${categorySlug}/${slug}.mdx`
+      }
+
+      const label = String(fields.title ?? fields.name ?? slug)
+
+      addPendingChange({
+        collection,
+        filePath,
+        slug,
+        frontmatter: { ...fields },
+        body,
+        timestamp: Date.now(),
+        label,
+      })
+
+      setToast({ message: 'Sauvegardé (en attente de publication)', type: 'success' })
       setDirty(false)
-      onSaved?.({ slug, filePath, frontmatter: fields, body, sha: data.sha })
+      setHasPending(true)
+      onSaved?.({ slug, filePath, frontmatter: fields, body, sha: entry?.sha })
     } catch (err) {
       setToast({ message: String(err instanceof Error ? err.message : err), type: 'error' })
     } finally {
@@ -532,6 +601,11 @@ export function ContentEditor({ collection, collectionDef, entry, shortcode, onS
           <span style={{ fontSize: '0.875rem', color: C.muted }}>
             {entry?.slug ? `Modifier — ${entry.slug}` : 'Nouveau'}
           </span>
+          {hasPending && !dirty && (
+            <span style={{ fontSize: '0.75rem', color: C.accent, background: C.accentSoft, padding: '2px 8px', borderRadius: 12, border: `1px solid ${C.accentBorder}` }}>
+              En attente de publication
+            </span>
+          )}
           {dirty && (
             <span style={{ fontSize: '0.75rem', color: C.warning, background: C.warningSoft, padding: '2px 8px', borderRadius: 12, border: `1px solid ${C.warningBorder}` }}>
               Non sauvegardé
