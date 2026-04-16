@@ -45,7 +45,29 @@ export function CopyButton({ text }: { text: string }) {
   )
 }
 
+function MiniCard({ name, brand, price, rating }: { name: string; brand: string; price: string; rating: string }) {
+  return (
+    <div style={{ flex: '0 0 160px', background: C.surface, border: `1px solid ${C.border}`, borderRadius: 8, padding: '.625rem .75rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '.375rem' }}>
+      <div>
+        <p style={{ margin: '0 0 .15rem', fontSize: '.6rem', fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: C.accent }}>{brand}</p>
+        <p style={{ margin: 0, fontSize: '.8rem', fontWeight: 700, color: C.text, lineHeight: 1.3 }}>{name}</p>
+      </div>
+      <div style={{ display: 'flex', gap: '.5rem', fontSize: '.7rem', color: C.muted }}>
+        <span><strong style={{ color: C.accent }}>{price}</strong></span>
+        <span><strong>{rating}</strong></span>
+      </div>
+    </div>
+  )
+}
+
 export const SHORTCODE_PREVIEWS: Record<string, React.ReactNode> = {
+  carousel: (
+    <div style={{ display: 'flex', gap: '.625rem', overflowX: 'auto', padding: '.25rem 0' }}>
+      <MiniCard name="X-Clean 4" brand="Rowenta" price="269 €" rating="8/10" />
+      <MiniCard name="X-Plorer 75s+" brand="Rowenta" price="449 €" rating="8.5/10" />
+      <MiniCard name="X-Force Flex 14.60" brand="Rowenta" price="349 €" rating="7.5/10" />
+    </div>
+  ),
   product: (
     <aside style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1.25rem', flexWrap: 'wrap', borderLeft: `3px solid ${C.accent}`, background: C.surface2, borderRadius: '0 8px 8px 0', padding: '0.875rem 1rem' }}>
       <div style={{ flex: 1, minWidth: 0 }}>
