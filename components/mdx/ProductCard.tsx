@@ -57,10 +57,8 @@ export default async function ProductCard({ slug }: Props) {
       }}
     >
       {image && (
-        <div style={{ flexShrink: 0, width: 200, position: 'relative', borderRight: '1px solid var(--border-light)' }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={image} alt={imageAlt} loading="lazy" decoding="async" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
-        </div>
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={image} alt={imageAlt} loading="lazy" decoding="async" style={{ width: 200, flexShrink: 0, objectFit: 'cover', margin: 0, padding: 0, display: 'block' }} />
       )}
 
       <div style={{ flex: 1, minWidth: 0, padding: '1.25rem 1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '.3rem' }}>
