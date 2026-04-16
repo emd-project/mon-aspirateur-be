@@ -21,6 +21,8 @@ export function ProductCardPreview({ fields }: Props) {
   const affiliateUrl = fields.affiliateUrl ? String(fields.affiliateUrl) : null
   const batteryMinutes = fields.batteryMinutes != null ? Number(fields.batteryMinutes) : null
   const noiseLevelDb = fields.noiseLevelDb != null ? Number(fields.noiseLevelDb) : null
+  const image1 = fields.image1 ? String(fields.image1) : null
+  const image1Alt = fields.image1Alt ? String(fields.image1Alt) : name
 
   if (!name) {
     return (
@@ -44,6 +46,12 @@ export function ProductCardPreview({ fields }: Props) {
         padding: '1rem 1.25rem',
       }}
     >
+      {image1 && (
+        <div style={{ flexShrink: 0, alignSelf: 'center' }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={image1} alt={image1Alt} style={{ width: 80, height: 80, objectFit: 'contain', borderRadius: 4 }} />
+        </div>
+      )}
       <div style={{ flex: 1, minWidth: 0 }}>
         <p style={{
           margin: '0 0 .25rem',

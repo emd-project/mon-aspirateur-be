@@ -11,6 +11,8 @@ interface ProductData {
   price: number | null
   rating: number | null
   affiliateUrl: string | null
+  image: string | null
+  imageAlt: string
 }
 
 function parseYaml(raw: string): Record<string, unknown> {
@@ -27,18 +29,26 @@ function parseYaml(raw: string): Record<string, unknown> {
   return result
 }
 
+function resolveImage(src: string | undefined): string | null {
+  if (!src || typeof src !== 'string') return null
+  try { if (fs.existsSync(path.join(process.cwd(), 'public', src))) return src } catch { /* noop */ }
+  return null
+}
+
 function loadProduct(slug: string): ProductData | null {
   try {
     const raw = fs.readFileSync(path.join(process.cwd(), 'content/products', `${slug}.yaml`), 'utf-8')
     const d = parseYaml(raw)
+    const name = String(d.name ?? slug)
+    const brand = d.brand ? String(d.brand) : null
     return {
-      slug,
-      name: String(d.name ?? slug),
-      brand: d.brand ? String(d.brand) : null,
+      slug, name, brand,
       description: d.description ? String(d.description) : null,
       price: d.price != null ? Number(d.price) : null,
       rating: d.rating != null ? Number(d.rating) : null,
       affiliateUrl: d.affiliateUrl ? String(d.affiliateUrl) : null,
+      image: resolveImage(d.image1 as string | undefined),
+      imageAlt: d.image1Alt ? String(d.image1Alt) : `${brand ? `${brand} ` : ''}${name}`,
     }
   } catch { return null }
 }
@@ -46,7 +56,6 @@ function loadProduct(slug: string): ProductData | null {
 export default async function ProductCarousel({ slugs }: Props) {
   const products = slugs.split(',').map(s => s.trim()).filter(Boolean)
     .map(loadProduct).filter((p): p is ProductData => p !== null)
-
   if (products.length === 0) return null
 
   return (
@@ -69,7 +78,11 @@ export default async function ProductCarousel({ slugs }: Props) {
             borderRadius: 'var(--radius-md)', padding: '1rem 1.125rem',
           }}
         >
-          <div>
+          {p.image && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={p.image} alt={p.imageAlt} loading="lazy" decoding="async" style={{ width: '100%', height: 120, objectFit: 'contain', borderRadius: 'var(--radius-sm)', marginBottom: '.625rem' }} />
+          )}
+          <div style={{ flex: 1 }}>
             <p style={{ margin: '0 0 .2rem', fontSize: '.65rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--accent-1)' }}>
               {p.brand ?? 'Produit'}
             </p>
@@ -77,27 +90,18 @@ export default async function ProductCarousel({ slugs }: Props) {
               {p.name}
             </p>
             {p.description && (
-              <p style={{ margin: '0 0 .5rem', fontSize: '.75rem', color: 'var(--text-muted)', lineHeight: 1.45, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+              <p style={{ margin: '0 0 .5rem', fontSize: '.75rem', color: 'var(--text-muted)', lineHeight: 1.45, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                 {p.description}
               </p>
             )}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '.5rem', marginTop: '.625rem' }}>
             <div style={{ display: 'flex', gap: '.75rem', fontSize: '.78rem', color: 'var(--text-muted)' }}>
-              {p.price != null && !isNaN(p.price) && (
-                <span><strong style={{ color: 'var(--accent-1)' }}>{p.price} €</strong></span>
-              )}
-              {p.rating != null && !isNaN(p.rating) && (
-                <span><strong>{p.rating}/10</strong></span>
-              )}
+              {p.price != null && !isNaN(p.price) && <span><strong style={{ color: 'var(--accent-1)' }}>{p.price} €</strong></span>}
+              {p.rating != null && !isNaN(p.rating) && <span><strong>{p.rating}/10</strong></span>}
             </div>
             {p.affiliateUrl && (
-              <a
-                href={p.affiliateUrl}
-                target="_blank"
-                rel="noopener noreferrer sponsored"
-                style={{ padding: '.35rem .7rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--accent-1)', color: 'var(--accent-1)', background: 'transparent', fontWeight: 600, fontSize: '.75rem', textDecoration: 'none', whiteSpace: 'nowrap' }}
-              >
+              <a href={p.affiliateUrl} target="_blank" rel="noopener noreferrer sponsored" style={{ padding: '.35rem .7rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--accent-1)', color: 'var(--accent-1)', background: 'transparent', fontWeight: 600, fontSize: '.75rem', textDecoration: 'none', whiteSpace: 'nowrap' }}>
                 Voir →
               </a>
             )}
