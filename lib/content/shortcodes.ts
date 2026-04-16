@@ -14,6 +14,7 @@
 
 export const SHORTCODE_COMPONENTS: Record<string, string> = {
   product: 'ProductCard',
+  carousel: 'ProductCarousel',
   stat: 'StatCard',
   tldr: 'TLDRBox',
   procon: 'ProConTable',
@@ -52,8 +53,7 @@ function expandShorthand(content: string): string {
     /\[\[([a-z]+):([^\]\s]+)\]\]/g,
     (_m, alias, value) => {
       const component = resolveComponent(alias)
-      // Produit et CTA utilisent slug comme attribut par défaut
-      const attr = component === 'ProductCard' ? 'slug' : 'slug'
+      const attr = component === 'ProductCarousel' ? 'slugs' : 'slug'
       return `<${component} ${attr}="${value}" />`
     },
   )
@@ -122,6 +122,13 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
     component: 'ProductCard',
     description: 'Encart produit avec prix, note et lien affilié. Lu depuis content/products/{slug}.yaml.',
     example: '[[product:x-clean-4]]',
+    type: 'shorthand',
+  },
+  {
+    alias: 'carousel',
+    component: 'ProductCarousel',
+    description: 'Carrousel horizontal de produits — slugs séparés par des virgules. Scroll snap sur mobile.',
+    example: '[[carousel:x-clean-4,x-plorer-75s,x-force-flex-14-60]]',
     type: 'shorthand',
   },
   {

@@ -47,6 +47,12 @@ describe('processShortcodes', () => {
     expect(out).toBe('[[unknown attr="value"]]')
   })
 
+  it('convertit [[carousel:slug1,slug2,slug3]] avec l\'attribut slugs', () => {
+    const input = '[[carousel:x-clean-4,x-plorer-75s,x-force-flex-14-60]]'
+    const out = processShortcodes(input)
+    expect(out).toBe('<ProductCarousel slugs="x-clean-4,x-plorer-75s,x-force-flex-14-60" />')
+  })
+
   it('gère plusieurs shortcodes dans le même contenu', () => {
     const input = [
       '[[product:x-clean-4]]',
