@@ -79,8 +79,10 @@ export default async function ProductCarousel({ slugs }: Props) {
           }}
         >
           {p.image && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={p.image} alt={p.imageAlt} loading="lazy" decoding="async" style={{ width: '100%', height: 120, objectFit: 'contain', borderRadius: 'var(--radius-sm)', marginBottom: '.625rem' }} />
+            <div style={{ background: 'var(--bg-raised)', borderRadius: 'var(--radius-sm)', padding: '.75rem', marginBottom: '.625rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={p.image} alt={p.imageAlt} loading="lazy" decoding="async" style={{ maxWidth: '100%', height: 110, objectFit: 'contain' }} />
+            </div>
           )}
           <div style={{ flex: 1 }}>
             <p style={{ margin: '0 0 .2rem', fontSize: '.65rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--accent-1)' }}>
