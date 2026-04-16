@@ -1,24 +1,36 @@
 /**
  * HTML ↔ Markdown converter for TipTap.
  *
- * Bug 2+3 fix strategy:
- * - MDX component blocks (JSX) are extracted BEFORE Markdown→HTML conversion
- *   and stored with placeholder tokens [[MDX_BLOCK_0]], [[MDX_BLOCK_1]], etc.
+ * Preserved-block strategy:
+ * - MDX component blocks (JSX), shortcodes ([[…]]) and GFM tables are
+ *   extracted BEFORE Markdown→HTML conversion and stored with placeholder
+ *   tokens [[MDX_BLOCK_0]], [[MDX_BLOCK_1]], etc.
  * - The placeholders survive the MD→HTML→MD round-trip as plain text.
- * - On save, MDX blocks are reinserted at their original positions.
+ * - On save, blocks are reinserted at their original positions.
  *
  * This means WYSIWYG mode edits standard prose only;
- * MDX components are preserved verbatim.
+ * MDX components, shortcodes and tables are preserved verbatim.
  */
 
-// ─── MDX block extraction ─────────────────────────────────────────────────────
+// ─── Block extraction ────────────────────────────────────────────────────────
 
-const MDX_PLACEHOLDER_RE = /\[\[MDX_BLOCK_(\d+)\]\]/g
+const MDX_PLACEHOLDER_RE = /\[\[MDXBLOCK(\d+)\]\]/g
 
 // Matches self-closing JSX: <ComponentName ... />  or block JSX: <ComponentName>...</ComponentName>
-// Also matches JSX-like "---" separators that are standalone lines between MDX
 const JSX_BLOCK_RE =
   /(?:^|\n)(<[A-Z][a-zA-Z0-9]*(?:\s[^>]*)?\/>|<([A-Z][a-zA-Z0-9]*)(?:\s[^>]*)?>[\s\S]*?<\/\2>)/g
+
+// GFM table: header row + separator row + at least one data row
+const GFM_TABLE_RE =
+  /(?:^|\n)((?:\|[^\n]+\|\s*\n)\|[\s:|-]+\|\s*\n(?:\|[^\n]+\|\s*\n?)+)/g
+
+// Shortcode blocks: [[tip …]]…[[/tip]], [[warning …]]…[[/warning]], etc.
+const SHORTCODE_BLOCK_RE =
+  /(?:^|\n)(\[\[[a-z]+[^\]]*\]\][\s\S]*?\[\[\/[a-z]+\]\])/g
+
+// Inline shortcodes: [[product:slug]], [[stat …]], etc.
+const SHORTCODE_INLINE_RE =
+  /(\[\[[a-z]+(?::[^\]]+|[^\]]*)\]\])/g
 
 export function extractMdxBlocks(markdown: string): {
   cleaned: string
@@ -26,11 +38,19 @@ export function extractMdxBlocks(markdown: string): {
 } {
   const blocks: Record<string, string> = {}
   let idx = 0
-  const cleaned = markdown.replace(JSX_BLOCK_RE, (match, p1) => {
-    const key = `[[MDX_BLOCK_${idx++}]]`
-    blocks[key.slice(2, -2)] = p1.trim()
+
+  function extract(match: string, captured: string): string {
+    const key = `[[MDXBLOCK${idx++}]]`
+    blocks[key.slice(2, -2)] = captured.trim()
     return `\n\n${key}\n\n`
-  })
+  }
+
+  let cleaned = markdown
+  cleaned = cleaned.replace(JSX_BLOCK_RE, (_m, p1) => extract(_m, p1))
+  cleaned = cleaned.replace(GFM_TABLE_RE, (_m, p1) => extract(_m, p1))
+  cleaned = cleaned.replace(SHORTCODE_BLOCK_RE, (_m, p1) => extract(_m, p1))
+  cleaned = cleaned.replace(SHORTCODE_INLINE_RE, (_m, p1) => extract(_m, p1))
+
   return { cleaned: cleaned.trim(), blocks }
 }
 
@@ -54,6 +74,12 @@ export function markdownToHtml(md: string): string {
 
   // Inline code
   html = html.replace(/`([^`]+)`/g, (_, code) => `<code>${escapeHtml(code)}</code>`)
+
+  // GFM tables (convert any remaining — normally extracted, but just in case)
+  html = html.replace(
+    /(?:^|\n)((?:\|[^\n]+\|\s*\n)\|[\s:|-]+\|\s*\n(?:\|[^\n]+\|\s*\n?)+)/gm,
+    (_, table) => gfmTableToHtml(table),
+  )
 
   // Headings
   html = html.replace(/^#{6}\s+(.+)$/gm, '<h6>$1</h6>')
@@ -111,8 +137,7 @@ export function markdownToHtml(md: string): string {
     .map((block) => {
       const t = block.trim()
       if (!t) return ''
-      // Already a block element?
-      if (/^<(h[1-6]|ul|ol|blockquote|pre|hr|img)/.test(t)) return t
+      if (/^<(h[1-6]|ul|ol|blockquote|pre|hr|img|table)/.test(t)) return t
       return `<p>${t.replace(/\n/g, '<br>')}</p>`
     })
     .filter(Boolean)
@@ -124,7 +149,6 @@ export function markdownToHtml(md: string): string {
 // ─── HTML → Markdown (from TipTap) ───────────────────────────────────────────
 
 export function htmlToMarkdown(html: string): string {
-  // Use regex-based serializer (works in browser + Node.js without DOM)
   let md = html
 
   // Pre-process: normalize self-closing tags
@@ -138,6 +162,9 @@ export function htmlToMarkdown(html: string): string {
 
   // Inline code
   md = md.replace(/<code[^>]*>([\s\S]*?)<\/code>/gi, (_, code) => `\`${unescapeHtml(code)}\``)
+
+  // Tables — must come before stripTags
+  md = md.replace(/<table[^>]*>([\s\S]*?)<\/table>/gi, (_, inner) => htmlTableToGfm(inner))
 
   // Headings
   md = md.replace(/<h1[^>]*>([\s\S]*?)<\/h1>/gi, (_, t) => `\n# ${stripTags(t).trim()}\n`)
@@ -192,6 +219,70 @@ export function htmlToMarkdown(html: string): string {
   md = md.replace(/\n{3,}/g, '\n\n').trim()
 
   return md
+}
+
+// ─── Table helpers ───────────────────────────────────────────────────────────
+
+function splitTableRow(row: string): string[] {
+  return row
+    .replace(/^\|/, '')
+    .replace(/\|$/, '')
+    .split('|')
+    .map((c) => c.trim())
+}
+
+function gfmTableToHtml(table: string): string {
+  const lines = table.trim().split('\n').filter((l) => l.trim())
+  if (lines.length < 2) return table
+
+  const headers = splitTableRow(lines[0] ?? '')
+  const rows = lines.slice(2).map((l) => splitTableRow(l))
+
+  let html = '<table><thead><tr>'
+  for (const h of headers) html += `<th>${h}</th>`
+  html += '</tr></thead><tbody>'
+  for (const row of rows) {
+    html += '<tr>'
+    for (const cell of row) html += `<td>${cell}</td>`
+    html += '</tr>'
+  }
+  html += '</tbody></table>'
+  return html
+}
+
+function htmlTableToGfm(inner: string): string {
+  const headerCells = [...inner.matchAll(/<th[^>]*>([\s\S]*?)<\/th>/gi)]
+    .map(([, c]) => stripTags(c ?? '').trim())
+
+  const bodyRows: string[][] = []
+  const trMatches = [...inner.matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/gi)]
+
+  // Skip the header <tr> (first one if it contains <th>)
+  const dataRows = headerCells.length > 0 ? trMatches.slice(1) : trMatches
+  for (const [, rowHtml] of dataRows) {
+    if (!rowHtml) continue
+    // Skip rows that only contain <th> (header row inside tbody)
+    if (/<th[^>]*>/i.test(rowHtml) && !/<td[^>]*>/i.test(rowHtml)) continue
+    const cells = [...rowHtml.matchAll(/<td[^>]*>([\s\S]*?)<\/td>/gi)]
+      .map(([, c]) => stripTags(c ?? '').trim())
+    if (cells.length > 0) bodyRows.push(cells)
+  }
+
+  if (headerCells.length === 0 && bodyRows.length === 0) return stripTags(inner)
+
+  const colCount = Math.max(headerCells.length, bodyRows[0]?.length ?? 0)
+  const heads = headerCells.length > 0
+    ? headerCells
+    : Array.from({ length: colCount }, () => '')
+
+  const headerLine = '| ' + heads.join(' | ') + ' |'
+  const separatorLine = '| ' + heads.map(() => '---').join(' | ') + ' |'
+  const dataLines = bodyRows.map((row) => {
+    const padded = Array.from({ length: colCount }, (_, i) => row[i] ?? '')
+    return '| ' + padded.join(' | ') + ' |'
+  })
+
+  return '\n' + [headerLine, separatorLine, ...dataLines].join('\n') + '\n'
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
