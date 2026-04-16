@@ -1,0 +1,26 @@
+name: X-Clean 2 GZ2271
+brand: Rowenta
+type: Aspirateur laveur
+description: "Aspirateur laveur 2-en-1 compact, modes ECO/MAX, auto-nettoyage en 90 secondes. Solution petit budget avec 35 min d'autonomie."
+price: 189
+affiliateUrl: "https://www.rowenta.be/fr/p/x-clean-2-gz2271e0-nettoyeur-de-sol-aspirateur-2-en-1-35-min-dautonomie-nettoyage-automatique-de-la-brosse/2211401416"
+rating: 7.5
+weight: 4.3 kg
+dimensions: 21×28×115 cm
+noiseLevelDb: 
+suctionPower: 0
+batteryMinutes: 35
+pros:
+  - Prix accessible
+  - Léger en main (1.1 kg)
+  - Auto-nettoyage rapide 90 s
+cons:
+  - Autonomie courte
+  - Puissance limitée
+  - Petit réservoir eau sale
+image1: /images/x-clean-2.jpg
+image1Alt: X-Clean 2 — Aspirateur laveur Rowenta
+image2: /images/x-clean-2.jpg
+image2Alt: X-Clean 2 — Détail tête de nettoyage
+image3: /images/x-clean-2.jpg
+image3Alt: X-Clean 2 — Station de charge
