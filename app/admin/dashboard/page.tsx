@@ -134,6 +134,16 @@ export default async function DashboardPage() {
           <div style={{ marginTop: '0.25rem', fontSize: '0.8125rem', color: C.dim }}>Images, SVG →</div>
         </Link>
 
+        <Link href="/admin/shortcodes" className="dash-card">
+          <div style={{ width: 36, height: 36, borderRadius: 9, background: C.accentSoft, border: `1px solid ${C.accentBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.625rem' }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <path d="M8 6l-5 6 5 6M16 6l5 6-5 6M14 4l-4 16" stroke={C.accent} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          <div style={{ fontWeight: 600, color: C.text, fontSize: '0.9375rem', letterSpacing: '-0.01em' }}>Shortcodes</div>
+          <div style={{ marginTop: '0.25rem', fontSize: '0.8125rem', color: C.dim }}>Produits, encarts →</div>
+        </Link>
+
         {session.role === 'admin' && (
           <Link href="/admin/users" className="dash-card">
             <div style={{ width: 36, height: 36, borderRadius: 9, background: C.accentSoft, border: `1px solid ${C.accentBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.625rem' }}>

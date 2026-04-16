@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import remarkGfm from 'remark-gfm'
 import { getArticleMdx, getAllArticleParams } from '@/lib/content/articles'
+import { processShortcodes } from '@/lib/content/shortcodes'
 import { getAuthor } from '@/lib/data/mock/authors'
 import AuthorByline from '@/components/ui/AuthorByline'
 import AuthorCard from '@/components/ui/AuthorCard'
@@ -184,7 +185,7 @@ export default async function ArticlePage({ params }: PageProps) {
 
   const author = getAuthor(article.authorSlug)
   const frontmatterFaq = (article as ArticleFaq).faq ?? []
-  const processedContent = autoInjectAISummarize(autoProductCTA(article.content), article.title)
+  const processedContent = autoInjectAISummarize(autoProductCTA(processShortcodes(article.content)), article.title)
   // Use frontmatter FAQ if available, otherwise extract from ## FAQ section in body
   const faq = frontmatterFaq.length > 0 ? frontmatterFaq : extractFaqFromBody(processedContent)
   const wordCount = processedContent.split(/\s+/).length

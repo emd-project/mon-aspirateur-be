@@ -675,7 +675,17 @@ export function ContentEditor({ collection, collectionDef, entry, shortcode, onS
       {collectionDef.format === 'mdx' && (
         <div>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-            <label style={{ ...labelStyle, marginBottom: 0 }}>Corps de l&apos;article</label>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+              <label style={{ ...labelStyle, marginBottom: 0 }}>Corps de l&apos;article</label>
+              <a
+                href="/admin/shortcodes"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ fontSize: '0.75rem', color: C.accent, textDecoration: 'none', fontWeight: 500 }}
+              >
+                Voir les shortcodes ↗
+              </a>
+            </div>
             <div style={{ display: 'flex', gap: 4 }}>
               {(['wysiwyg', 'source'] as const).map((mode) => (
                 <button

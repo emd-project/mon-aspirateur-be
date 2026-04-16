@@ -133,6 +133,10 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
                   <NavIcon d="M2 4a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V4zm10 8l-3-3-2 2-2-2-3 3" />
                   Médias
                 </Link>
+                <Link href="/admin/shortcodes" className="sidebar-link">
+                  <NavIcon d="M5 4L2 8l3 4M11 4l3 4-3 4M9 3l-2 10" />
+                  Shortcodes
+                </Link>
                 {session.role === 'admin' && (
                   <Link href="/admin/users" className="sidebar-link">
                     <NavIcon d="M9 6a3 3 0 11-6 0 3 3 0 016 0zm-9 8a6 6 0 0112 0H0zm13-6a3 3 0 11-6 0 3 3 0 016 0zm3 8a6 6 0 00-9-5.2" />
