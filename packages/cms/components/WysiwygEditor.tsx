@@ -6,6 +6,7 @@ import StarterKit from '@tiptap/starter-kit'
 import Link from '@tiptap/extension-link'
 import Underline from '@tiptap/extension-underline'
 import Placeholder from '@tiptap/extension-placeholder'
+import { cleanPastedHTML } from '../lib/paste-cleanup'
 
 // ─── Palette ─────────────────────────────────────────────────────────────────
 const C = {
@@ -86,6 +87,10 @@ export const WysiwygEditor = forwardRef<WysiwygEditorRef, WysiwygEditorProps>(
             `font-family:system-ui,-apple-system,sans-serif`,
           ].join(';'),
         },
+        // Pré-nettoyage du HTML collé : Google Docs / Word / Notion injectent
+        // des `<table>` que TipTap StarterKit aplatit en cellules-paragraphes.
+        // On les convertit en GFM markdown texte avant ingestion.
+        transformPastedHTML: (html: string) => cleanPastedHTML(html),
       },
     })
 
