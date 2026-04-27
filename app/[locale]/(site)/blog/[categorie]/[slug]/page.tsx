@@ -6,6 +6,7 @@ import { MDXRemote } from 'next-mdx-remote/rsc'
 import remarkGfm from 'remark-gfm'
 import { getArticleMdx, getAllArticleParams } from '@/lib/content/articles'
 import { processShortcodes } from '@/lib/content/shortcodes'
+import { extractFaqFromBody, stripFaqSection } from '@/lib/content/faq-extract'
 import { getAuthor } from '@/lib/data/mock/authors'
 import AuthorByline from '@/components/ui/AuthorByline'
 import AuthorCard from '@/components/ui/AuthorCard'
@@ -141,44 +142,6 @@ function extractHeadings(content: string): { id: string; text: string }[] {
   return headings
 }
 
-/** Extract FAQ from body content (## FAQ section with ### questions + paragraph answers) */
-function extractFaqFromBody(content: string): FaqItem[] {
-  const items: FaqItem[] = []
-  const lines = content.split('\n')
-  let inFaqSection = false
-
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i] ?? ''
-
-    // Detect ## FAQ heading
-    if (/^## FAQ\b/i.test(line)) {
-      inFaqSection = true
-      continue
-    }
-
-    // Exit FAQ section on next ## heading
-    if (inFaqSection && /^## /.test(line) && !/^## FAQ\b/i.test(line)) {
-      break
-    }
-
-    if (inFaqSection && /^### /.test(line)) {
-      const question = line.replace(/^### /, '').trim()
-      // Collect paragraph lines until next heading or end
-      const answerLines: string[] = []
-      for (let j = i + 1; j < lines.length; j++) {
-        const nextLine = lines[j] ?? ''
-        if (/^#{1,3} /.test(nextLine)) break
-        answerLines.push(nextLine)
-      }
-      const answer = answerLines.join('\n').trim()
-      if (question && answer) {
-        items.push({ question, answer })
-      }
-    }
-  }
-  return items
-}
-
 export default async function ArticlePage({ params }: PageProps) {
   const { locale, categorie, slug } = await params
   const article = getArticleMdx(locale, categorie, slug)
@@ -187,12 +150,15 @@ export default async function ArticlePage({ params }: PageProps) {
   const author = getAuthor(article.authorSlug)
   const frontmatterFaq = (article as ArticleFaq).faq ?? []
   const processedContent = autoInjectAISummarize(autoProductCTA(processShortcodes(article.content)), article.title)
-  // Use frontmatter FAQ if available, otherwise extract from ## FAQ section in body
+  // Frontmatter FAQ prioritaire, sinon on l'extrait du corps (formats `### Q?` ou `**Q?**`)
   const faq = frontmatterFaq.length > 0 ? frontmatterFaq : extractFaqFromBody(processedContent)
-  const wordCount = processedContent.split(/\s+/).length
-  const headings = extractHeadings(processedContent)
+  // L'accordéon affiche déjà la FAQ en bas — on retire la section `## FAQ` du corps
+  // pour éviter le doublon visuel hérité des imports Google Docs.
+  const bodyContent = faq.length > 0 ? stripFaqSection(processedContent) : processedContent
+  const wordCount = bodyContent.split(/\s+/).length
+  const headings = extractHeadings(bodyContent)
   const articleUrl = `https://www.mon-aspirateur.be/${locale}/blog/${categorie}/${slug}`
-  const finalContent = injectAISummarizeMeta(processedContent, article.title, articleUrl)
+  const finalContent = injectAISummarizeMeta(bodyContent, article.title, articleUrl)
   const [chunk1, chunk2, chunk3] = splitContentIntoChunks(finalContent)
 
   const articleJsonLd = {
