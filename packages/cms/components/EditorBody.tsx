@@ -1,9 +1,12 @@
 'use client'
 
-import type { RefObject } from 'react'
+import type { RefObject, ClipboardEvent } from 'react'
 import { WysiwygEditor, type WysiwygEditorRef } from './WysiwygEditor'
 import { C, inputStyle } from './editor-tokens'
 import { EditorSection } from './EditorSection'
+import { tabbedTextToGfm } from '../lib/source-paste'
+import { htmlToMarkdown } from '../lib/html-md'
+import { cleanPastedHTML } from '../lib/paste-cleanup'
 
 interface Props {
   bodyMode: 'wysiwyg' | 'source'
@@ -19,6 +22,35 @@ interface Props {
 
 export function EditorBody({ bodyMode, onSwitchToWysiwyg, onSwitchToSource, sourceBody, onSourceChange, mdxBlocks, wysiwygHtml, onWysiwygChange, editorRef }: Props) {
   const mdxCount = Object.keys(mdxBlocks).length
+
+  // En mode Source, on intercepte le paste pour convertir un tableau Google Docs
+  // (HTML <table> ou texte tab-séparé) en GFM markdown au moment de l'insertion.
+  function handleSourcePaste(e: ClipboardEvent<HTMLTextAreaElement>) {
+    const html = e.clipboardData.getData('text/html')
+    const plain = e.clipboardData.getData('text/plain')
+
+    let replacement: string | null = null
+    if (html && /<table\b/i.test(html)) {
+      // HTML disponible avec un tableau → on passe par cleanPastedHTML + htmlToMarkdown
+      replacement = htmlToMarkdown(cleanPastedHTML(html))
+    } else if (plain && plain.includes('\t')) {
+      // Plain text tab-séparé → conversion directe en GFM
+      replacement = tabbedTextToGfm(plain)
+    }
+    if (!replacement) return // comportement standard (paste plain)
+
+    e.preventDefault()
+    const target = e.currentTarget
+    const start = target.selectionStart ?? sourceBody.length
+    const end = target.selectionEnd ?? sourceBody.length
+    const next = sourceBody.slice(0, start) + replacement + sourceBody.slice(end)
+    onSourceChange(next)
+    // Replacer le caret après l'insertion
+    requestAnimationFrame(() => {
+      target.selectionStart = target.selectionEnd = start + replacement.length
+    })
+  }
+
   return (
     <EditorSection title="Corps de l&#39;article" defaultOpen>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -37,7 +69,7 @@ export function EditorBody({ bodyMode, onSwitchToWysiwyg, onSwitchToSource, sour
           <WysiwygEditor ref={editorRef} initialHTML={wysiwygHtml} onChange={onWysiwygChange} placeholder="Rédigez le contenu ici…" />
         </>
       ) : (
-        <textarea value={sourceBody} onChange={(e) => onSourceChange(e.target.value)} rows={24} spellCheck={false} style={{ ...inputStyle, resize: 'vertical', fontFamily: 'JetBrains Mono, Consolas, monospace', fontSize: '0.8125rem', lineHeight: 1.6, tabSize: 2 }} placeholder="MDX source…" />
+        <textarea value={sourceBody} onChange={(e) => onSourceChange(e.target.value)} onPaste={handleSourcePaste} rows={24} spellCheck={false} style={{ ...inputStyle, resize: 'vertical', fontFamily: 'JetBrains Mono, Consolas, monospace', fontSize: '0.8125rem', lineHeight: 1.6, tabSize: 2 }} placeholder="MDX source…" />
       )}
     </EditorSection>
   )

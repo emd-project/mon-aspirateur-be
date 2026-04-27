@@ -2,14 +2,16 @@
  * HTML ↔ Markdown converter for TipTap.
  *
  * Preserved-block strategy:
- * - MDX component blocks (JSX), shortcodes ([[…]]) and GFM tables are
- *   extracted BEFORE Markdown→HTML conversion and stored with placeholder
- *   tokens [[MDX_BLOCK_0]], [[MDX_BLOCK_1]], etc.
- * - The placeholders survive the MD→HTML→MD round-trip as plain text.
- * - On save, blocks are reinserted at their original positions.
+ * - MDX component blocks (JSX) et shortcodes ([[…]]) sont extraits AVANT la
+ *   conversion Markdown→HTML et stockés sous forme de placeholders
+ *   [[MDXBLOCK0]], [[MDXBLOCK1]]… Les placeholders survivent au round-trip
+ *   MD→HTML→MD comme texte brut. À la sauvegarde, ils sont réinsérés à leur
+ *   position d'origine.
  *
- * This means WYSIWYG mode edits standard prose only;
- * MDX components, shortcodes and tables are preserved verbatim.
+ * - Les tableaux GFM ne sont PAS extraits : ils transitent par les
+ *   convertisseurs `gfmTableToHtml` / `htmlTableToGfm` ci-dessous, ce qui
+ *   permet à TipTap (avec l'extension Table) de les rendre comme de vrais
+ *   tableaux éditables dans le WYSIWYG.
  */
 
 // ─── Block extraction ────────────────────────────────────────────────────────
@@ -19,10 +21,6 @@ const MDX_PLACEHOLDER_RE = /\[\[MDXBLOCK(\d+)\]\]/g
 // Matches self-closing JSX: <ComponentName ... />  or block JSX: <ComponentName>...</ComponentName>
 const JSX_BLOCK_RE =
   /(?:^|\n)(<[A-Z][a-zA-Z0-9]*(?:\s[^>]*)?\/>|<([A-Z][a-zA-Z0-9]*)(?:\s[^>]*)?>[\s\S]*?<\/\2>)/g
-
-// GFM table: header row + separator row + at least one data row
-const GFM_TABLE_RE =
-  /(?:^|\n)((?:\|[^\n]+\|\s*\n)\|[\s:|-]+\|\s*\n(?:\|[^\n]+\|\s*\n?)+)/g
 
 // Shortcode blocks: [[tip …]]…[[/tip]], [[warning …]]…[[/warning]], etc.
 const SHORTCODE_BLOCK_RE =
@@ -47,7 +45,6 @@ export function extractMdxBlocks(markdown: string): {
 
   let cleaned = markdown
   cleaned = cleaned.replace(JSX_BLOCK_RE, (_m, p1) => extract(_m, p1))
-  cleaned = cleaned.replace(GFM_TABLE_RE, (_m, p1) => extract(_m, p1))
   cleaned = cleaned.replace(SHORTCODE_BLOCK_RE, (_m, p1) => extract(_m, p1))
   cleaned = cleaned.replace(SHORTCODE_INLINE_RE, (_m, p1) => extract(_m, p1))
 

@@ -6,6 +6,10 @@ import StarterKit from '@tiptap/starter-kit'
 import Link from '@tiptap/extension-link'
 import Underline from '@tiptap/extension-underline'
 import Placeholder from '@tiptap/extension-placeholder'
+import { Table } from '@tiptap/extension-table'
+import { TableRow } from '@tiptap/extension-table-row'
+import { TableHeader } from '@tiptap/extension-table-header'
+import { TableCell } from '@tiptap/extension-table-cell'
 import { cleanPastedHTML } from '../lib/paste-cleanup'
 
 // ─── Palette ─────────────────────────────────────────────────────────────────
@@ -75,6 +79,13 @@ export const WysiwygEditor = forwardRef<WysiwygEditorRef, WysiwygEditorProps>(
         Link.configure({ openOnClick: false, HTMLAttributes: { rel: 'noopener noreferrer' } }),
         Underline,
         Placeholder.configure({ placeholder }),
+        // Tables — rendu natif dans le WYSIWYG. Tab/Shift-Tab pour naviguer
+        // entre les cellules. Les tableaux Google Docs collés sont nettoyés
+        // par cleanPastedHTML puis ingérés directement par ces extensions.
+        Table.configure({ resizable: true, HTMLAttributes: { class: 'tt-table' } }),
+        TableRow,
+        TableHeader,
+        TableCell,
       ],
       content: initialHTML,
       onUpdate: ({ editor: e }) => onChange?.(e.getHTML()),
@@ -90,9 +101,10 @@ export const WysiwygEditor = forwardRef<WysiwygEditorRef, WysiwygEditorProps>(
             `font-family:system-ui,-apple-system,sans-serif`,
           ].join(';'),
         },
-        // Pré-nettoyage du HTML collé : Google Docs / Word / Notion injectent
-        // des `<table>` que TipTap StarterKit aplatit en cellules-paragraphes.
-        // On les convertit en GFM markdown texte avant ingestion.
+        // Pré-nettoyage du HTML collé : Google Docs / Word / Notion enveloppent
+        // les tableaux dans des `<style>`, `<meta>` et wrappers `docs-internal-guid`
+        // qu'on retire avant que TipTap ne les ingère. La structure `<table>` reste
+        // intacte et est rendue nativement par l'extension Table.
         transformPastedHTML: (html: string) => cleanPastedHTML(html),
       },
     })
@@ -219,6 +231,47 @@ export const WysiwygEditor = forwardRef<WysiwygEditorRef, WysiwygEditorProps>(
           <div style={{ width: 1, background: C.border, margin: '0 4px', alignSelf: 'stretch' }} />
 
           <ToolbarButton
+            title="Insérer un tableau (3 col × 3 lignes)"
+            onClick={() =>
+              editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
+            }
+          >
+            ▦
+          </ToolbarButton>
+          <ToolbarButton
+            title="Ajouter une ligne en dessous"
+            onClick={() => editor.chain().focus().addRowAfter().run()}
+          >
+            +↓
+          </ToolbarButton>
+          <ToolbarButton
+            title="Ajouter une colonne à droite"
+            onClick={() => editor.chain().focus().addColumnAfter().run()}
+          >
+            +→
+          </ToolbarButton>
+          <ToolbarButton
+            title="Supprimer la ligne"
+            onClick={() => editor.chain().focus().deleteRow().run()}
+          >
+            −↓
+          </ToolbarButton>
+          <ToolbarButton
+            title="Supprimer la colonne"
+            onClick={() => editor.chain().focus().deleteColumn().run()}
+          >
+            −→
+          </ToolbarButton>
+          <ToolbarButton
+            title="Supprimer le tableau"
+            onClick={() => editor.chain().focus().deleteTable().run()}
+          >
+            ▦×
+          </ToolbarButton>
+
+          <div style={{ width: 1, background: C.border, margin: '0 4px', alignSelf: 'stretch' }} />
+
+          <ToolbarButton
             title="Annuler (Ctrl+Z)"
             onClick={() => editor.chain().focus().undo().run()}
           >
@@ -258,6 +311,13 @@ export const WysiwygEditor = forwardRef<WysiwygEditorRef, WysiwygEditorProps>(
           .tiptap pre code { background:none; padding:0; }
           .tiptap hr { border:none; border-top:1px solid ${C.border}; margin:1rem 0; }
           .tiptap p { margin:.5rem 0; }
+          .tiptap table.tt-table { border-collapse:collapse; margin:1rem 0; width:100%; table-layout:fixed; overflow:hidden; }
+          .tiptap table.tt-table td, .tiptap table.tt-table th { border:1px solid ${C.border}; padding:.5rem .625rem; vertical-align:top; min-width:6ch; box-sizing:border-box; position:relative; }
+          .tiptap table.tt-table th { background:${C.surface}; font-weight:700; text-align:left; }
+          .tiptap table.tt-table tr:nth-child(even) td { background:${C.surface}; }
+          .tiptap table.tt-table .selectedCell { background:${C.accentSoft}; }
+          .tiptap table.tt-table .column-resize-handle { position:absolute; right:-2px; top:0; bottom:0; width:4px; background:${C.accent}; pointer-events:none; }
+          .tiptap .tableWrapper { overflow-x:auto; }
         `}</style>
       </div>
     )
