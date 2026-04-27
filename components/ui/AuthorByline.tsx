@@ -3,14 +3,16 @@ import Link from 'next/link'
 type AuthorBylineProps = {
   authorSlug: string
   authorName: string
-  publishedAt: string   // ISO 8601
+  publishedAt?: string   // ISO 8601 — optionnel : un article importé peut ne pas l'avoir
   updatedAt?: string
   readingTimeMin?: number
   locale: string
 }
 
-const formatDate = (iso: string, locale: string): string => {
+const formatDate = (iso: string | undefined, locale: string): string | null => {
+  if (!iso) return null
   const date = new Date(iso)
+  if (isNaN(date.getTime())) return null
   return new Intl.DateTimeFormat(locale === 'fr' ? 'fr-BE' : 'en-GB', {
     year: 'numeric',
     month: 'long',
@@ -26,6 +28,9 @@ export default function AuthorByline({
   readingTimeMin,
   locale,
 }: AuthorBylineProps) {
+  const publishedLabel = formatDate(publishedAt, locale)
+  const updatedLabel = updatedAt && updatedAt !== publishedAt ? formatDate(updatedAt, locale) : null
+
   return (
     <div
       style={{
@@ -47,19 +52,20 @@ export default function AuthorByline({
         </Link>
       </span>
 
-      <span aria-hidden="true">·</span>
+      {publishedLabel && (
+        <>
+          <span aria-hidden="true">·</span>
+          <time dateTime={publishedAt}>
+            {locale === 'fr' ? 'Publié le' : 'Published'} {publishedLabel}
+          </time>
+        </>
+      )}
 
-      <time dateTime={publishedAt}>
-        {locale === 'fr' ? 'Publié le' : 'Published'}{' '}
-        {formatDate(publishedAt, locale)}
-      </time>
-
-      {updatedAt && updatedAt !== publishedAt && (
+      {updatedLabel && (
         <>
           <span aria-hidden="true">·</span>
           <time dateTime={updatedAt}>
-            {locale === 'fr' ? 'Mis à jour le' : 'Updated'}{' '}
-            {formatDate(updatedAt, locale)}
+            {locale === 'fr' ? 'Mis à jour le' : 'Updated'} {updatedLabel}
           </time>
         </>
       )}
