@@ -9,14 +9,17 @@ import Placeholder from '@tiptap/extension-placeholder'
 import { cleanPastedHTML } from '../lib/paste-cleanup'
 
 // ─── Palette ─────────────────────────────────────────────────────────────────
+// Alignée sur editor-tokens.ts pour la cohérence visuelle avec le reste du CMS.
 const C = {
-  bg: '#0d0d0d',
-  surface: '#111111',
-  border: '#222222',
-  text: '#e5e5e5',
-  muted: '#666666',
-  accent: '#ff3d57',
-  toolbar: '#161616',
+  bg: '#FFFFFF',
+  surface: '#FAF7F2',
+  border: '#EDE5D8',
+  text: '#1A1714',
+  muted: '#6B5E54',
+  accent: '#C4622D',
+  accentSoft: 'rgba(196,98,45,.1)',
+  toolbar: '#FAF7F2',
+  codeBg: '#F0EBE3',
 }
 
 export interface WysiwygEditorRef {
@@ -54,7 +57,7 @@ const ToolbarButton = ({
       borderRadius: 5,
       border: 'none',
       background: active ? C.accent : 'transparent',
-      color: active ? '#fff' : C.text,
+      color: active ? '#fff' : C.muted,
       cursor: 'pointer',
       fontSize: '0.8125rem',
       fontWeight: 600,
@@ -244,14 +247,14 @@ export const WysiwygEditor = forwardRef<WysiwygEditorRef, WysiwygEditorProps>(
           .tiptap h1 { font-size:1.75rem; font-weight:700; margin:.75rem 0 .5rem; color:${C.text}; }
           .tiptap h2 { font-size:1.375rem; font-weight:700; margin:.75rem 0 .5rem; color:${C.text}; }
           .tiptap h3 { font-size:1.125rem; font-weight:600; margin:.75rem 0 .5rem; color:${C.text}; }
-          .tiptap strong { font-weight:700; }
+          .tiptap strong { font-weight:700; color:${C.text}; }
           .tiptap a { color:${C.accent}; text-decoration:underline; }
           .tiptap ul { padding-left:1.5rem; list-style:disc; }
           .tiptap ol { padding-left:1.5rem; list-style:decimal; }
           .tiptap li { margin:.25rem 0; }
-          .tiptap blockquote { border-left:3px solid ${C.accent}; margin:0; padding:.5rem 1rem; color:#aaa; }
-          .tiptap code { background:#1a1a1a; padding:.125rem .375rem; border-radius:4px; font-family:monospace; font-size:.875em; }
-          .tiptap pre { background:#1a1a1a; padding:.75rem 1rem; border-radius:6px; overflow-x:auto; }
+          .tiptap blockquote { border-left:3px solid ${C.accent}; margin:0; padding:.5rem 1rem; color:${C.muted}; }
+          .tiptap code { background:${C.codeBg}; padding:.125rem .375rem; border-radius:4px; font-family:monospace; font-size:.875em; color:${C.text}; }
+          .tiptap pre { background:${C.codeBg}; padding:.75rem 1rem; border-radius:6px; overflow-x:auto; color:${C.text}; }
           .tiptap pre code { background:none; padding:0; }
           .tiptap hr { border:none; border-top:1px solid ${C.border}; margin:1rem 0; }
           .tiptap p { margin:.5rem 0; }
