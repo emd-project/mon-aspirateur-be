@@ -10,7 +10,7 @@ describe('extractMdxBlocks', () => {
     expect(blocks['MDXBLOCK0']).toBe('<ProductCard slug="x" />')
   })
 
-  it('extracts GFM tables as preserved blocks', () => {
+  it('does NOT extract GFM tables — they round-trip via gfmTableToHtml/htmlTableToGfm', () => {
     const md = [
       'Intro text',
       '',
@@ -22,11 +22,9 @@ describe('extractMdxBlocks', () => {
       'After table',
     ].join('\n')
     const { cleaned, blocks } = extractMdxBlocks(md)
-    expect(cleaned).toContain('[[MDXBLOCK0]]')
-    expect(cleaned).not.toContain('| Model')
-    const block = blocks['MDXBLOCK0'] ?? ''
-    expect(block).toContain('| Model | Price |')
-    expect(block).toContain('| X-Clean 4 | 249 € |')
+    expect(Object.keys(blocks)).toHaveLength(0)
+    expect(cleaned).toContain('| Model | Price |')
+    expect(cleaned).toContain('| X-Clean 4 | 249 € |')
   })
 
   it('extracts shortcode blocks [[tip …]]…[[/tip]]', () => {
@@ -90,7 +88,7 @@ describe('htmlToMarkdown — tables', () => {
 })
 
 describe('table round-trip', () => {
-  it('GFM → extract → reinsert preserves table verbatim', () => {
+  it('GFM → markdownToHtml → htmlToMarkdown preserves table data and surrounding prose', () => {
     const original = [
       'Introduction.',
       '',
@@ -103,6 +101,7 @@ describe('table round-trip', () => {
     ].join('\n')
 
     const { cleaned, blocks } = extractMdxBlocks(original)
+    expect(Object.keys(blocks)).toHaveLength(0) // tables ne sont plus extraites
     const html = markdownToHtml(cleaned)
     const backMd = htmlToMarkdown(html)
     const final = reinsertMdxBlocks(backMd, blocks)
