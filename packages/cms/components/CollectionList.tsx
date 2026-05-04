@@ -86,11 +86,12 @@ export function CollectionList({
   const [page, setPage] = useState(1)
   const [deleting, setDeleting] = useState<string | null>(null)
   const [toast, setToast] = useState<string | null>(null)
+  const [deletedPaths, setDeletedPaths] = useState<Set<string>>(new Set())
 
   const isReadOnly = collectionDef.readOnly ?? false
 
   const filtered = useMemo(() => {
-    let list = [...entries]
+    let list = entries.filter(e => !deletedPaths.has(e.filePath))
     if (search.trim()) {
       const q = search.toLowerCase()
       list = list.filter(
@@ -110,7 +111,7 @@ export function CollectionList({
       return sortDir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va)
     })
     return list
-  }, [entries, search, filter, sortKey, sortDir])
+  }, [entries, deletedPaths, search, filter, sortKey, sortDir])
 
   const totalLive = entries.filter((e) => !e.frontmatter.draft || e.frontmatter.draft === 'false').length
   const totalDraft = entries.filter((e) => e.frontmatter.draft === true || e.frontmatter.draft === 'true').length
@@ -134,7 +135,8 @@ export function CollectionList({
         body: JSON.stringify({ filePath: entry.filePath, sha: entry.sha }),
       })
       if (!res.ok) throw new Error('Erreur de suppression')
-      setToast('Article supprimé')
+      setDeletedPaths(prev => new Set([...prev, entry.filePath]))
+      setToast('Entrée supprimée')
       onDelete?.(entry)
     } catch (err) {
       setToast(String(err instanceof Error ? err.message : err))
@@ -200,7 +202,7 @@ export function CollectionList({
                 letterSpacing: '-0.01em',
               }}
             >
-              + Nouvel article
+              + Nouveau
             </Link>
           </>
         )}
