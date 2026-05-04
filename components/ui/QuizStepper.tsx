@@ -2,7 +2,7 @@
 
 import { useReducer } from 'react'
 import { useTranslations } from 'next-intl'
-import { getTopPicksByCategory } from '@/lib/data/brands'
+import { getProductsByBudget } from '@/lib/data/brands'
 import type { ProductCategory } from '@/lib/data/types'
 
 type QuizState = {
@@ -93,7 +93,8 @@ export default function QuizStepper() {
 
   if (state.done) {
     const category = recommendCategory(state)
-    const results  = getTopPicksByCategory(category).slice(0, 3)
+    const budget = state.budget ?? 'moins200'
+    const results = getProductsByBudget(category, budget)
     const catLabel: Record<ProductCategory, string> = {
       balai: 'Aspirateurs balai', robot: 'Robots aspirateurs',
       traineau: 'Aspirateurs traîneau', laveur: 'Laveurs de sol', accessoires: 'Accessoires',
@@ -108,29 +109,38 @@ export default function QuizStepper() {
           Pour vous, on recommande les <strong>{catLabel[category]}</strong>.
         </p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {results.map(p => (
-            <div key={p.name} className="card" style={{ padding: '1rem 1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '.75rem' }}>
-              <div>
-                <div style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)', marginBottom: '.25rem' }}>
-                  {p.name}
+          {results.map(p => {
+            const href = p.affiliateUrl !== '#'
+              ? p.affiliateUrl
+              : `https://www.amazon.fr/s?k=${encodeURIComponent(`${p.brandName} ${p.name}`)}`
+            return (
+              <div key={p.name} className="card" style={{ padding: '1rem 1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '.75rem' }}>
+                <div>
+                  <div style={{ fontSize: '.75rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: '.2rem' }}>
+                    {p.brandName}
+                  </div>
+                  <div style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)', marginBottom: '.25rem' }}>
+                    {p.name}
+                  </div>
+                  <div style={{ fontSize: '.85rem', color: 'var(--text-secondary)' }}>{p.highlight}</div>
                 </div>
-                <div style={{ fontSize: '.85rem', color: 'var(--text-secondary)' }}>{p.highlight}</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexShrink: 0 }}>
+                  <span style={{ fontFamily: 'var(--font-playfair)', fontWeight: 900, fontSize: '1.25rem', color: 'var(--accent-1)' }}>
+                    {p.priceEur} €
+                  </span>
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer sponsored"
+                    className="btn btn-primary"
+                    style={{ fontSize: '.85rem', padding: '.5rem 1rem' }}
+                  >
+                    Voir sur Amazon →
+                  </a>
+                </div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexShrink: 0 }}>
-                <span style={{ fontFamily: 'var(--font-playfair)', fontWeight: 900, fontSize: '1.25rem', color: 'var(--accent-1)' }}>
-                  {p.priceEur} €
-                </span>
-                <a
-                  href={p.affiliateUrl}
-                  rel="noopener noreferrer sponsored"
-                  className="btn btn-primary"
-                  style={{ fontSize: '.85rem', padding: '.5rem 1rem' }}
-                >
-                  Voir →
-                </a>
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
         <button
           type="button"
