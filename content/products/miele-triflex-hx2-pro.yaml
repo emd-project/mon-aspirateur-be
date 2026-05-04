@@ -1,0 +1,18 @@
+name: Miele Triflex HX2 Pro
+brandSlug: miele
+brand: Miele
+type: Aspirateur balai
+description: "3 configurations (balai/aspirateur/mini), batterie remplaçable en 1 clic. 60 dB, 11 000 Pa."
+price: 499
+affiliateUrl: "#"
+rating: 8.4
+weight: 3.8 kg
+noiseLevelDb: 60
+batteryMinutes: 120
+pros:
+  - 3 configurations en 1
+  - Batterie remplaçable
+  - Qualité de construction Miele
+cons:
+  - Prix élevé pour un balai
+  - Lourd par rapport aux concurrents

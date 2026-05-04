@@ -5,6 +5,17 @@ export const cmsConfig: CmsConfig = {
   repo: 'emd-project/mon-aspirateur-be',
   branch: 'claude/analyze-requirements-Ob4Ae',
   collections: {
+    brands: {
+      label: 'Marques',
+      path: 'content/brands',
+      format: 'yaml',
+      flatPath: true,
+      fields: {
+        name: { type: 'text', label: 'Nom de la marque', required: true },
+        country: { type: 'text', label: 'Pays (ex: FR/DE, CN, US…)' },
+        positioning: { type: 'textarea', label: 'Positionnement (1 phrase)' },
+      },
+    },
     articles: {
       label: 'Articles',
       path: 'content/articles',
@@ -79,7 +90,26 @@ export const cmsConfig: CmsConfig = {
       csvEnabled: true,
       fields: {
         name: { type: 'text', label: 'Nom du produit', required: true },
-        brand: { type: 'text', label: 'Marque' },
+        brandSlug: {
+          type: 'select',
+          label: 'Marque',
+          options: [
+            { label: 'Rowenta', value: 'rowenta' },
+            { label: 'Dyson', value: 'dyson' },
+            { label: 'Dreame', value: 'dreame' },
+            { label: 'Roborock', value: 'roborock' },
+            { label: 'DJI', value: 'dji' },
+            { label: 'Tineco', value: 'tineco' },
+            { label: 'iRobot', value: 'irobot' },
+            { label: 'Ecovacs', value: 'ecovacs' },
+            { label: 'Miele', value: 'miele' },
+            { label: 'Bosch', value: 'bosch' },
+            { label: 'Bissell', value: 'bissell' },
+            { label: 'Samsung', value: 'samsung' },
+            { label: 'Xiaomi', value: 'xiaomi' },
+          ],
+        },
+        brand: { type: 'text', label: 'Marque (texte libre)' },
         type: { type: 'text', label: 'Type (ex: balai, robot, traîneau…)' },
         description: { type: 'textarea', label: 'Description courte' },
         price: { type: 'number', label: 'Prix indicatif (€)' },

@@ -1,0 +1,17 @@
+name: Bosch GS50 MoveOn
+brandSlug: bosch
+brand: Bosch
+type: Aspirateur traîneau
+description: "Compact, léger (3,5 kg), bon suceur à main intégré — entrée de gamme sérieuse. 700 W, filtre EPA."
+price: 199
+affiliateUrl: "#"
+rating: 7.5
+weight: 3.5 kg
+noiseLevelDb: 74
+pros:
+  - Très compact et léger
+  - Suceur main intégré
+  - Rapport qualité/prix solide
+cons:
+  - Pas de HEPA vrai
+  - Puissance modeste 700 W

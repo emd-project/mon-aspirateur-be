@@ -1,0 +1,17 @@
+name: Deebot T30 Pro Omni
+brandSlug: ecovacs
+brand: Ecovacs
+type: Robot aspirateur
+description: "Serpillère à vibration 6000 RPM — les taches séchées n'ont qu'à bien se tenir. 11 000 Pa."
+price: 799
+affiliateUrl: "#"
+rating: 8.7
+noiseLevelDb: 66
+batteryMinutes: 180
+pros:
+  - Serpillère vibration 6000 RPM
+  - 11 000 Pa aspiration
+  - Station tout-en-un
+cons:
+  - Prix 799 €
+  - App parfois instable

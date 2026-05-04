@@ -6,6 +6,7 @@ export interface CmsProduct {
   slug: string
   name: string
   brand: string
+  brandSlug: string
   category: ProductCategory
   priceEur: number
   rating: number
@@ -64,6 +65,7 @@ export function getAllCmsProducts(): CmsProduct[] {
         slug: file.replace('.yaml', ''),
         name: String(data.name ?? ''),
         brand: String(data.brand ?? ''),
+        brandSlug: String(data.brandSlug ?? ''),
         category,
         priceEur,
         rating: isNaN(Number(data.rating)) ? 0 : Number(data.rating),
