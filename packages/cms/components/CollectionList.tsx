@@ -135,7 +135,7 @@ export function CollectionList({
   }
 
   async function handleDelete(entry: EntryRow) {
-    if (!isAdmin || isReadOnly) return
+    if (isReadOnly) return
     if (!window.confirm(`Supprimer "${entry.frontmatter.title ?? entry.frontmatter.name ?? entry.slug}" ?`)) return
     setDeleting(entry.slug)
     try {
@@ -342,10 +342,10 @@ export function CollectionList({
                     </td>
                   )}
                   <td style={{ padding: '0.875rem', textAlign: 'right', whiteSpace: 'nowrap' }}>
-                    <Link href={editPath} style={{ color: C.accent, fontSize: '0.8125rem', textDecoration: 'none', marginRight: isAdmin && !isReadOnly ? '0.875rem' : 0, fontWeight: 500 }}>
+                    <Link href={editPath} style={{ color: C.accent, fontSize: '0.8125rem', textDecoration: 'none', marginRight: !isReadOnly ? '0.875rem' : 0, fontWeight: 500 }}>
                       Modifier →
                     </Link>
-                    {isAdmin && !isReadOnly && (
+                    {!isReadOnly && (
                       <button
                         type="button"
                         disabled={deleting === entry.slug}
