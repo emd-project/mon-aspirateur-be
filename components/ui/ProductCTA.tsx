@@ -1,3 +1,16 @@
+function ctaLabel(url: string): string {
+  if (!url || url === '#') return 'Voir le produit'
+  try {
+    const host = new URL(url).hostname.replace(/^www\./, '')
+    if (host.includes('amazon')) return 'Voir sur Amazon'
+    const parts = host.split('.')
+    const domain = parts.length >= 2 ? parts[parts.length - 2] : host
+    return `Voir sur ${domain.charAt(0).toUpperCase() + domain.slice(1)}`
+  } catch {
+    return 'Voir le produit'
+  }
+}
+
 type ProductCTAProps = {
   name: string
   brand: string
@@ -109,7 +122,7 @@ export default function ProductCTA({
           width: 'fit-content',
         }}
       >
-        Voir sur Amazon →
+        {ctaLabel(affiliateUrl)} →
       </a>
     </article>
   )

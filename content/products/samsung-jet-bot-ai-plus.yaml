@@ -4,7 +4,7 @@ brand: Samsung
 type: Robot aspirateur
 description: "Reconnaissance d'objets par caméra, station Clean Station, mapping précis. LiDAR 3D, 30 W."
 price: 799
-affiliateUrl: "#"
+affiliateUrl: "https://www.amazon.com.be/dp/B09FK41Z3G"
 rating: 8.5
 noiseLevelDb: 64
 batteryMinutes: 100

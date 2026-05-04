@@ -4,7 +4,7 @@ brand: Xiaomi
 type: Robot aspirateur
 description: "LiDAR + station autovidage sous les 500 € — difficile à battre. 4 000 Pa, serpillère basique."
 price: 499
-affiliateUrl: "#"
+affiliateUrl: "https://www.amazon.com.be/dp/B0CKXYKD2H"
 rating: 8.2
 noiseLevelDb: 65
 batteryMinutes: 150

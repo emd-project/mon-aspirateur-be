@@ -13,7 +13,7 @@ const ARTICLE_GROUPS: FieldGroup[] = [
 ]
 
 const PRODUCT_GROUPS: FieldGroup[] = [
-  { title: 'Informations', keys: ['name', 'brand', 'type', 'description'], column: 'main', defaultOpen: true },
+  { title: 'Informations', keys: ['name', 'brandSlug', 'brand', 'type', 'description'], column: 'main', defaultOpen: true },
   { title: 'Spécifications', keys: ['price', 'rating', 'weight', 'dimensions', 'noiseLevelDb', 'suctionPower', 'batteryMinutes'], column: 'main', accent: '#2B7A5F' },
   { title: 'Évaluation', keys: ['pros', 'cons'], column: 'main', accent: '#6B5E54' },
   { title: 'Commerce', keys: ['affiliateUrl'], column: 'side', accent: '#C49A2D' },
