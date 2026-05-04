@@ -430,3 +430,51 @@ export function getTopPicksByCategory(category: ProductCategory): BrandProductWi
     )
     .sort((a, b) => b.score - a.score)
 }
+
+type BudgetKey = 'moins200' | '200_400' | '400_700' | 'plus700'
+
+const BUDGET_MAX: Record<BudgetKey, number> = {
+  'moins200': 200,
+  '200_400':  400,
+  '400_700':  700,
+  'plus700':  Infinity,
+}
+const BUDGET_MIN: Record<BudgetKey, number> = {
+  'moins200': 0,
+  '200_400':  200,
+  '400_700':  400,
+  'plus700':  700,
+}
+
+/**
+ * Returns up to `limit` products in `category` that fit the budget,
+ * sorted by score. If the budget range yields fewer than `limit` results,
+ * fills with the closest-priced products from the same category.
+ */
+export function getProductsByBudget(
+  category: ProductCategory,
+  budget: BudgetKey,
+  limit = 3
+): BrandProductWithBrand[] {
+  const all = brands
+    .flatMap(b =>
+      b.topProducts
+        .filter(p => p.category === category)
+        .map(p => ({ ...p, brandName: b.name }))
+    )
+    .sort((a, b) => b.score - a.score)
+
+  const min = BUDGET_MIN[budget]
+  const max = BUDGET_MAX[budget]
+  const inRange = all.filter(p => p.priceEur >= min && p.priceEur <= max)
+
+  if (inRange.length >= limit) return inRange.slice(0, limit)
+
+  // Fill remaining slots with nearest-priced products outside the range
+  const midpoint = max === Infinity ? min + 300 : (min + max) / 2
+  const extras = all
+    .filter(p => p.priceEur < min || p.priceEur > max)
+    .sort((a, b) => Math.abs(a.priceEur - midpoint) - Math.abs(b.priceEur - midpoint))
+
+  return [...inRange, ...extras].slice(0, limit)
+}
