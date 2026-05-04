@@ -125,6 +125,131 @@ export async function deleteFile(
   if (!res.ok) throw new Error(`GitHub deleteFile failed: ${res.status} ${await res.text()}`)
 }
 
+// ─── Git low-level helpers (used by deploy) ──────────────────────────────────
+
+export interface BranchInfo {
+  commitSha: string
+  treeSha: string
+  date: string
+}
+
+export async function getBranchInfo(
+  repo: string,
+  branch: string,
+  token?: string
+): Promise<BranchInfo> {
+  const res = await fetch(`${GITHUB_API}/repos/${repo}/branches/${encodeURIComponent(branch)}`, {
+    headers: headers(getToken(token)),
+    next: { revalidate: 0 },
+  })
+  if (!res.ok) throw new Error(`GitHub getBranchInfo failed: ${res.status} ${await res.text()}`)
+  const data = await res.json() as { commit: { sha: string; commit: { tree: { sha: string }; committer: { date: string } } } }
+  return {
+    commitSha: data.commit.sha,
+    treeSha: data.commit.commit.tree.sha,
+    date: data.commit.commit.committer.date,
+  }
+}
+
+export interface TreeEntry {
+  path: string
+  mode: '100644' | '100755' | '040000' | '160000' | '120000'
+  type: 'blob' | 'tree' | 'commit'
+  sha: string | null
+}
+
+export async function getTreeRecursive(
+  repo: string,
+  treeSha: string,
+  token?: string
+): Promise<TreeEntry[]> {
+  const res = await fetch(
+    `${GITHUB_API}/repos/${repo}/git/trees/${treeSha}?recursive=1`,
+    { headers: headers(getToken(token)), next: { revalidate: 0 } }
+  )
+  if (!res.ok) throw new Error(`GitHub getTreeRecursive failed: ${res.status} ${await res.text()}`)
+  const data = await res.json() as { tree: TreeEntry[]; truncated?: boolean }
+  return data.tree
+}
+
+/** Strip leading slashes and collapse double slashes to avoid 422 from git/trees */
+function sanitizePath(path: string): string {
+  return path.replace(/^\/+/, '').replace(/\/\/+/g, '/').replace(/\/$/, '')
+}
+
+export async function createTree(
+  repo: string,
+  baseTreeSha: string,
+  entries: Array<{ path: string; sha: string | null; mode?: TreeEntry['mode'] }>,
+  token?: string
+): Promise<string> {
+  const tree = entries.map((e) => ({
+    path: sanitizePath(e.path),
+    mode: e.mode ?? '100644',
+    type: 'blob' as const,
+    sha: e.sha,
+  }))
+
+  const res = await fetch(`${GITHUB_API}/repos/${repo}/git/trees`, {
+    method: 'POST',
+    headers: headers(getToken(token)),
+    body: JSON.stringify({ base_tree: baseTreeSha, tree }),
+  })
+  if (!res.ok) throw new Error(`git/trees failed: ${res.status} ${await res.text()}`)
+  const data = await res.json() as { sha: string }
+  return data.sha
+}
+
+export async function createCommit(
+  repo: string,
+  message: string,
+  treeSha: string,
+  parentSha: string,
+  token?: string
+): Promise<string> {
+  const res = await fetch(`${GITHUB_API}/repos/${repo}/git/commits`, {
+    method: 'POST',
+    headers: headers(getToken(token)),
+    body: JSON.stringify({ message, tree: treeSha, parents: [parentSha] }),
+  })
+  if (!res.ok) throw new Error(`GitHub createCommit failed: ${res.status} ${await res.text()}`)
+  const data = await res.json() as { sha: string }
+  return data.sha
+}
+
+export async function updateRef(
+  repo: string,
+  branch: string,
+  commitSha: string,
+  force = false,
+  token?: string
+): Promise<void> {
+  const res = await fetch(
+    `${GITHUB_API}/repos/${repo}/git/refs/heads/${encodeURIComponent(branch)}`,
+    {
+      method: 'PATCH',
+      headers: headers(getToken(token)),
+      body: JSON.stringify({ sha: commitSha, force }),
+    }
+  )
+  if (!res.ok) throw new Error(`GitHub updateRef failed: ${res.status} ${await res.text()}`)
+}
+
+export async function getAheadBy(
+  repo: string,
+  base: string,
+  head: string,
+  token?: string
+): Promise<number> {
+  const res = await fetch(
+    `${GITHUB_API}/repos/${repo}/compare/${encodeURIComponent(base)}...${encodeURIComponent(head)}`,
+    { headers: headers(getToken(token)), next: { revalidate: 0 } }
+  )
+  if (!res.ok) return 0
+  const data = await res.json() as { ahead_by: number }
+  return data.ahead_by
+}
+
 export async function uploadMedia(
   repo: string,
   path: string,
