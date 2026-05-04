@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import QuizStepper from '@/components/ui/QuizStepper'
-
-export const dynamic = 'force-static'
+import { getAllCmsProducts } from '@/lib/content/products'
 
 type Props = { params: Promise<{ locale: string }> }
 
@@ -15,6 +14,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function QuizPage({ params }: Props) {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'quiz' })
+  const cmsProducts = getAllCmsProducts()
 
   return (
     <main id="main-content">
@@ -28,7 +28,7 @@ export default async function QuizPage({ params }: Props) {
           <p className="typo-lead">{t('subtitle')}</p>
         </header>
 
-        <QuizStepper />
+        <QuizStepper cmsProducts={cmsProducts} />
 
       </div>
     </main>
