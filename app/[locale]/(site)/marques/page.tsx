@@ -1,11 +1,9 @@
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
-import { brands } from '@/lib/data/brands'
-import { categoryMeta } from '@/lib/data/comparateur'
-import type { ProductCategory } from '@/lib/data/types'
+import { getAllBrands } from '@/lib/content/brands'
 
-export const dynamic = 'force-static'
+export const revalidate = 3600
 
 type Props = { params: Promise<{ locale: string }> }
 
@@ -19,6 +17,7 @@ export default async function MarquesPage({ params }: Props) {
   const { locale } = await params
   const t    = await getTranslations({ locale, namespace: 'marques' })
   const base = `/${locale}`
+  const brands = getAllBrands().sort((a, b) => a.name.localeCompare(b.name))
 
   return (
     <main id="main-content" style={{ maxWidth: '1200px', margin: '0 auto', padding: '3rem 1.5rem' }}>
@@ -53,17 +52,9 @@ export default async function MarquesPage({ params }: Props) {
                 </span>
               </div>
 
-              <p style={{ fontSize: '.875rem', color: 'var(--text-secondary)', lineHeight: 1.55, margin: '0 0 1rem' }}>
+              <p style={{ fontSize: '.875rem', color: 'var(--text-secondary)', lineHeight: 1.55, margin: 0 }}>
                 {brand.positioning}
               </p>
-
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.4rem' }}>
-                {brand.categories.map((cat: ProductCategory) => (
-                  <span key={cat} className={`badge badge-${cat}`}>
-                    {categoryMeta[cat].label}
-                  </span>
-                ))}
-              </div>
             </article>
           </Link>
         ))}

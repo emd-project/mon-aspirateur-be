@@ -1,0 +1,18 @@
+name: Dyson V12 Detect Slim
+brandSlug: dyson
+brand: Dyson
+type: Aspirateur balai
+description: "1,5 kg — le plus léger avec laser, idéal deux étages. Moteur Hyperdymium, aspiration 150 AW."
+price: 499
+affiliateUrl: "#"
+rating: 7.8
+weight: 1.5 kg
+noiseLevelDb: 76
+batteryMinutes: 60
+pros:
+  - Ultra-léger 1,5 kg
+  - Laser sur parquet
+  - Compact et maniable
+cons:
+  - Bac de petite capacité
+  - Prix élevé

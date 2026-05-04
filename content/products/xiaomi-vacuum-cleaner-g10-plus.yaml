@@ -1,0 +1,18 @@
+name: Xiaomi Vacuum Cleaner G10 Plus
+brandSlug: xiaomi
+brand: Xiaomi
+type: Aspirateur balai
+description: "120 000 Pa, 60 min, filtre HEPA — sans chichi, fait le job. Léger 1,45 kg, 5 modes."
+price: 199
+affiliateUrl: "#"
+rating: 7.3
+weight: 1.45 kg
+noiseLevelDb: 72
+batteryMinutes: 60
+pros:
+  - Prix très accessible 199 €
+  - HEPA vrai
+  - Léger 1,45 kg
+cons:
+  - Finitions plastique basique
+  - Bruit 72 dB honorable
