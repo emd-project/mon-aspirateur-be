@@ -130,6 +130,11 @@ export interface BatchFileChange {
   content: string
 }
 
+/** Strip leading/trailing slashes and collapse double slashes — GitHub git/trees rejects malformed path components */
+function sanitizeTreePath(path: string): string {
+  return path.replace(/^\/+/, '').replace(/\/\/+/g, '/').replace(/\/$/, '')
+}
+
 export async function batchPutFiles(
   repo: string,
   branch: string,
@@ -142,7 +147,7 @@ export async function batchPutFiles(
   const h = headers(tok)
 
   const refRes = await fetch(
-    `${GITHUB_API}/repos/${repo}/git/ref/heads/${branch}`,
+    `${GITHUB_API}/repos/${repo}/git/refs/heads/${branch}`,
     { headers: h }
   )
   if (!refRes.ok) throw new Error(`git/ref failed: ${refRes.status}`)
@@ -158,7 +163,7 @@ export async function batchPutFiles(
   const baseTreeSha = commitData.tree.sha
 
   const treeEntries = files.map((f) => ({
-    path: f.path,
+    path: sanitizeTreePath(f.path),
     mode: '100644' as const,
     type: 'blob' as const,
     content: f.content,
