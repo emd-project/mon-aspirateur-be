@@ -18,7 +18,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: t('title', { year }),
     description: t('description', { year }),
-    alternates: { canonical: `/${locale}/blog` },
+    alternates: {
+      canonical: `/${locale}/blog`,
+      languages: { fr: '/fr/blog', en: '/en/blog' },
+    },
   }
 }
 
