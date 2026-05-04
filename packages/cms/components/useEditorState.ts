@@ -3,11 +3,20 @@ import type { CollectionDef, ContentEntry } from '../types'
 import { titleToSlug, importMarkdownFile } from '../lib/parser'
 import { extractMdxBlocks, reinsertMdxBlocks, markdownToHtml, htmlToMarkdown } from '../lib/html-md'
 import type { WysiwygEditorRef } from './WysiwygEditor'
-import { getPendingChanges, addPendingChange } from './editor-pending'
+import { getPendingChanges, addPendingChange, clearPendingChanges } from './editor-pending'
 
 interface Opts {
   collection: string; collectionDef: CollectionDef; entry?: ContentEntry
   onSaved?: (entry: ContentEntry) => void
+}
+
+function buildFilePath(collectionPath: string, isFlatPath: boolean, isMdx: boolean, slug: string, locale: unknown, categorySlug: unknown): string {
+  const ext = isMdx ? '.mdx' : '.yaml'
+  if (isFlatPath) return `${collectionPath}/${slug}${ext}`
+  // Use || (not ??) so empty strings also fall back to defaults
+  const loc = String(locale || 'fr')
+  const cat = String(categorySlug || 'guide-achat')
+  return `${collectionPath}/${loc}/${cat}/${slug}.mdx`
 }
 
 export function useEditorState({ collection, collectionDef, entry, onSaved }: Opts) {
@@ -31,16 +40,13 @@ export function useEditorState({ collection, collectionDef, entry, onSaved }: Op
 
   useEffect(() => {
     const pending = getPendingChanges()
-    const ext = isMdx ? '.mdx' : '.yaml'
     const currentSlug = entry?.slug ?? slug
     if (!currentSlug) return
-    let expectedPath: string
-    if (isFlatPath) { expectedPath = `${collectionDef.path}/${currentSlug}${ext}` }
-    else {
-      const locale = String(entry?.frontmatter?.locale ?? fields.locale ?? 'fr')
-      const catSlug = String(entry?.frontmatter?.categorySlug ?? fields.categorySlug ?? 'guide-achat')
-      expectedPath = `${collectionDef.path}/${locale}/${catSlug}/${currentSlug}.mdx`
-    }
+    const expectedPath = buildFilePath(
+      collectionDef.path, isFlatPath, isMdx, currentSlug,
+      entry?.frontmatter?.locale ?? fields.locale,
+      entry?.frontmatter?.categorySlug ?? fields.categorySlug,
+    )
     const match = pending.find((c) => c.filePath === expectedPath)
     if (match) {
       setFields(match.frontmatter)
@@ -69,12 +75,18 @@ export function useEditorState({ collection, collectionDef, entry, onSaved }: Op
   function handleSave() {
     if (saving) return; setSaving(true)
     try {
-      const ext = isMdx ? '.mdx' : '.yaml'; const body = getCurrentBody()
-      let filePath: string
-      if (isFlatPath) { filePath = `${collectionDef.path}/${slug}${ext}` }
-      else { filePath = `${collectionDef.path}/${String(fields.locale ?? 'fr')}/${String(fields.categorySlug ?? 'guide-achat')}/${slug}.mdx` }
+      const body = getCurrentBody()
+      const filePath = buildFilePath(collectionDef.path, isFlatPath, isMdx, slug, fields.locale, fields.categorySlug)
+
+      // Remove any stale pending entries for this slug+collection (e.g. from a previous bad path)
+      const existing = getPendingChanges().filter((c) => !(c.collection === collection && c.slug === slug))
+      if (existing.length < getPendingChanges().length) {
+        clearPendingChanges()
+        existing.forEach((c) => addPendingChange(c))
+      }
+
       addPendingChange({ collection, filePath, slug, frontmatter: { ...fields }, body, timestamp: Date.now(), label: String(fields.title ?? fields.name ?? slug) })
-      setToast({ message: 'Sauvegard\u00e9 (en attente de publication)', type: 'success' }); setDirty(false); setHasPending(true)
+      setToast({ message: 'Sauvegardé (en attente de publication)', type: 'success' }); setDirty(false); setHasPending(true)
       onSaved?.({ slug, filePath, frontmatter: fields, body, sha: entry?.sha })
     } catch (err) { setToast({ message: String(err instanceof Error ? err.message : err), type: 'error' }) }
     finally { setSaving(false) }
