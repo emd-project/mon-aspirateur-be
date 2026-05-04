@@ -25,10 +25,16 @@ const PAGE_GROUPS: FieldGroup[] = [
   { title: 'SEO', keys: ['meta_title', 'meta_description'], column: 'side', accent: '#2B7A5F' },
 ]
 
+const BRAND_GROUPS: FieldGroup[] = [
+  { title: 'Identité', keys: ['name', 'country', 'positioning'], column: 'main', defaultOpen: true },
+  { title: 'Catégories', keys: ['categories'], column: 'side', accent: '#2B7A5F' },
+]
+
 export function getGroups(collection: string): FieldGroup[] {
   if (collection === 'articles') return ARTICLE_GROUPS
   if (collection === 'products') return PRODUCT_GROUPS
   if (collection === 'pages') return PAGE_GROUPS
+  if (collection === 'brands') return BRAND_GROUPS
   return []
 }
 

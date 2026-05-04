@@ -36,7 +36,7 @@ export default async function MarquesPage({ params }: Props) {
         {brands.map(brand => (
           <Link key={brand.slug} href={`${base}/marques/${brand.slug}`} style={{ textDecoration: 'none' }}>
             <article className="card card-lift" style={{ padding: '1.5rem', height: '100%' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '.75rem' }}>
+              <div style={{ marginBottom: '.75rem' }}>
                 <div
                   style={{
                     fontFamily: 'var(--font-playfair), Georgia, serif',
@@ -47,9 +47,6 @@ export default async function MarquesPage({ params }: Props) {
                 >
                   {brand.name}
                 </div>
-                <span style={{ fontSize: '.8rem', color: 'var(--text-muted)', marginTop: '.2rem' }}>
-                  {brand.country}
-                </span>
               </div>
 
               <p style={{ fontSize: '.875rem', color: 'var(--text-secondary)', lineHeight: 1.55, margin: 0 }}>

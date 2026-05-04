@@ -1,3 +1,6 @@
 name: Roborock
 country: CN
 positioning: Le roi de la cartographie — navigation LiDAR la plus précise du marché
+categories:
+  - robot
+  - balai

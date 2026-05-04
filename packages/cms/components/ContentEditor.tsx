@@ -8,7 +8,7 @@ import { EditorHeader } from './EditorHeader'
 import { EditorSection } from './EditorSection'
 import { EditorImageCard } from './EditorImageCard'
 import { EditorBody } from './EditorBody'
-import { TextField, TextareaField, SelectField, TagsField, ListField, RepeaterField } from './EditorFields'
+import { TextField, TextareaField, SelectField, TagsField, ListField, RepeaterField, CheckboxGroupField } from './EditorFields'
 import { Toast } from './EditorToast'
 import { getGroups, IMAGE_SETS, IMAGE_KEYS } from './editor-groups'
 export { getPendingChanges, clearPendingChanges } from './editor-pending'
@@ -44,6 +44,7 @@ export function ContentEditor({ collection, collectionDef, entry, shortcode, onS
         {field.type === 'select' && <SelectField field={{ ...field, key }} value={String(val ?? '')} onChange={(v) => s.setField(key, v)} />}
         {field.type === 'tags' && <TagsField value={Array.isArray(val) ? (val as string[]) : []} onChange={(v) => s.setField(key, v)} />}
         {field.type === 'list' && <ListField field={{ ...field, key }} value={Array.isArray(val) ? (val as string[]) : []} onChange={(v) => s.setField(key, v)} />}
+        {field.type === 'checkboxgroup' && <CheckboxGroupField field={{ ...field, key }} value={Array.isArray(val) ? (val as string[]) : []} onChange={(v) => s.setField(key, v)} />}
         {field.type === 'repeater' && <RepeaterField field={{ ...field, key }} value={Array.isArray(val) ? (val as Record<string, string>[]) : []} onChange={(v) => s.setField(key, v)} />}
       </div>
     )

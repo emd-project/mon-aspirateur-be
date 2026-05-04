@@ -14,6 +14,17 @@ export const cmsConfig: CmsConfig = {
         name: { type: 'text', label: 'Nom de la marque', required: true },
         country: { type: 'text', label: 'Pays (ex: FR/DE, CN, US…)' },
         positioning: { type: 'textarea', label: 'Positionnement (1 phrase)' },
+        categories: {
+          type: 'checkboxgroup',
+          label: 'Catégories de produits',
+          options: [
+            { label: 'Aspirateur balai', value: 'balai' },
+            { label: 'Robot aspirateur', value: 'robot' },
+            { label: 'Aspirateur traîneau', value: 'traineau' },
+            { label: 'Aspirateur laveur', value: 'laveur' },
+            { label: 'Accessoires', value: 'accessoires' },
+          ],
+        },
       },
     },
     articles: {

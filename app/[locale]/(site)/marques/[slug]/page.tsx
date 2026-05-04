@@ -33,7 +33,9 @@ export default async function MarqueDetailPage({ params }: Props) {
   if (!brand) return notFound()
 
   const base = `/${locale}`
-  const products = getAllCmsProducts().filter(p => p.brandSlug === slug)
+  const products = getAllCmsProducts()
+    .filter(p => p.brandSlug === slug)
+    .sort((a, b) => b.rating - a.rating)
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -49,8 +51,6 @@ export default async function MarqueDetailPage({ params }: Props) {
     })),
   }
 
-  const categories = [...new Set(products.map(p => p.category))]
-
   return (
     <main id="main-content" style={{ maxWidth: '1200px', margin: '0 auto', padding: '3rem 1.5rem' }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
@@ -64,15 +64,12 @@ export default async function MarqueDetailPage({ params }: Props) {
       </nav>
 
       <header style={{ marginBottom: '2.5rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '.75rem', flexWrap: 'wrap' }}>
-          <h1 className="typo-h1-article" style={{ margin: 0 }}>{brand.name}</h1>
-          <span style={{ fontSize: '.9rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>{brand.country}</span>
-        </div>
+        <h1 className="typo-h1-article" style={{ margin: '0 0 .75rem' }}>{brand.name}</h1>
         <p className="typo-lead" style={{ maxWidth: '600px' }}>{brand.positioning}</p>
 
-        {categories.length > 0 && (
+        {brand.categories.length > 0 && (
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.5rem', marginTop: '1rem' }}>
-            {categories.map(cat => (
+            {brand.categories.map(cat => (
               <a
                 key={cat}
                 href={`${base}/comparer/${cat}`}
@@ -98,20 +95,18 @@ export default async function MarqueDetailPage({ params }: Props) {
             gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
             gap: '1.25rem',
           }}>
-            {products
-              .sort((a, b) => b.rating - a.rating)
-              .map(p => (
-                <ProductCTA
-                  key={p.slug}
-                  name={p.name}
-                  brand={p.brand || brand.name}
-                  priceEur={p.priceEur}
-                  score={p.rating}
-                  highlight={p.description}
-                  affiliateUrl={p.affiliateUrl || '#'}
-                  category={p.category}
-                />
-              ))}
+            {products.map(p => (
+              <ProductCTA
+                key={p.slug}
+                name={p.name}
+                brand={p.brand || brand.name}
+                priceEur={p.priceEur}
+                score={p.rating}
+                highlight={p.description}
+                affiliateUrl={p.affiliateUrl || '#'}
+                category={p.category}
+              />
+            ))}
           </div>
         )}
       </section>
