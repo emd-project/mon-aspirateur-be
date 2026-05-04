@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/api/', '/studio/'],
+        disallow: ['/api/', '/studio/', '/admin/'],
       },
     ],
     sitemap: 'https://www.mon-aspirateur.be/sitemap.xml',
