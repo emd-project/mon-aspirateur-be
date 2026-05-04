@@ -159,9 +159,6 @@ export async function DELETE(
   try {
     const session = await getSession()
     if (!session) return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
-    if (session.role !== 'admin') {
-      return NextResponse.json({ error: 'Droits insuffisants' }, { status: 403 })
-    }
 
     const { path } = await params
     const [collection, ...rest] = path
