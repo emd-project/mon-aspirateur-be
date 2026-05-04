@@ -63,7 +63,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: article.metaTitle ? `${article.metaTitle} | mon-aspirateur.be` : `${article.title} | mon-aspirateur.be`,
     description: article.metaDescription ?? article.excerpt,
-    alternates: { canonical: `/${locale}/blog/${article.categorySlug}/${slug}` },
+    alternates: {
+      canonical: `/${locale}/blog/${article.categorySlug}/${slug}`,
+      languages: {
+        fr: `/fr/blog/${article.categorySlug}/${slug}`,
+        en: `/en/blog/${article.categorySlug}/${slug}`,
+      },
+    },
   }
 }
 
