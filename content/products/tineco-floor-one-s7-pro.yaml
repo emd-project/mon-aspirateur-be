@@ -1,0 +1,18 @@
+name: Tineco Floor One S7 Pro
+brandSlug: tineco
+brand: Tineco
+type: Aspirateur laveur
+description: "Capteur iLoop + autovidage de la cuve — lave vraiment propre. Sèche-sol intégré, connexion app."
+price: 449
+affiliateUrl: "https://www.amazon.com.be/dp/B088H28VPM"
+rating: 9.0
+weight: 5.0 kg
+noiseLevelDb: 73
+batteryMinutes: 35
+pros:
+  - Capteur iLoop ajuste la puissance
+  - Autovidage de la cuve
+  - Résultats de lavage excellents
+cons:
+  - Lourd (5 kg)
+  - Autonomie 35 min

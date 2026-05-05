@@ -1,0 +1,17 @@
+name: Deebot X2 Omni
+brandSlug: ecovacs
+brand: Ecovacs
+type: Robot aspirateur
+description: "Design carré pour les coins, bras latéral, station 4-en-1. 8 000 Pa, LiDAR TrueMapping."
+price: 999
+affiliateUrl: "https://www.amazon.com.be/dp/B0CDLW7T16"
+rating: 9.0
+noiseLevelDb: 65
+batteryMinutes: 180
+pros:
+  - Design carré atteint les coins
+  - Station 4-en-1
+  - Bras latéral
+cons:
+  - Prix 999 €
+  - Gabarit imposant

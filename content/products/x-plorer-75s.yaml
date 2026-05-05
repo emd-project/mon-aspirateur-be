@@ -1,0 +1,26 @@
+name: X-Plorer Serie 75S RR8567
+brandSlug: rowenta
+brand: Rowenta
+type: Aspirateur robot
+description: Robot aspirateur laveur 2700 Pa, caméra + laser, 4-en-1 (aspiration, balayage, brossage, lavage). Smart Aqua Power 4 niveaux et connectivité WiFi.
+price: 199
+affiliateUrl: "https://www.rowenta.be/fr/p/x-plorer-serie-75s-rr8567-aspirateur-robot/2211401095"
+rating: 8.3
+weight: 3.1 kg
+dimensions: 34.2×34.2×9.5 cm
+noiseLevelDb: 70
+suctionPower: 0
+batteryMinutes: 150
+pros:
+  - Fonction 4-en-1
+  - WiFi et app
+  - Smart Aqua Power
+cons:
+  - Sans station de vidage
+  - Puissance modérée
+image1: /images/x-plorer-75s.jpg
+image1Alt: X-Plorer 75S — Robot aspirateur laveur
+image2: /images/x-plorer-75s.jpg
+image2Alt: X-Plorer 75S — Navigation laser
+image3: /images/x-plorer-75s.jpg
+image3Alt: X-Plorer 75S — Smart Aqua Power

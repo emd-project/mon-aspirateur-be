@@ -185,6 +185,25 @@ function ImageUrlField({ field, value, onChange }: { field: FieldDef & { key: st
   )
 }
 
+function CheckboxGroupField({ field, value, onChange }: { field: FieldDef & { key: string }; value: string[]; onChange: (v: string[]) => void }) {
+  function toggle(opt: string) {
+    onChange(value.includes(opt) ? value.filter(v => v !== opt) : [...value, opt])
+  }
+  return (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+      {(field.options ?? []).map(o => {
+        const checked = value.includes(o.value)
+        return (
+          <label key={o.value} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '0.375rem 0.75rem', borderRadius: 8, border: `1px solid ${checked ? C.accent : C.border}`, background: checked ? C.accentSoft : 'transparent', cursor: 'pointer', fontSize: '0.875rem', color: checked ? C.accent : C.muted, userSelect: 'none' }}>
+            <input type="checkbox" checked={checked} onChange={() => toggle(o.value)} style={{ accentColor: C.accent }} />
+            {o.label}
+          </label>
+        )
+      })}
+    </div>
+  )
+}
+
 function SelectField({ field, value, onChange }: { field: FieldDef & { key: string }; value: string; onChange: (v: string) => void }) {
   return (
     <select value={value} onChange={(e) => onChange(e.target.value)} style={inputStyle}>
@@ -603,6 +622,9 @@ export function ContentEditor({ collection, collectionDef, entry, onSaved }: Con
           )}
           {field.type === 'tags' && (
             <TagsField value={Array.isArray(fields[key]) ? (fields[key] as string[]) : []} onChange={(v) => setField(key, v)} />
+          )}
+          {field.type === 'checkboxgroup' && (
+            <CheckboxGroupField field={{ ...field, key }} value={Array.isArray(fields[key]) ? (fields[key] as string[]) : []} onChange={(v) => setField(key, v)} />
           )}
           {field.type === 'repeater' && (
             <RepeaterField

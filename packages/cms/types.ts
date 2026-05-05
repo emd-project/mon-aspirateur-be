@@ -11,6 +11,7 @@ export type FieldType =
   | 'repeater'
   | 'relation'
   | 'image'
+  | 'checkboxgroup'
 
 export interface SelectOption {
   label: string

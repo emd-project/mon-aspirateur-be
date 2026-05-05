@@ -1,0 +1,17 @@
+name: Roomba j9+
+brandSlug: irobot
+brand: iRobot
+type: Robot aspirateur
+description: "Évite les obstacles en temps réel, vide tout seul 60 jours. Clean Base, caméra frontale."
+price: 899
+affiliateUrl: "https://www.amazon.com.be/dp/B0CKZFLBJ8"
+rating: 8.6
+noiseLevelDb: 68
+batteryMinutes: 120
+pros:
+  - Autovidage 60 jours
+  - Évitement obstacles en temps réel
+  - Écosystème iRobot mature
+cons:
+  - Pas de serpillère
+  - Prix 899 €

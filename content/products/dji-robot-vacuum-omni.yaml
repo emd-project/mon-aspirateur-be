@@ -1,0 +1,17 @@
+name: DJI Robot Vacuum Omni
+brandSlug: dji
+brand: DJI
+type: Robot aspirateur
+description: "Station autovidage compacte, navigation DJI ultra-fluide. 4 000 Pa, LiDAR haute résolution."
+price: 799
+affiliateUrl: "https://www.amazon.com.be/s?k=DJI+Robot+Vacuum+Omni"
+rating: 8.7
+noiseLevelDb: 64
+batteryMinutes: 130
+pros:
+  - Navigation DJI ultra-précise
+  - Station compacte
+  - Silencieux 64 dB
+cons:
+  - Aspiration 4000 Pa dans la moyenne
+  - Pas de serpillère

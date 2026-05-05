@@ -1,0 +1,17 @@
+name: Roborock S8 MaxV Ultra
+brandSlug: roborock
+brand: Roborock
+type: Robot aspirateur
+description: "Camera AI + bras latéral pour les coins — la Rolls des robots aspirateurs. 10 000 Pa, station 4-en-1."
+price: 1199
+affiliateUrl: "https://www.amazon.com.be/dp/B0CRV7F37B"
+rating: 9.5
+noiseLevelDb: 66
+batteryMinutes: 180
+pros:
+  - Bras latéral pour les coins
+  - Caméra AI évitement obstacles
+  - Station 4-en-1 complète
+cons:
+  - Prix très élevé 1199 €
+  - Station très volumineuse

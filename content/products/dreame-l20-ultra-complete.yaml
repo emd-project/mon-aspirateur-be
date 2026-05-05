@@ -1,0 +1,17 @@
+name: Dreame L20 Ultra Complete
+brandSlug: dreame
+brand: Dreame
+type: Robot aspirateur
+description: "Station autovidage + auto-lavage des serpillères — vraiment autonome. Navigation TrueDetect 3D, 7000 Pa."
+price: 999
+affiliateUrl: "https://www.amazon.com.be/dp/B0CF5XP9GN"
+rating: 9.2
+noiseLevelDb: 65
+batteryMinutes: 180
+pros:
+  - Vraiment autonome (auto-lavage serpillères)
+  - Navigation 3D très précise
+  - 7000 Pa aspiration
+cons:
+  - Encombrant avec la station
+  - Prix 999 €

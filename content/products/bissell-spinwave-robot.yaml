@@ -1,0 +1,17 @@
+name: Bissell SpinWave Robot
+brandSlug: bissell
+brand: Bissell
+type: Robot aspirateur
+description: Robot laveur abordable pour appartement sans moquette. Tampons rotatifs, navigation de base.
+price: 299
+affiliateUrl: "https://www.amazon.com.be/dp/B08K2R73Y6"
+rating: 7.2
+noiseLevelDb: 68
+batteryMinutes: 90
+pros:
+  - Prix abordable
+  - Tampons rotatifs efficaces
+  - Facile à prendre en main
+cons:
+  - Navigation basique sans LiDAR
+  - Évitement obstacles limité

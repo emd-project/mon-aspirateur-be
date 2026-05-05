@@ -1,0 +1,18 @@
+name: Bissell CrossWave X7
+brandSlug: bissell
+brand: Bissell
+type: Aspirateur laveur
+description: "Aspire et lave en même temps, brosses multi-surfaces, séchage rapide. Idéal familles avec animaux."
+price: 399
+affiliateUrl: "https://www.amazon.com.be/dp/B09HSP47HN"
+rating: 8.3
+weight: 5.0 kg
+noiseLevelDb: 76
+batteryMinutes: 30
+pros:
+  - Aspire et lave simultanément
+  - Brosses multi-surfaces
+  - Résultats visibles sur animaux
+cons:
+  - Autonomie 30 min
+  - Entretien régulier requis

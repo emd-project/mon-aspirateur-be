@@ -1,0 +1,18 @@
+name: Dyson Gen5detect
+brandSlug: dyson
+brand: Dyson
+type: Aspirateur balai
+description: Puissance maximale absolue — pour les familles avec animaux et tapis épais. 262 AW, filtration HEPA intégrée.
+price: 950
+affiliateUrl: "https://www.amazon.com.be/dp/B0C2JD5H7D"
+rating: 7.7
+weight: 3.1 kg
+noiseLevelDb: 80
+batteryMinutes: 70
+pros:
+  - Puissance 262 AW record
+  - Filtration HEPA totale
+  - Brosse anti-emmêlement incluse
+cons:
+  - Prix premium 999 €
+  - Encombrant

@@ -1,0 +1,17 @@
+name: Xiaomi Robot Vacuum X10+
+brandSlug: xiaomi
+brand: Xiaomi
+type: Robot aspirateur
+description: "LiDAR + station autovidage sous les 500 € — difficile à battre. 4 000 Pa, serpillère basique."
+price: 499
+affiliateUrl: "https://www.amazon.com.be/dp/B0CKXYKD2H"
+rating: 8.2
+noiseLevelDb: 65
+batteryMinutes: 150
+pros:
+  - LiDAR + autovidage sous 500 €
+  - Navigation précise
+  - Bon rapport qualité/prix
+cons:
+  - Serpillère basique
+  - App Mi Home parfois lente

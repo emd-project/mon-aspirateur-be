@@ -1,0 +1,17 @@
+name: Samsung Jet Bot AI+
+brandSlug: samsung
+brand: Samsung
+type: Robot aspirateur
+description: "Reconnaissance d'objets par caméra, station Clean Station, mapping précis. LiDAR 3D, 30 W."
+price: 799
+affiliateUrl: "https://www.amazon.com.be/dp/B09FK41Z3G"
+rating: 8.5
+noiseLevelDb: 64
+batteryMinutes: 100
+pros:
+  - Caméra IA reconnaissance objets
+  - Station Clean Station
+  - Design premium
+cons:
+  - Prix 799 €
+  - Pas de serpillère native

@@ -1,0 +1,26 @@
+name: X-Force Flex 9.60 RH2036
+brandSlug: rowenta
+brand: Rowenta
+type: Aspirateur balai
+description: "Aspirateur balai sans fil ultra-léger (1.1 kg en main), 100 AirWatts, filtration 99.9%, tube Flex et réglage auto de la puissance. 45 min d'autonomie."
+price: 119
+affiliateUrl: "https://www.rowenta.be/fr/p/x-force-flex-960-rh2036-aspirateur-balai-100-airwatts-45-min/7211005323"
+rating: 8.2
+weight: 1.1 kg (main)
+dimensions: 23.4×24.8×112 cm
+noiseLevelDb: 
+suctionPower: 0
+batteryMinutes: 45
+pros:
+  - Ultra léger 1.1 kg
+  - Prix accessible
+  - Filtration 99.9%
+cons:
+  - Puissance limitée 100 AW
+  - Autonomie courte en Boost
+image1: /images/x-force-flex-9-60.jpg
+image1Alt: X-Force Flex 9.60 — Aspirateur balai
+image2: /images/x-force-flex-9-60.jpg
+image2Alt: X-Force Flex 9.60 — Tube Flex
+image3: /images/x-force-flex-9-60.jpg
+image3Alt: X-Force Flex 9.60 — Accessoires

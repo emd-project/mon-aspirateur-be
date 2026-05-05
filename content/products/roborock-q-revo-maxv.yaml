@@ -1,0 +1,17 @@
+name: Roborock Q Revo MaxV
+brandSlug: roborock
+brand: Roborock
+type: Robot aspirateur
+description: "Serpillère rotative qui se lève sur tapis — aucun compromis. LiDAR PreciSense, 10 000 Pa."
+price: 799
+affiliateUrl: "https://www.amazon.com.be/dp/B0CZH7B4QX"
+rating: 8.9
+noiseLevelDb: 65
+batteryMinutes: 180
+pros:
+  - Serpillère rotative qui se lève sur tapis
+  - LiDAR très précis
+  - Bonne autonomie
+cons:
+  - Prix 799 €
+  - Station encombrante
