@@ -37,6 +37,10 @@ export interface CollectionDef {
   flatPath?: boolean
   /** Hide "New" button and delete actions — for fixed-slug collections like pages */
   readOnly?: boolean
+  /** MDX shortcode template for embedding in articles */
+  shortcode?: string
+  /** Show CSV import/export buttons */
+  csvEnabled?: boolean
   fields: Record<string, FieldDef>
 }
 
