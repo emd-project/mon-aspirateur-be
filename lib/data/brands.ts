@@ -430,3 +430,16 @@ export function getTopPicksByCategory(category: ProductCategory): BrandProductWi
     )
     .sort((a, b) => b.score - a.score)
 }
+
+export function getProductsByBudget(category: ProductCategory, budget: string, limit = 3): BrandProductWithBrand[] {
+  const MIN: Record<string, number> = { moins200: 0, '200_400': 200, '400_700': 400, plus700: 700 }
+  const MAX: Record<string, number> = { moins200: 200, '200_400': 400, '400_700': 700, plus700: Infinity }
+  const min = MIN[budget] ?? 0
+  const max = MAX[budget] ?? Infinity
+  const all = brands.flatMap(b => b.topProducts.filter(p => p.category === category).map(p => ({ ...p, brandName: b.name })))
+  const inRange = all.filter(p => p.priceEur >= min && p.priceEur <= max).sort((a, b) => b.score - a.score)
+  if (inRange.length >= limit) return inRange.slice(0, limit)
+  const mid = max === Infinity ? min + 300 : (min + max) / 2
+  const extras = all.filter(p => p.priceEur < min || p.priceEur > max).sort((a, b) => Math.abs(a.priceEur - mid) - Math.abs(b.priceEur - mid))
+  return [...inRange, ...extras].slice(0, limit)
+}
