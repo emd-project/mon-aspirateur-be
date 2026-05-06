@@ -4,7 +4,7 @@ function ctaLabel(url: string): string {
     const host = new URL(url).hostname.replace(/^www\./, '')
     if (host.includes('amazon')) return 'Voir sur Amazon'
     const parts = host.split('.')
-    const domain = parts.length >= 2 ? parts[parts.length - 2] : host
+    const domain = parts.length >= 2 ? parts[parts.length - 2] ?? host : host
     return `Voir sur ${domain.charAt(0).toUpperCase() + domain.slice(1)}`
   } catch {
     return 'Voir le produit'
