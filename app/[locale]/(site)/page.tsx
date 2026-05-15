@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
-import { getTopPicksByCategory } from '@/lib/data/brands'
 import { categoryOrder, categoryMeta } from '@/lib/data/comparateur'
 import { getAllBrands } from '@/lib/content/brands'
+import { getAllCmsProducts } from '@/lib/content/products'
 import { getArticlesMdx } from '@/lib/content/articles'
 import ProductCTA from '@/components/ui/ProductCTA'
 import NoiseOverlay from '@/components/effects/NoiseOverlay'
@@ -32,9 +32,11 @@ export default async function HomePage({ params }: Props) {
   const t = await getTranslations({ locale, namespace: 'home' })
   const base = `/${locale}`
 
-  const topBalai    = getTopPicksByCategory('balai').slice(0, 2)
-  const topTraineau = getTopPicksByCategory('traineau').slice(0, 2)
-  const topPicks    = [...topBalai, ...topTraineau]
+  const allProducts = getAllCmsProducts()
+  const topPicks = [
+    ...allProducts.filter(p => p.brandSlug === 'rowenta' && (p.category === 'balai' || p.category === 'traineau')).sort((a, b) => b.rating - a.rating).slice(0, 2),
+    ...allProducts.filter(p => p.brandSlug !== 'rowenta' && (p.category === 'balai' || p.category === 'traineau')).sort((a, b) => b.rating - a.rating).slice(0, 2),
+  ]
   const topBrands = getAllBrands().sort((a, b) => a.name.localeCompare(b.name)).slice(0, 6)
   const articles = getArticlesMdx(locale).slice(0, 5)
   const featuredArticle = articles[0] ?? null
@@ -354,15 +356,15 @@ export default async function HomePage({ params }: Props) {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1rem' }}>
             {topPicks.map(p => (
               <ProductCTA
-                key={p.name}
+                key={p.slug}
                 name={p.name}
-                brand={p.brandName}
+                brand={p.brand}
                 priceEur={p.priceEur}
-                score={p.score}
-                highlight={p.highlight}
+                score={p.rating}
+                highlight={p.description}
                 affiliateUrl={p.affiliateUrl}
                 category={p.category}
-                isTopPick={p.isTopPick}
+                isTopPick={p.brandSlug === 'rowenta'}
               />
             ))}
           </div>
