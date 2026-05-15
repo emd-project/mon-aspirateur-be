@@ -47,8 +47,18 @@
 - [x] eslint → 0 erreurs, 0 warnings
 - [x] vitest → 5/5 tests
 
+## Complété — Shortcodes dynamiques (variables produit)
+
+- [x] lib/content/variables.ts — résolution `[[var:champ.slug]]` depuis lib/data/mock/products.ts
+- [x] Champs : price · name · brand · score · autonomy · noise · surface
+- [x] Intégré dans processShortcodes() comme étape 0 (avant expandShorthand)
+- [x] Slug ou champ inconnu → shortcode conservé intact (jamais de texte cassé)
+- [x] expandShorthand protégé contre l'alias `var` (guard explicite)
+- [x] SHORTCODE_DOCS mis à jour avec entrée `var`
+- [x] vitest → 57/57 tests (6 tests ajoutés)
+
 ## Prochaine session
 - [ ] MDX pipeline (next-mdx-remote/rsc) pour articles
 - [ ] Contenu éditorial : 12 articles + 5 comparateurs brand vs brand
-- [ ] Sanity V2 — swap lib/data/mock → GROQ
+- [ ] Sanity V2 — swap lib/data/mock → GROQ (variables.ts à adapter : PRODUCTS → GROQ)
 - [ ] Lighthouse audit

@@ -51,6 +51,12 @@ typo-score      → font-variant-numeric:oldstyle-nums · dates et notes produit
 - lib/data/types.ts : interfaces TypeScript agnostiques CMS — swap Sanity transparent en V2
 - AI Résumé 6.Y : prompt inject site:mon-aspirateur.be pour éviter sources externes
 
+## Shortcodes dynamiques — décisions
+- Syntaxe `[[var:champ.slug]]` — résolution serveur dans processShortcodes(), étape 0
+- Produit inconnu ou champ inconnu → shortcode conservé intact (jamais silencieusement vide)
+- Source de vérité : lib/data/mock/products.ts (V1) → à brancher sur GROQ en V2 sans changer la syntaxe dans les articles
+- Champ `price` formaté avec espace insécable implicite via template string `${p.priceEur} €`
+
 ## À valider
 - [ ] Affiliation Awin BE — activer quand trafic > 5k/mois [DÉCISION À VALIDER]
 - [ ] Display ads — activer V2 si affiliation insuffisante [DÉCISION À VALIDER]
