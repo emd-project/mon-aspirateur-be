@@ -3,7 +3,7 @@ import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import { getTopPicksByCategory } from '@/lib/data/brands'
 import { categoryOrder, categoryMeta } from '@/lib/data/comparateur'
-import { brands } from '@/lib/data/brands'
+import { getAllBrands } from '@/lib/content/brands'
 import { getArticlesMdx } from '@/lib/content/articles'
 import ProductCTA from '@/components/ui/ProductCTA'
 import NoiseOverlay from '@/components/effects/NoiseOverlay'
@@ -35,7 +35,7 @@ export default async function HomePage({ params }: Props) {
   const topBalai    = getTopPicksByCategory('balai').slice(0, 2)
   const topTraineau = getTopPicksByCategory('traineau').slice(0, 2)
   const topPicks    = [...topBalai, ...topTraineau]
-  const topBrands = brands.slice(0, 6)
+  const topBrands = getAllBrands().sort((a, b) => a.name.localeCompare(b.name)).slice(0, 6)
   const articles = getArticlesMdx(locale).slice(0, 5)
   const featuredArticle = articles[0] ?? null
   const otherArticles = articles.slice(1, 4)
@@ -407,19 +407,6 @@ export default async function HomePage({ params }: Props) {
                         letterSpacing: '-.01em',
                       }}>
                         {brand.name}
-                      </span>
-                      <span style={{
-                        fontSize: '.65rem',
-                        fontWeight: 700,
-                        letterSpacing: '.1em',
-                        textTransform: 'uppercase',
-                        color: 'var(--text-muted)',
-                        border: '1px solid var(--border-light)',
-                        borderRadius: '3px',
-                        padding: '.1rem .35rem',
-                        flexShrink: 0,
-                      }}>
-                        {brand.country}
                       </span>
                     </div>
 
