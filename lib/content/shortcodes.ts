@@ -3,6 +3,7 @@
 // traverse le round-trip TipTap sans transformation.
 //
 // Syntaxe :
+//   Variable dynamique : [[var:price.dyson-v15-detect]]  → "599 €"
 //   Inline raccourci  : [[product:x-clean-4]]
 //   Inline attributs  : [[stat value="45 min" label="Durée" sub="…"]]
 //   Bloc avec contenu : [[tip title="Le vrai tip"]]Contenu…[[/tip]]
@@ -11,6 +12,8 @@
 //   product → ProductCard · stat → StatCard · tldr → TLDRBox
 //   procon → ProConTable · cta → ProductCTA · summary → AISummarize
 //   tip → Tip · warning → Warning · verdict → Verdict · pullquote → PullQuote
+
+import { resolveVariables } from '@/lib/content/variables'
 
 export const SHORTCODE_COMPONENTS: Record<string, string> = {
   product: 'ProductCard',
@@ -52,6 +55,8 @@ function expandShorthand(content: string): string {
   return content.replace(
     /\[\[([a-z]+):([^\]\s]+)\]\]/g,
     (_m, alias, value) => {
+      // [[var:...]] est géré par resolveVariables — s'il reste ici, le slug est inconnu.
+      if (alias === 'var') return _m
       const component = resolveComponent(alias)
       const attr = component === 'ProductCarousel' ? 'slugs' : 'slug'
       return `<${component} ${attr}="${value}" />`
@@ -96,9 +101,11 @@ function expandInlineShortcodes(content: string): string {
 
 /**
  * Pipeline complet — à appliquer sur le contenu MDX brut avant compilation.
+ * Étape 0 : résolution des variables dynamiques [[var:champ.slug]] → valeur texte.
  */
 export function processShortcodes(content: string): string {
-  let out = decodeEncodedJsx(content)
+  let out = resolveVariables(content)
+  out = decodeEncodedJsx(out)
   out = expandShorthand(out)
   out = expandBlockShortcodes(out)
   out = expandInlineShortcodes(out)
@@ -117,6 +124,13 @@ export interface ShortcodeDoc {
 }
 
 export const SHORTCODE_DOCS: ShortcodeDoc[] = [
+  {
+    alias: 'var',
+    component: '—',
+    description: 'Variable dynamique extraite des données produit. Champs : price · name · brand · score · autonomy · noise · surface. Produit inconnu → shortcode conservé intact.',
+    example: '[[var:price.dyson-v15-detect]]',
+    type: 'shorthand',
+  },
   {
     alias: 'product',
     component: 'ProductCard',
