@@ -1,43 +1,65 @@
 // Variables dynamiques dans le contenu — syntaxe [[var:champ.slug]]
 //
-// Champs disponibles :
-//   price   → "349 €"
-//   name    → "RoboVac LiDAR Pro"
-//   brand   → "EcoVacs"
-//   score   → "91"
-//   autonomy → "110 min"
-//   noise   → "62 dB"
-//   surface → "120 m²"
+// Source : fiches produit du CMS (content/products/*.yaml) via getAllCmsProducts().
+// Aucune donnée hardcodée — tout slug présent dans le CMS est résolvable.
 //
-// Exemple : [[var:price.dyson-v15-detect]] → "599 €"
-// Produit inconnu ou champ inconnu → laisse le shortcode intact pour faciliter le debug.
+// Champs disponibles :
+//   price    → "599 €"
+//   name     → "Dyson V15 Detect Absolute"
+//   brand    → "Dyson"
+//   score    → "7.5"        (alias de rating)
+//   rating   → "7.5"
+//   autonomy → "60 min"
+//   noise    → "78 dB"
+//   weight   → "3.1 kg"
+//   power    → "22000 Pa"
+//
+// Exemple : [[var:price.x-clean-4]] → "380 €"
+// Slug ou champ inconnu → shortcode laissé tel quel pour faciliter le debug.
 
-import { PRODUCTS } from '@/lib/data/mock/products'
-import type { Product } from '@/lib/data/types'
+import { getAllCmsProducts, type CmsProduct } from '@/lib/content/products'
 
-const FIELD_MAP: Record<string, (p: Product) => string> = {
+type FieldResolver = (p: CmsProduct) => string | null
+
+const FIELD_MAP: Record<string, FieldResolver> = {
   price:    (p) => `${p.priceEur} €`,
   name:     (p) => p.name,
   brand:    (p) => p.brand,
-  score:    (p) => String(p.score),
-  autonomy: (p) => `${p.autonomyMin} min`,
-  noise:    (p) => `${p.noiseDb} dB`,
-  surface:  (p) => `${p.surfaceM2Max} m²`,
+  score:    (p) => String(p.rating),
+  rating:   (p) => String(p.rating),
+  autonomy: (p) => (p.autonomyMin === null ? null : `${p.autonomyMin} min`),
+  noise:    (p) => (p.noiseDb === null ? null : `${p.noiseDb} dB`),
+  weight:   (p) => (p.weightKg === null ? null : `${p.weightKg} kg`),
+  power:    (p) => (p.suctionPowerPa === null || p.suctionPowerPa === 0 ? null : `${p.suctionPowerPa} Pa`),
 }
 
-function resolveVar(field: string, slug: string): string | null {
+/** Échappe les caractères HTML dangereux dans une valeur résolue avant injection dans le MDX. */
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
+function resolveVar(field: string, slug: string, products: CmsProduct[]): string | null {
   const resolver = FIELD_MAP[field]
   if (!resolver) return null
-  const product = PRODUCTS.find((p) => p.slug === slug)
+  const product = products.find((p) => p.slug === slug)
   if (!product) return null
-  return resolver(product)
+  const value = resolver(product)
+  return value === null ? null : escapeHtml(value)
 }
 
 const VAR_RE = /\[\[var:([a-z]+)\.([^\]\s]+)\]\]/g
 
 export function resolveVariables(content: string): string {
+  if (!VAR_RE.test(content)) return content
+  VAR_RE.lastIndex = 0
+  const products = getAllCmsProducts()
   return content.replace(VAR_RE, (match, field, slug) => {
-    const value = resolveVar(field, slug)
+    const value = resolveVar(field, slug, products)
     return value ?? match
   })
 }

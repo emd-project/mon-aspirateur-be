@@ -81,8 +81,26 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 type ArticleFaq = { faq?: FaqItem[] }
 
 /**
+ * Block JSX tags that, once opened, must stay in the same chunk as their
+ * closing tag. Shortcodes already expanded into JSX by processShortcodes.
+ */
+const BLOCK_JSX_TAGS = ['Tip', 'Warning', 'Verdict', 'PullQuote', 'AISummarize', 'TLDRBox', 'ProConTable', 'StatCard', 'ProductCard', 'ProductCarousel', 'ProductCTA', 'ArticleImage']
+
+/** True if cutting between `blocks[i]` and `blocks[i+1]` would split a JSX block. */
+function isInsideJsxBlock(blocks: string[], index: number): boolean {
+  const upTo = blocks.slice(0, index + 1).join('\n\n')
+  for (const tag of BLOCK_JSX_TAGS) {
+    const opens = (upTo.match(new RegExp(`<${tag}(\\s|>)`, 'g')) ?? []).length
+    const closes = (upTo.match(new RegExp(`</${tag}>`, 'g')) ?? []).length
+    const selfClose = (upTo.match(new RegExp(`<${tag}[^>]*/>`, 'g')) ?? []).length
+    if (opens - selfClose > closes) return true
+  }
+  return false
+}
+
+/**
  * Split MDX content into up to 3 chunks at paragraph boundaries,
- * targeting the 1/3 and 2/3 word-count marks.
+ * targeting the 1/3 and 2/3 word-count marks. Never cuts inside a JSX block.
  * Returns [chunk1, chunk2, chunk3] — chunk2 and chunk3 may be empty strings.
  */
 function splitContentIntoChunks(content: string): [string, string, string] {
@@ -99,8 +117,8 @@ function splitContentIntoChunks(content: string): [string, string, string] {
 
   for (let i = 0; i < blocks.length; i++) {
     wordsSoFar += (blocks[i] ?? '').split(/\s+/).length
-    if (split1 === -1 && wordsSoFar >= target1) split1 = i
-    if (split2 === -1 && wordsSoFar >= target2) { split2 = i; break }
+    if (split1 === -1 && wordsSoFar >= target1 && !isInsideJsxBlock(blocks, i)) split1 = i
+    if (split1 !== -1 && split2 === -1 && wordsSoFar >= target2 && !isInsideJsxBlock(blocks, i) && i > split1) { split2 = i; break }
   }
 
   if (split1 === -1 || split2 === -1 || split1 >= split2) return [content, '', '']

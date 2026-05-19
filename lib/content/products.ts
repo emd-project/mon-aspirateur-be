@@ -12,6 +12,11 @@ export interface CmsProduct {
   rating: number
   description: string
   affiliateUrl: string
+  autonomyMin: number | null
+  noiseDb: number | null
+  weightKg: number | null
+  suctionPowerPa: number | null
+  dimensions: string | null
 }
 
 function parseYaml(raw: string): Record<string, unknown> {
@@ -32,6 +37,20 @@ function parseYaml(raw: string): Record<string, unknown> {
     }
   }
   return result
+}
+
+/** Extract leading number from a YAML scalar (handles "5.4 kg", "60", null). */
+function parseFloatField(v: unknown): number | null {
+  if (v === null || v === undefined || v === '') return null
+  const match = String(v).match(/[\d.]+/)
+  if (!match) return null
+  const n = Number(match[0])
+  return isNaN(n) || n <= 0 ? null : n
+}
+
+function parseIntField(v: unknown): number | null {
+  const n = parseFloatField(v)
+  return n === null ? null : Math.round(n)
 }
 
 function toCategory(type: unknown): ProductCategory | null {
@@ -71,6 +90,11 @@ export function getAllCmsProducts(): CmsProduct[] {
         rating: isNaN(Number(data.rating)) ? 0 : Number(data.rating),
         description: String(data.description ?? ''),
         affiliateUrl: String(data.affiliateUrl ?? ''),
+        autonomyMin: parseIntField(data.batteryMinutes),
+        noiseDb: parseIntField(data.noiseLevelDb),
+        weightKg: parseFloatField(data.weight),
+        suctionPowerPa: parseIntField(data.suctionPower),
+        dimensions: data.dimensions ? String(data.dimensions) : null,
       })
     } catch { /* skip */ }
   }
