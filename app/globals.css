@@ -244,12 +244,16 @@ body::after {
 
 .prose-article ul,
 .prose-article ol {
-  margin: 0 0 1.25rem 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: .4rem;
+  margin: 0 0 1.25rem;
+  padding-left: 1.5rem;
 }
-.prose-article li { line-height: 1.6; }
+.prose-article ul { list-style: disc; }
+.prose-article ol { list-style: decimal; }
+.prose-article li {
+  line-height: 1.6;
+  margin-bottom: .4rem;
+}
+.prose-article li::marker { color: var(--accent-1); }
 
 .prose-article table {
   width: 100%;
