@@ -50,34 +50,75 @@ function decodeEncodedJsx(content: string): string {
 
 /**
  * Étape 2 — Convertit la syntaxe raccourcie `[[product:slug]]` en JSX.
+ * Les slugs du carousel (séparés par virgules) sont trimés pour tolérer
+ * `[[carousel:a, b, c]]` aussi bien que `[[carousel:a,b,c]]`.
  */
 function expandShorthand(content: string): string {
   return content.replace(
-    /\[\[([a-z]+):([^\]\s]+)\]\]/g,
+    /\[\[([a-z]+):([^\]]+)\]\]/g,
     (_m, alias, value) => {
       // [[var:...]] est géré par resolveVariables — s'il reste ici, le slug est inconnu.
       if (alias === 'var') return _m
       const component = resolveComponent(alias)
-      const attr = component === 'ProductCarousel' ? 'slugs' : 'slug'
-      return `<${component} ${attr}="${value}" />`
+      if (component === 'ProductCarousel') {
+        const slugs = String(value)
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean)
+          .join(',')
+        return `<${component} slugs="${slugs}" />`
+      }
+      const clean = String(value).trim()
+      return `<${component} slug="${clean}" />`
     },
   )
 }
 
 /**
  * Étape 3 — Convertit les shortcodes bloc `[[tip ...]]...[[/tip]]` en JSX.
+ *
+ * Parser à compteur plutôt qu'à regex non-greedy : on suit l'imbrication
+ * du même alias pour ne pas fermer prématurément quand le corps contient
+ * `[[/alias]]` (par exemple un article qui documente la syntaxe).
  */
 function expandBlockShortcodes(content: string): string {
-  return content.replace(
-    /\[\[([a-z]+)([^\]]*)\]\]([\s\S]*?)\[\[\/\1\]\]/g,
-    (match, alias, attrs, body) => {
-      if (!BLOCK_ALIASES.has(alias)) return match
-      const component = resolveComponent(alias)
-      const cleanAttrs = attrs.trim()
-      const open = cleanAttrs ? `<${component} ${cleanAttrs}>` : `<${component}>`
-      return `${open}\n${body.trim()}\n</${component}>`
-    },
-  )
+  const OPEN_RE = /\[\[([a-z]+)((?:\s+[^\]]*)?)\]\]/g
+  let result = ''
+  let cursor = 0
+  let match: RegExpExecArray | null
+  while ((match = OPEN_RE.exec(content)) !== null) {
+    const openTag = match[0]
+    const alias = match[1] ?? ''
+    const attrs = match[2] ?? ''
+    if (!BLOCK_ALIASES.has(alias)) continue
+    const bodyStart = match.index + openTag.length
+    const closeTag = `[[/${alias}]]`
+    const reSame = new RegExp(`\\[\\[/?${alias}((?:\\s+[^\\]]*)?)\\]\\]`, 'g')
+    reSame.lastIndex = bodyStart
+    let depth = 1
+    let bodyEnd = -1
+    let closeEnd = -1
+    let inner: RegExpExecArray | null
+    while ((inner = reSame.exec(content)) !== null) {
+      if (inner[0] === closeTag) {
+        depth--
+        if (depth === 0) { bodyEnd = inner.index; closeEnd = inner.index + closeTag.length; break }
+      } else {
+        depth++
+      }
+    }
+    if (bodyEnd === -1) continue
+    const body = content.slice(bodyStart, bodyEnd)
+    const component = resolveComponent(alias)
+    const cleanAttrs = (attrs ?? '').trim()
+    const open = cleanAttrs ? `<${component} ${cleanAttrs}>` : `<${component}>`
+    result += content.slice(cursor, match.index)
+    result += `${open}\n${body.trim()}\n</${component}>`
+    cursor = closeEnd
+    OPEN_RE.lastIndex = closeEnd
+  }
+  result += content.slice(cursor)
+  return result
 }
 
 /**
@@ -127,8 +168,8 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
   {
     alias: 'var',
     component: '—',
-    description: 'Variable dynamique extraite des données produit. Champs : price · name · brand · score · autonomy · noise · surface. Produit inconnu → shortcode conservé intact.',
-    example: '[[var:price.dyson-v15-detect]]',
+    description: 'Variable dynamique extraite du CMS (content/products/*.yaml). Champs : price · name · brand · score · rating · autonomy · noise · weight · power. Slug ou champ inconnu → shortcode conservé intact.',
+    example: '[[var:price.x-clean-4]]',
     type: 'shorthand',
   },
   {
