@@ -38,6 +38,13 @@ export default async function HomePage({ params }: Props) {
     ...allProducts.filter(p => p.brandSlug !== 'rowenta' && (p.category === 'balai' || p.category === 'traineau')).sort((a, b) => b.rating - a.rating).slice(0, 2),
   ]
   const topBrands = getAllBrands().sort((a, b) => a.name.localeCompare(b.name)).slice(0, 6)
+  const topProductByBrand = new Map<string, { name: string; priceEur: number }>()
+  for (const brand of topBrands) {
+    const best = allProducts
+      .filter(p => p.brandSlug === brand.slug)
+      .sort((a, b) => b.rating - a.rating)[0]
+    if (best) topProductByBrand.set(brand.slug, { name: best.name, priceEur: best.priceEur })
+  }
   const articles = getArticlesMdx(locale).slice(0, 5)
   const featuredArticle = articles[0] ?? null
   const otherArticles = articles.slice(1, 4)
@@ -385,7 +392,7 @@ export default async function HomePage({ params }: Props) {
           </div>
           <div className="grid-brands">
             {topBrands.map(brand => {
-              const top = brand.topProducts?.[0]
+              const top = topProductByBrand.get(brand.slug)
               return (
                 <Link key={brand.slug} href={`${base}/marques/${brand.slug}`} style={{ textDecoration: 'none', display: 'flex' }}>
                   <div style={{
