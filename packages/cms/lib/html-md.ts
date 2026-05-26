@@ -27,8 +27,11 @@ const SHORTCODE_BLOCK_RE =
   /(?:^|\n)(\[\[[a-z]+[^\]]*\]\][\s\S]*?\[\[\/[a-z]+\]\])/g
 
 // Inline shortcodes: [[product:slug]], [[stat …]], etc.
+// [[var:...]] est exclu : ce sont des tokens texte purs qui survivent au
+// round-trip TipTap sans transformation et ne doivent pas devenir des
+// placeholders opaques MDXBLOCK dans l'éditeur.
 const SHORTCODE_INLINE_RE =
-  /(\[\[[a-z]+(?::[^\]]+|[^\]]*)\]\])/g
+  /(\[\[(?!var:)[a-z]+(?::[^\]]+|[^\]]*)\]\])/g
 
 export function extractMdxBlocks(markdown: string): {
   cleaned: string

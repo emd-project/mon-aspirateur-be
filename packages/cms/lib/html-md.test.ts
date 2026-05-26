@@ -43,6 +43,14 @@ describe('extractMdxBlocks', () => {
     expect(blocks['MDXBLOCK0']).toBe('[[product:x-clean-4]]')
   })
 
+  it('does NOT extract [[var:...]] — they survive TipTap round-trip as plain text', () => {
+    const md = 'Le prix est [[var:price.x-clean-4]] et le bruit est [[var:noise.x-clean-10]].'
+    const { cleaned, blocks } = extractMdxBlocks(md)
+    expect(Object.keys(blocks)).toHaveLength(0)
+    expect(cleaned).toContain('[[var:price.x-clean-4]]')
+    expect(cleaned).toContain('[[var:noise.x-clean-10]]')
+  })
+
   it('does not extract MDX_BLOCK placeholders themselves', () => {
     const md = '[[MDXBLOCK0]] text [[MDXBLOCK1]]'
     const { cleaned, blocks } = extractMdxBlocks(md)
