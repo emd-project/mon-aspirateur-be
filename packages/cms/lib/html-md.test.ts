@@ -130,3 +130,26 @@ describe('table round-trip', () => {
     expect(backHtml).toContain('<td>d</td>')
   })
 })
+
+describe('htmlToMarkdown — espaces insécables', () => {
+  it('retire les &nbsp; hérités de Google Docs', () => {
+    const md = htmlToMarkdown('<p>un vrai aspirateur laveur&nbsp;!</p>')
+    expect(md).not.toContain('&nbsp;')
+    expect(md).toContain('un vrai aspirateur laveur !')
+  })
+
+  it('retire le caractère insécable U+00A0', () => {
+    const nbsp = String.fromCharCode(0x00a0)
+    const md = htmlToMarkdown(`<p>chez vous${nbsp}!${nbsp}</p>`)
+    expect(md).not.toContain(nbsp)
+    expect(md).toContain('chez vous !')
+  })
+
+  it('préserve les tableaux GFM (non-régression)', () => {
+    const md = htmlToMarkdown(
+      '<table><thead><tr><th>A</th><th>B</th></tr></thead><tbody><tr><td>1</td><td>2</td></tr></tbody></table>',
+    )
+    expect(md).toContain('| A | B |')
+    expect(md).toContain('| 1 | 2 |')
+  })
+})

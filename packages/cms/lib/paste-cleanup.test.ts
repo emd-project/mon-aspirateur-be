@@ -110,4 +110,12 @@ describe('cleanPastedHTML', () => {
     expect(out).not.toContain('<col ')
     expect(out).toContain('<td>a</td>')
   })
+
+  it('convertit les espaces insécables (&nbsp; et U+00A0) en espace normal', () => {
+    const nbsp = String.fromCharCode(0x00a0)
+    const out = cleanPastedHTML(`<p>Sous 200&nbsp;€, le X-Clean 2${nbsp}!</p>`)
+    expect(out).not.toContain('&nbsp;')
+    expect(out).not.toContain(nbsp)
+    expect(out).toContain('Sous 200 €, le X-Clean 2 !')
+  })
 })

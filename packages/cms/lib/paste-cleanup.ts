@@ -16,6 +16,10 @@ const GOOGLE_DOCS_GUID_RE = /<b\s+id="docs-internal-guid-[^"]*"[^>]*>([\s\S]*?)<
 const STYLE_BLOCK_RE = /<style[\s\S]*?<\/style>/gi
 const META_TAG_RE = /<meta\b[^>]*\/?>/gi
 const COMMENT_RE = /<!--[\s\S]*?-->/g
+// Espaces insécables hérités de Google Docs (entité, entités numériques, et le
+// caractère U+00A0 lui-même). Convertis en espace normal pour éviter qu'ils ne
+// se retrouvent dans le Markdown stocké et créent des écarts de mise en page.
+const NBSP_RE = /&nbsp;|&#160;|&#xA0;| /gi
 const TABLE_RE = /<table\b[^>]*>([\s\S]*?)<\/table>/gi
 const CELL_OPEN_RE = /<(t[hd])\b[^>]*>/gi
 const CELL_CLOSE_RE = /<\/(t[hd])>/gi
@@ -60,6 +64,7 @@ function cleanTableInner(inner: string): string {
  * Transforme l'HTML collé pour qu'il survive au passage dans TipTap.
  *
  * - Retire les blocs `<style>`, balises `<meta>`, commentaires HTML
+ * - Convertit les espaces insécables (`&nbsp;`, U+00A0) en espace normal
  * - Retire les wrappers Google Docs (`<b id="docs-internal-guid-…">`)
  * - Retire les attributs `style`/`class`/`id` envahissants
  * - Nettoie les tableaux pour que l'extension Table de TipTap les ingère
@@ -75,6 +80,9 @@ export function cleanPastedHTML(html: string): string {
   out = out.replace(STYLE_BLOCK_RE, '')
   out = out.replace(META_TAG_RE, '')
   out = out.replace(COMMENT_RE, '')
+
+  // Espaces insécables → espace normal (avant le déballage des tableaux/spans)
+  out = out.replace(NBSP_RE, ' ')
 
   // Déballer le wrapper docs-internal-guid avant les autres transformations
   out = out.replace(GOOGLE_DOCS_GUID_RE, (_m, inner) => String(inner ?? ''))

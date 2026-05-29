@@ -14,7 +14,9 @@
  *   tableaux éditables dans le WYSIWYG.
  */
 
-// ─── Block extraction ────────────────────────────────────────────────────────
+import { normalizeMdxWhitespace } from '@/lib/content/normalize'
+
+// ─── Block extraction ────────────────────────────────────────────────────
 
 const MDX_PLACEHOLDER_RE = /\[\[MDXBLOCK(\d+)\]\]/g
 
@@ -61,7 +63,7 @@ export function reinsertMdxBlocks(markdown: string, blocks: Record<string, strin
   })
 }
 
-// ─── Markdown → HTML (for TipTap) ────────────────────────────────────────────
+// ─── Markdown → HTML (for TipTap) ───────────────────────────────────────
 
 export function markdownToHtml(md: string): string {
   let html = md
@@ -146,7 +148,7 @@ export function markdownToHtml(md: string): string {
   return html
 }
 
-// ─── HTML → Markdown (from TipTap) ───────────────────────────────────────────
+// ─── HTML → Markdown (from TipTap) ─────────────────────────────────────
 
 export function htmlToMarkdown(html: string): string {
   let md = html
@@ -215,13 +217,18 @@ export function htmlToMarkdown(html: string): string {
   // Remaining tags
   md = stripTags(md)
 
+  // Normalisation typographique : retire les &nbsp;/insécables/espaces traînants
+  // hérités des imports Google Docs pour que le .mdx stocké soit propre dès la
+  // sauvegarde (même normalisation qu'au rendu — cf. lib/content/normalize).
+  md = normalizeMdxWhitespace(md)
+
   // Clean up whitespace
   md = md.replace(/\n{3,}/g, '\n\n').trim()
 
   return md
 }
 
-// ─── Table helpers ───────────────────────────────────────────────────────────
+// ─── Table helpers ─────────────────────────────────────────────────
 
 function splitTableRow(row: string): string[] {
   return row
@@ -285,7 +292,7 @@ function htmlTableToGfm(inner: string): string {
   return '\n' + [headerLine, separatorLine, ...dataLines].join('\n') + '\n'
 }
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// ─── Helpers ──────────────────────────────────────────────────────
 
 function escapeHtml(str: string): string {
   return str
