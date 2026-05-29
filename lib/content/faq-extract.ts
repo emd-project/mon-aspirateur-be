@@ -8,32 +8,21 @@ import type { FaqItem } from '@/lib/data/types'
  *   **Question ?**                  → paragraphe gras puis paragraphe(s) réponse
  *
  * Les séparateurs `---` entre Q/A sont ignorés. La section s'arrête au prochain
- * `## ` ou en fin de fichier. La fonction retourne un tableau vide si aucune
- * section FAQ n'est trouvée.
+ * `## `, au prochain bloc éditorial (verdict, tip, warning, pullquote — sous
+ * forme de shortcode `[[…]]` ou de JSX `<Verdict …>`) ou en fin de fichier.
+ * La fonction retourne un tableau vide si aucune section FAQ n'est trouvée.
+ *
+ * Pourquoi borner sur les blocs : les imports Google Docs placent souvent la
+ * conclusion (`[[verdict …]]`) APRÈS la FAQ, sans titre `##` intermédiaire.
+ * Sans cette borne, la conclusion serait avalée par `stripFaqSection`.
  */
 export function extractFaqFromBody(content: string): FaqItem[] {
   const items: FaqItem[] = []
   const lines = content.split('\n')
 
-  // Localiser la section ## FAQ
-  let start = -1
-  for (let i = 0; i < lines.length; i++) {
-    if (/^##\s+FAQ\b/i.test(lines[i] ?? '')) {
-      start = i + 1
-      break
-    }
-  }
+  const start = findFaqStart(lines)
   if (start === -1) return items
-
-  // Borner la section au prochain ## ou à la fin
-  let end = lines.length
-  for (let i = start; i < lines.length; i++) {
-    const line = lines[i] ?? ''
-    if (/^##\s/.test(line) && !/^##\s+FAQ\b/i.test(line)) {
-      end = i
-      break
-    }
-  }
+  const end = findFaqEnd(lines, start)
 
   // Découper en blocs séparés par des lignes vides
   const blocks: string[] = []
@@ -100,33 +89,49 @@ function readQuestion(block: string): string | null {
 }
 
 /**
- * Retire la section `## FAQ` du corps MDX (heading inclus) jusqu'au prochain
- * H2 ou à la fin. Utilisé pour éviter le doublon visuel avec l'accordéon FAQ.
+ * Retire la section `## FAQ` du corps MDX (heading inclus) jusqu'à la borne de
+ * fin de section. Utilisé pour éviter le doublon visuel avec l'accordéon FAQ.
  */
 export function stripFaqSection(content: string): string {
   const lines = content.split('\n')
 
-  let start = -1
-  for (let i = 0; i < lines.length; i++) {
-    if (/^##\s+FAQ\b/i.test(lines[i] ?? '')) {
-      start = i
-      break
-    }
-  }
+  const start = findFaqStart(lines)
   if (start === -1) return content
-
-  let end = lines.length
-  for (let i = start + 1; i < lines.length; i++) {
-    const line = lines[i] ?? ''
-    if (/^##\s/.test(line) && !/^##\s+FAQ\b/i.test(line)) {
-      end = i
-      break
-    }
-  }
+  const end = findFaqEnd(lines, start)
 
   // Conserver une seule ligne vide à la jointure
   const before = lines.slice(0, start).join('\n').replace(/\n+$/, '')
   const after = lines.slice(end).join('\n').replace(/^\n+/, '')
   if (!after) return before
+  if (!before) return after
   return `${before}\n\n${after}`
+}
+
+// ─── Bornage de la section FAQ ───────────────────────────────────────────────
+
+/** Index de la ligne `## FAQ`, ou -1. */
+function findFaqStart(lines: string[]): number {
+  for (let i = 0; i < lines.length; i++) {
+    if (/^##\s+FAQ\b/i.test(lines[i] ?? '')) return i
+  }
+  return -1
+}
+
+// Blocs éditoriaux qui marquent la fin d'une section FAQ, qu'ils soient encore
+// sous forme de shortcode (`[[verdict …]]`) ou déjà expansés en JSX (`<Verdict …>`).
+const BLOCK_SHORTCODE_RE = /^\s*\[\[(tip|warning|verdict|pullquote)\b/i
+const BLOCK_JSX_RE =
+  /^\s*<(Verdict|Tip|Warning|PullQuote|TLDRBox|ProductCarousel|ProductCard|StatCard|ProConTable|ProductCTA|AISummarize|ArticleImage)\b/
+
+/**
+ * Première borne de fin après `start` : prochain `## ` (hors FAQ), prochain bloc
+ * éditorial, ou fin de fichier.
+ */
+function findFaqEnd(lines: string[], start: number): number {
+  for (let i = start + 1; i < lines.length; i++) {
+    const line = lines[i] ?? ''
+    if (/^##\s/.test(line) && !/^##\s+FAQ\b/i.test(line)) return i
+    if (BLOCK_SHORTCODE_RE.test(line) || BLOCK_JSX_RE.test(line)) return i
+  }
+  return lines.length
 }

@@ -111,6 +111,23 @@ describe('extractFaqFromBody', () => {
     expect(faq[0]?.answer).toContain('Première phrase')
     expect(faq[0]?.answer).toContain('Deuxième ligne')
   })
+
+  it("n'inclut pas un bloc <Verdict> placé après la FAQ comme une paire Q/A", () => {
+    const md = [
+      '## FAQ',
+      '',
+      '**Q ?**',
+      '',
+      'A.',
+      '',
+      '<Verdict title="Conclusion">',
+      'Notre recommandation finale.',
+      '</Verdict>',
+    ].join('\n')
+    const faq = extractFaqFromBody(md)
+    expect(faq).toHaveLength(1)
+    expect(JSON.stringify(faq)).not.toContain('recommandation finale')
+  })
 })
 
 describe('stripFaqSection', () => {
@@ -159,5 +176,47 @@ describe('stripFaqSection', () => {
   it('returns the content unchanged when no FAQ section', () => {
     const md = '## Intro\n\nTexte.\n\n## Conclusion\n'
     expect(stripFaqSection(md)).toBe(md)
+  })
+
+  it('préserve une conclusion <Verdict> placée juste après la FAQ', () => {
+    const md = [
+      '## Pour quel profil ?',
+      '',
+      'Texte.',
+      '',
+      '## FAQ',
+      '',
+      '**Q ?**',
+      '',
+      'A.',
+      '',
+      '<Verdict title="Conclusion">',
+      'Notre recommandation finale.',
+      '</Verdict>',
+    ].join('\n')
+    const out = stripFaqSection(md)
+    expect(out).not.toContain('## FAQ')
+    expect(out).not.toContain('**Q ?**')
+    expect(out).toContain('<Verdict title="Conclusion">')
+    expect(out).toContain('Notre recommandation finale.')
+    expect(out).toContain('## Pour quel profil ?')
+  })
+
+  it('préserve une conclusion [[verdict]] (shortcode brut) placée après la FAQ', () => {
+    const md = [
+      '## FAQ',
+      '',
+      '### Q ?',
+      '',
+      'A.',
+      '',
+      '[[verdict title="Conclusion"]]',
+      'Notre reco.',
+      '[[/verdict]]',
+    ].join('\n')
+    const out = stripFaqSection(md)
+    expect(out).not.toContain('## FAQ')
+    expect(out).toContain('[[verdict title="Conclusion"]]')
+    expect(out).toContain('Notre reco.')
   })
 })
