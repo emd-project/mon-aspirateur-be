@@ -10,7 +10,7 @@
 // Cette fonction est appliquée au rendu (et non au fichier) : elle harmonise
 // l'affichage sans modifier le contenu stocké en repo.
 
-const NBSP_RE = /&nbsp;|&#160;|&#xA0;| /gi
+const NBSP_RE = /&nbsp;|&#160;|&#xA0;|\xa0/gi
 
 export function normalizeMdxWhitespace(content: string): string {
   const withoutNbsp = content.replace(NBSP_RE, ' ')

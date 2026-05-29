@@ -19,7 +19,7 @@ const COMMENT_RE = /<!--[\s\S]*?-->/g
 // Espaces insécables hérités de Google Docs (entité, entités numériques, et le
 // caractère U+00A0 lui-même). Convertis en espace normal pour éviter qu'ils ne
 // se retrouvent dans le Markdown stocké et créent des écarts de mise en page.
-const NBSP_RE = /&nbsp;|&#160;|&#xA0;| /gi
+const NBSP_RE = /&nbsp;|&#160;|&#xA0;|\xa0/gi
 const TABLE_RE = /<table\b[^>]*>([\s\S]*?)<\/table>/gi
 const CELL_OPEN_RE = /<(t[hd])\b[^>]*>/gi
 const CELL_CLOSE_RE = /<\/(t[hd])>/gi
