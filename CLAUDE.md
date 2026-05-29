@@ -9,10 +9,14 @@ Domaine : mon-aspirateur.be · Stack : Next.js ~16.2.1 + next-intl + next-themes
 Langues : FR + EN · Repo : github.com/emd-project/mon-aspirateur-be
 Vercel région fra1 · prod sur main
 
-## Philosophie no-image
-Ce projet ne contient aucune image raster. La DA repose sur :
-typographie · effets CSS · SVG inline · composition · motion
-Toute section vide visuellement est un bug de DA, pas un placeholder en attente.
+## Philosophie visuelle (V2)
+La DA repose d'abord sur : typographie · effets CSS · SVG inline · composition · motion.
+Depuis la V2, des **images éditoriales/lifestyle (raster)** sont autorisées pour rendre
+le site plus vivant et humain : bande « Le terrain » de la page d'accueil (1 à 3 visuels)
+et images d'articles (image1–3). Elles passent par un `<img>` natif (cf. ArticleImage /
+HomeImageBand), jamais par next/image. Une image absente ne doit jamais casser la mise en
+page : les composants ne rendent rien si la source est vide.
+Toute autre section vide visuellement reste un bug de DA, pas un placeholder en attente.
 
 ## CMS — Sanity (V2)
 V1 : données statiques dans lib/data/mock/
@@ -20,9 +24,11 @@ V2 : swap lib/data/ vers Sanity GROQ — les composants ne changent pas
 Ne pas implémenter Sanity avant confirmation explicite.
 
 ## Assets autorisés
-SVG uniquement — icônes, logo, éléments décoratifs
+SVG — icônes, logo, éléments décoratifs
+Images raster éditoriales/lifestyle (jpg/png/webp) — via `<img>` natif uniquement,
+hébergées dans public/images (ou blob Vercel). Gérées par le CMS (champs image1–3).
 OG : générées via app/[locale]/opengraph-image.tsx
-Jamais : <img> · next/image éditorial · picsum · unsplash · placeholder.com
+Jamais : next/image éditorial · picsum · unsplash · placeholder.com
 
 ## Auteurs actifs
 | Slug      | Nom       | Fichier                 | Statut |
@@ -46,7 +52,8 @@ Nouvel auteur → AUTHOR-[slug].md + /auteurs/[slug] avant tout article.
 
 ## Filtre qualité — avant chaque commit
 - [ ] tsc --noEmit · next lint · vitest run
-- [ ] Zéro <img> · zéro next/image éditorial · SVG only
+- [ ] Images raster via `<img>` uniquement · zéro next/image éditorial · SVG pour icônes/déco
+- [ ] Composants image robustes : source vide → ne rend rien (jamais de slot cassé)
 - [ ] middleware.ts présent et fonctionnel (/ → /fr)
 - [ ] Variables CSS · zéro hardcode hex · composants < 150 lignes
 - [ ] Secrets hors repo · params await · CSP sans unsafe-eval

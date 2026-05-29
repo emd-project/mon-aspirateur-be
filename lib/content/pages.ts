@@ -10,6 +10,16 @@ export type PageContent = {
   hero_subheadline?: string
   hero_cta?: string
   hero_cta_secondary?: string
+  // Homepage editorial images (V2 — bande "Le terrain", 1 à 3 visuels)
+  image1?: string
+  image1Alt?: string
+  image1Caption?: string
+  image2?: string
+  image2Alt?: string
+  image2Caption?: string
+  image3?: string
+  image3Alt?: string
+  image3Caption?: string
   // SEO
   meta_title?: string
   meta_description?: string

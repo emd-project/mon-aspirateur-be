@@ -5,6 +5,9 @@ import { categoryOrder, categoryMeta } from '@/lib/data/comparateur'
 import { getAllBrands } from '@/lib/content/brands'
 import { getAllCmsProducts } from '@/lib/content/products'
 import { getArticlesMdx } from '@/lib/content/articles'
+import { getPageContent } from '@/lib/content/pages'
+import { getHomeImages } from '@/lib/content/home-images'
+import HomeImageBand from '@/components/home/HomeImageBand'
 import ProductCTA from '@/components/ui/ProductCTA'
 import NoiseOverlay from '@/components/effects/NoiseOverlay'
 
@@ -31,6 +34,8 @@ export default async function HomePage({ params }: Props) {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'home' })
   const base = `/${locale}`
+
+  const homeImages = getHomeImages(getPageContent('accueil'))
 
   const allProducts = getAllCmsProducts()
   const topPicks = [
@@ -218,6 +223,9 @@ export default async function HomePage({ params }: Props) {
           </div>
         </div>
       </section>
+
+      {/* ── BANDE IMAGES (V2 — page d'accueil plus vivante) ──────── */}
+      <HomeImageBand images={homeImages} locale={locale} />
 
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 1.5rem' }}>
 
