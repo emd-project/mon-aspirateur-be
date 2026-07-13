@@ -23,8 +23,8 @@
   "nav": {
     "comparer": "Comparer",
     "choisir": "Choisir",
+    "classement": "Classement",
     "marques": "Marques",
-    "deals": "Deals",
     "blog": "Blog",
     "quiz": "Quiz",
     "toggleTheme": "Changer le thème",
@@ -64,7 +64,7 @@
       "categories": "Choisir par catégorie",
       "topPicks": "Nos coups de cœur",
       "comparer": "Comparer les modèles",
-      "deals": "Deals du moment",
+      "classement": "Notre classement",
       "blog": "Derniers articles",
       "marques": "Les marques"
     }
@@ -75,7 +75,7 @@
       "description": "Comparez les {categorie} côte-à-côte sur tous les critères : puissance, autonomie, bruit, prix. Données vérifiées."
     },
     "hub": {
-      "title": "Comparer les {categorie}",
+      "title": "Comparer les aspirateurs",
       "subtitle": "Tous les modèles côte-à-côte. Sans langue de bois."
     },
     "selectCategory": "Choisir une catégorie",
@@ -93,6 +93,24 @@
       "subtitle": "Un guide par usage — on vous dit clairement ce qui vaut le coup."
     }
   },
+  "classement": {
+    "meta": {
+      "title": "Classement aspirateurs — nos meilleurs modèles | Mon Aspirateur",
+      "description": "Nos classements aspirateurs : robots, balais, toutes catégories. Modèles réels, prix relevés en Belgique, verdict sans langue de bois."
+    },
+    "hub": {
+      "title": "Nos classements aspirateurs",
+      "subtitle": "Des modèles réels, un prix relevé, un lien marchand vérifiable."
+    },
+    "tldr": "En bref",
+    "criteria": "Nos critères",
+    "methodology": "Méthodologie",
+    "ranking": "Le classement",
+    "priceCheckedOn": "Prix relevés le",
+    "source": "Source",
+    "seePrice": "Voir le prix",
+    "faq": "Questions fréquentes"
+  },
   "marques": {
     "meta": {
       "title": "Marques aspirateurs — Guide complet | Mon Aspirateur",
@@ -105,18 +123,6 @@
     "topProducts": "Top produits",
     "positioning": "Positionnement",
     "categories": "Catégories couvertes"
-  },
-  "deals": {
-    "meta": {
-      "title": "Deals aspirateurs — Promos du moment | Mon Aspirateur",
-      "description": "Les meilleures promotions aspirateurs du moment. Sélection mise à jour régulièrement par notre équipe."
-    },
-    "title": "Deals & Promos aspirateurs",
-    "subtitle": "Les bons plans du moment — filtrés pour vous éviter les fausses promos.",
-    "filterAll": "Tous",
-    "noDeals": "Aucun deal pour cette catégorie en ce moment.",
-    "priceAlert": "Alerte prix",
-    "tip": "Le vrai tip : les meilleures promos arrivent lors du Prime Day (juillet), du Black Friday (novembre) et des soldes de janvier."
   },
   "simulateur": {
     "meta": {
@@ -213,7 +219,7 @@
     "mentions": {
       "meta": {
         "title": "Mentions légales | Mon Aspirateur",
-        "description": "Mentions légales de monaspirateur.fr."
+        "description": "Mentions légales de mon-aspirateur.be."
       }
     },
     "privacy": {

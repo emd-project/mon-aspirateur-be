@@ -1,7 +1,7 @@
 {
   "common": {
-    "siteName": "mon-aspirateur.be",
-    "tagline": "Belgium's reference guide for choosing a vacuum cleaner",
+    "siteName": "Mon Aspirateur",
+    "tagline": "Vacuum cleaners — field tests, straight talk",
     "cta": "See our picks",
     "readMore": "Read more",
     "publishedOn": "Published on",
@@ -9,22 +9,33 @@
     "readingTime": "{min} min read",
     "backToHome": "Back to home",
     "search": "Search",
-    "noResults": "No results for this search.",
+    "noResults": "No results.",
     "skipToContent": "Skip to main content",
-    "formSuccess": "Thanks! Your message has been sent.",
-    "formError": "Something went wrong. Please try again.",
-    "breadcrumbHome": "Home"
+    "breadcrumbHome": "Home",
+    "score": "Score",
+    "priceFrom": "From",
+    "buyOn": "See on Amazon",
+    "topPick": "Our top pick",
+    "bestValue": "Best value for money",
+    "yes": "Yes",
+    "no": "No"
   },
   "nav": {
-    "guides": "Buying guides",
-    "comparatifs": "Comparisons",
-    "tools": "Tools",
-    "toolsQuiz": "Quiz",
-    "toolsComparateur": "Comparator",
-    "toolsSimulateur": "Simulator",
+    "comparer": "Compare",
+    "choisir": "Choose",
+    "classement": "Ranking",
+    "marques": "Brands",
     "blog": "Blog",
+    "quiz": "Quiz",
     "toggleTheme": "Toggle theme",
-    "toggleMenu": "Open menu"
+    "toggleMenu": "Open menu",
+    "categories": {
+      "balai": "Cordless stick vacuums",
+      "robot": "Robot vacuums",
+      "traineau": "Canister vacuums",
+      "laveur": "Floor washers",
+      "accessoires": "Accessories"
+    }
   },
   "footer": {
     "navigation": "Navigation",
@@ -33,59 +44,162 @@
     "legal": "Legal notice",
     "privacy": "Privacy policy",
     "cookies": "Cookies",
-    "madeIn": "Made in Belgium",
-    "authorLink": "By Thomas V."
+    "madeWith": "Made with care",
+    "authorLink": "By Thomas V.",
+    "affDisclaimer": "As an Amazon Associate we earn a commission on eligible purchases, at no extra cost to you.",
+    "tagline": "Field tests and straight talk — no marketing fluff."
   },
   "home": {
     "meta": {
-      "title": "Vacuum Cleaner Belgium {year} | mon-aspirateur.be",
-      "description": "Vacuum cleaner comparison and buying guide for Belgium. Expert guides, brand comparisons and interactive tools to choose your vacuum in {year}."
+      "title": "Mon Aspirateur — Vacuum cleaner comparisons and tests",
+      "description": "Vacuum cleaner comparator and buying guide for Belgium. Expert guides, brand comparisons, quiz and tools to choose without reading 45 spec sheets."
     },
     "hero": {
-      "headline": "Choose your vacuum cleaner with confidence",
-      "subheadline": "Buying guides, brand comparisons and interactive tools designed for the Belgian market.",
-      "cta": "See our {year} picks",
-      "ctaSecondary": "Quiz: which vacuum suits me?"
+      "headline": "Choose your vacuum cleaner in under 10 minutes",
+      "subheadline": "Real tests, a real voice. No jargon, no spec sheets — just what you need to know to get it right.",
+      "cta": "Find my vacuum",
+      "ctaSecondary": "Quick quiz (2 min)"
     },
     "sections": {
-      "featured": "Featured",
-      "guides": "Buying guides",
-      "comparatifs": "Comparisons",
-      "tools": "Interactive tools",
-      "blog": "Blog"
+      "categories": "Choose by category",
+      "topPicks": "Our top picks",
+      "comparer": "Compare models",
+      "classement": "Our ranking",
+      "blog": "Latest articles",
+      "marques": "The brands"
     }
   },
-  "guides": {
+  "comparer": {
     "meta": {
-      "title": "Vacuum Cleaner Guide {year} — Pick the right model | mon-aspirateur.be",
-      "description": "All our vacuum cleaner buying guides for Belgium. Robot, cordless stick, canister: expert advice and tested selections in {year}."
+      "title": "{categorie} comparator — Compare models | Mon Aspirateur",
+      "description": "Compare {categorie} side by side on every criterion: power, battery life, noise, price. Verified data."
     },
     "hub": {
-      "title": "Vacuum Cleaner Buying Guides {year}",
-      "subtitle": "Our guides are written by Thomas V., expert tester, and regularly updated."
+      "title": "Compare vacuum cleaners",
+      "subtitle": "Every model side by side. No marketing fluff."
+    },
+    "selectCategory": "Choose a category",
+    "specs": "Technical specifications",
+    "bestScore": "Best score",
+    "lowestPrice": "Lowest price"
+  },
+  "choisir": {
+    "meta": {
+      "title": "Which {categorie} to choose? {year} guide | Mon Aspirateur",
+      "description": "Our complete guide to choosing the right {categorie} for your usage, your home and your budget. Updated in {year}."
+    },
+    "hub": {
+      "title": "Which vacuum should you choose?",
+      "subtitle": "One guide per use case — we tell you plainly what is worth it."
     }
   },
-  "comparatifs": {
+  "classement": {
     "meta": {
-      "title": "Vacuum Cleaner Comparisons {year} | mon-aspirateur.be",
-      "description": "Brand vs brand comparisons, tested and sourced for the Belgian market. Dyson, Miele, Roomba, Bosch: our clear verdict in {year}."
+      "title": "Vacuum cleaner rankings — our best models | Mon Aspirateur",
+      "description": "Our vacuum cleaner rankings: robots, cordless sticks, all categories. Real models, Belgian prices, no-nonsense verdicts."
     },
     "hub": {
-      "title": "Vacuum Cleaner Comparisons {year}",
-      "subtitle": "Complete analyses with a clear verdict — no marketing jargon."
+      "title": "Our vacuum cleaner rankings",
+      "subtitle": "Real models, a listed price, a verifiable merchant link."
     },
-    "verdict": "Our verdict",
-    "brandA": "Brand A",
-    "brandB": "Brand B"
+    "tldr": "In brief",
+    "criteria": "Our criteria",
+    "methodology": "Methodology",
+    "ranking": "The ranking",
+    "priceCheckedOn": "Prices checked on",
+    "source": "Source",
+    "seePrice": "Check price",
+    "faq": "Frequently asked questions"
+  },
+  "marques": {
+    "meta": {
+      "title": "Vacuum brands — Complete guide | Mon Aspirateur",
+      "description": "Everything you need to know about Dyson, Rowenta, Dreame, Roborock, Miele and the other vacuum brands."
+    },
+    "hub": {
+      "title": "Vacuum cleaner brands",
+      "subtitle": "Strengths, weaknesses, who it is for — brand by brand."
+    },
+    "topProducts": "Top products",
+    "positioning": "Positioning",
+    "categories": "Categories covered"
+  },
+  "simulateur": {
+    "meta": {
+      "title": "Vacuum price cycle simulator | Mon Aspirateur",
+      "description": "Work out when to buy your vacuum at the best price based on Amazon promotion cycles."
+    },
+    "title": "When should you buy?",
+    "subtitle": "Amazon price cycles decoded — so you never pay full price.",
+    "events": {
+      "soldesJanvier": "January sales",
+      "primeDay": "Prime Day (July)",
+      "backToSchool": "Back to school (Aug-Sept)",
+      "blackFriday": "Black Friday",
+      "cyber": "Cyber Monday",
+      "noel": "Holidays (Dec)"
+    },
+    "discountLabel": "Usual discount",
+    "bestMoment": "Best moment"
+  },
+  "quiz": {
+    "meta": {
+      "title": "Quiz: which vacuum suits me? | Mon Aspirateur",
+      "description": "4 questions to find the perfect vacuum for your home, your pets and your budget."
+    },
+    "title": "Which vacuum suits you?",
+    "subtitle": "4 questions. One straight answer.",
+    "stepOf": "{current}/{total}",
+    "next": "Next",
+    "previous": "Previous",
+    "seeResults": "See my recommendation",
+    "restart": "Start over",
+    "resultsTitle": "Our recommendation for you",
+    "questions": {
+      "logement": {
+        "label": "Where do you live?",
+        "options": {
+          "studio": "Studio / 1-room",
+          "appartement": "Apartment (2-4 rooms)",
+          "maison": "House"
+        }
+      },
+      "sol": {
+        "label": "Your main floor type?",
+        "options": {
+          "parquet": "Hardwood / tiles",
+          "moquette": "Carpet / rugs",
+          "mixte": "Mixed"
+        }
+      },
+      "animaux": {
+        "label": "Any pets?",
+        "options": {
+          "non": "No",
+          "chat": "Cat",
+          "chien": "Dog",
+          "plusieurs": "Several pets"
+        }
+      },
+      "budget": {
+        "label": "Your budget?",
+        "options": {
+          "moins200": "< €200",
+          "200_400": "€200 – €400",
+          "400_700": "€400 – €700",
+          "plus700": "> €700"
+        }
+      }
+    }
   },
   "blog": {
     "meta": {
-      "title": "Vacuum Cleaner Blog Belgium {year} | mon-aspirateur.be",
-      "description": "Tips, news and analysis on vacuum cleaners for the Belgian market. By Thomas V., home appliance expert."
+      "title": "Vacuum cleaner blog — Advice & tests | Mon Aspirateur",
+      "description": "Practical advice, analysis and tests on vacuum cleaners. By Thomas V., independent tester."
     },
     "hub": {
-      "title": "Vacuum Cleaner Blog",
-      "subtitle": "Practical advice and expert analysis to choose and maintain your vacuum cleaner."
+      "title": "Articles & advice",
+      "subtitle": "Field tests and concrete advice — not mass-produced content."
     },
     "tldr": "In brief",
     "tableOfContents": "Contents",
@@ -94,136 +208,37 @@
   },
   "author": {
     "meta": {
-      "title": "Thomas V. — Vacuum Expert | mon-aspirateur.be",
-      "description": "Thomas V. tests and compares vacuum cleaners to help Belgian households choose without being misled by marketing."
+      "title": "Thomas V. — Vacuum tester | Mon Aspirateur",
+      "description": "Thomas V. tests and compares vacuum cleaners to help you choose without being misled by marketing."
     },
-    "role": "Home appliance expert & vacuum tester",
-    "publishedArticles": "{count} published articles",
+    "role": "Vacuum tester & expert",
+    "publishedArticles": "{count} articles",
     "testedSince": "Tester since 2019"
-  },
-  "tools": {
-    "quiz": {
-      "meta": {
-        "title": "Quiz: which vacuum cleaner to choose? | mon-aspirateur.be",
-        "description": "Answer 6 questions to get a personalised recommendation tailored to your home and budget."
-      },
-      "title": "Which vacuum suits you?",
-      "subtitle": "Answer our questions to get a personalised recommendation.",
-      "stepOf": "Step {current} of {total}",
-      "next": "Next",
-      "previous": "Previous",
-      "seeResults": "See results",
-      "restart": "Start over",
-      "resultsTitle": "Our recommendations for you",
-      "compatibility": "Compatibility",
-      "questions": {
-        "logement": {
-          "label": "Type of home",
-          "options": {
-            "appartement": "Apartment",
-            "maison": "House"
-          }
-        },
-        "surface": {
-          "label": "Area in m²",
-          "hint": "Total area to vacuum"
-        },
-        "sol": {
-          "label": "Main floor type",
-          "options": {
-            "parquet": "Hardwood / tiles",
-            "moquette": "Carpet",
-            "mixte": "Mixed"
-          }
-        },
-        "animaux": {
-          "label": "Pets?",
-          "options": {
-            "oui": "Yes",
-            "non": "No"
-          }
-        },
-        "budget": {
-          "label": "Maximum budget (EUR)",
-          "hint": "Indicative price in Belgium"
-        },
-        "priorite": {
-          "label": "Your priority",
-          "options": {
-            "silence": "Quiet (< 65 dB)",
-            "autonomie": "Long battery life",
-            "puissance": "Maximum power"
-          }
-        }
-      }
-    },
-    "simulateur": {
-      "meta": {
-        "title": "Vacuum area simulator | mon-aspirateur.be",
-        "description": "Calculate the recommended autonomy and capacity for your vacuum cleaner based on your area and vacuuming frequency."
-      },
-      "title": "Area Simulator",
-      "subtitle": "Enter your parameters to get recommended specifications.",
-      "surface": "Area (m²)",
-      "rooms": "Number of rooms",
-      "frequency": "Vacuuming frequency (times/week)",
-      "floorType": "Floor type",
-      "calculate": "Calculate",
-      "results": {
-        "title": "Recommendations for your home",
-        "minAutonomy": "Recommended minimum autonomy",
-        "binCapacity": "Recommended bin capacity",
-        "noiseLevel": "Recommended noise level",
-        "matchingProducts": "Matching models"
-      }
-    },
-    "comparateur": {
-      "meta": {
-        "title": "Side-by-side vacuum comparator | mon-aspirateur.be",
-        "description": "Compare up to 2 vacuum cleaners side by side on all technical criteria. Verified data for Belgium."
-      },
-      "title": "Side-by-side comparator",
-      "subtitle": "Select two models to compare their specifications.",
-      "selectModel": "Choose a model",
-      "addModel": "Add a model",
-      "criteria": {
-        "price": "Price (EUR)",
-        "autonomy": "Autonomy (min)",
-        "noise": "Noise (dB)",
-        "surface": "Max area (m²)",
-        "hepa": "HEPA filtration",
-        "pet": "Pet-friendly",
-        "score": "Overall score"
-      },
-      "best": "Best",
-      "yes": "Yes",
-      "no": "No"
-    }
   },
   "legal": {
     "mentions": {
       "meta": {
-        "title": "Legal notice | mon-aspirateur.be",
-        "description": "Legal notice for mon-aspirateur.be: publisher, host, liability."
+        "title": "Legal notice | Mon Aspirateur",
+        "description": "Legal notice for mon-aspirateur.be."
       }
     },
     "privacy": {
       "meta": {
-        "title": "Privacy policy | mon-aspirateur.be",
-        "description": "How mon-aspirateur.be collects and processes your personal data. GDPR Belgium."
+        "title": "Privacy policy | Mon Aspirateur",
+        "description": "How Mon Aspirateur collects and processes your personal data."
       }
     },
     "cookies": {
       "meta": {
-        "title": "Cookie policy | mon-aspirateur.be",
-        "description": "Use of cookies on mon-aspirateur.be. Plausible CE, privacy-first, no third-party cookies."
+        "title": "Cookie policy | Mon Aspirateur",
+        "description": "Use of cookies on Mon Aspirateur."
       }
     }
   },
   "errors": {
     "notFound": {
       "title": "Page not found",
-      "message": "The page you're looking for doesn't exist or has been moved.",
+      "message": "The page you are looking for does not exist or has been moved.",
       "cta": "Back to home"
     },
     "error": {
