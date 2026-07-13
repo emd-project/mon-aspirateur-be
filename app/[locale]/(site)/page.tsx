@@ -58,7 +58,7 @@ export default async function HomePage({ params }: Props) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      {/* ── HERO SPLIT ──────────────────────────────────────────── */}
+      {/* ── HERO SPLIT ──────────────────────────────────────── */}
       <section style={{
         position: 'relative',
         background: 'var(--bg-surface)',
@@ -96,7 +96,7 @@ export default async function HomePage({ params }: Props) {
         }}>
           <div className="grid-hero">
 
-            {/* ── Gauche : texte ─────────────────── */}
+            {/* ── Gauche : texte ───────────────────── */}
             <div className="animate-fade-up">
               <p style={{
                 fontSize: '.72rem',
@@ -144,7 +144,7 @@ export default async function HomePage({ params }: Props) {
               </p>
 
               <div style={{ display: 'flex', gap: '.75rem', flexWrap: 'wrap' }}>
-                <Link href={`${base}/comparer/balai`} style={{
+                <Link href={`${base}/classement`} style={{
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '.4rem',
@@ -224,12 +224,12 @@ export default async function HomePage({ params }: Props) {
         </div>
       </section>
 
-      {/* ── BANDE IMAGES (V2 — page d'accueil plus vivante) ──────── */}
+      {/* ── BANDE IMAGES ────────────────────────────────────── */}
       <HomeImageBand images={homeImages} locale={locale} />
 
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 1.5rem' }}>
 
-        {/* ── ARTICLES RÉCENTS ──────────────────────────────────── */}
+        {/* ── ARTICLES RÉCENTS ───────────────────────────────── */}
         {(featuredArticle || otherArticles.length > 0) && (
           <section style={{ padding: '4rem 0' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '2rem' }}>
@@ -353,7 +353,7 @@ export default async function HomePage({ params }: Props) {
           </section>
         )}
 
-        {/* ── TOP PICKS ───────────────────────────────────────────── */}
+        {/* ── TOP PICKS ──────────────────────────────────────── */}
         <section style={{ padding: '4rem 0', borderTop: '1px solid var(--border-light)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '2rem' }}>
             <div>
@@ -364,8 +364,8 @@ export default async function HomePage({ params }: Props) {
                 {locale === 'fr' ? 'Balai & traîneau — notre sélection' : 'Cordless & canister — our picks'}
               </h2>
             </div>
-            <Link href={`${base}/comparer/balai`} style={{ fontSize: '.875rem', color: 'var(--accent-1)', textDecoration: 'none', fontWeight: 600, whiteSpace: 'nowrap' }}>
-              {locale === 'fr' ? 'Voir tous →' : 'See all →'}
+            <Link href={`${base}/classement`} style={{ fontSize: '.875rem', color: 'var(--accent-1)', textDecoration: 'none', fontWeight: 600, whiteSpace: 'nowrap' }}>
+              {locale === 'fr' ? 'Voir le classement →' : 'See the ranking →'}
             </Link>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1rem' }}>
@@ -385,7 +385,7 @@ export default async function HomePage({ params }: Props) {
           </div>
         </section>
 
-        {/* ── MARQUES ─────────────────────────────────────────────── */}
+        {/* ── MARQUES ────────────────────────────────────────── */}
         <section style={{ padding: '4rem 0', borderTop: '1px solid var(--border-light)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '2rem' }}>
             <div>
@@ -498,7 +498,7 @@ export default async function HomePage({ params }: Props) {
           </div>
         </section>
 
-        {/* ── OUTILS ──────────────────────────────────────────────── */}
+        {/* ── OUTILS ─────────────────────────────────────────── */}
         <section style={{ padding: '4rem 0 5rem', borderTop: '1px solid var(--border-light)' }}>
           <div style={{ marginBottom: '2rem' }}>
             <p style={{ fontSize: '.72rem', fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '.35rem' }}>
@@ -508,9 +508,10 @@ export default async function HomePage({ params }: Props) {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '.75rem' }}>
             {([
-              { href: `${base}/quiz`,       title: 'Quiz aspirateur',   desc: '4 questions → recommandation', cta: 'Faire le quiz' },
-              { href: `${base}/deals`,      title: 'Deals & Promos',    desc: 'Sélection promos du moment',   cta: 'Voir les deals' },
-              { href: `${base}/simulateur`, title: 'Quand acheter ?',   desc: 'Calendrier prix Amazon',       cta: 'Voir le calendrier' },
+              { href: `${base}/classement`, title: 'Classement aspirateurs', desc: 'Nos meilleurs modèles, prix relevés', cta: 'Voir le classement' },
+              { href: `${base}/comparer`,   title: 'Comparateur',            desc: 'Tous les modèles côte-à-côte',        cta: 'Comparer' },
+              { href: `${base}/quiz`,       title: 'Quiz aspirateur',        desc: '4 questions → recommandation',        cta: 'Faire le quiz' },
+              { href: `${base}/simulateur`, title: 'Quand acheter ?',        desc: 'Calendrier prix Amazon',              cta: 'Voir le calendrier' },
             ] as const).map(tool => (
               <Link key={tool.href} href={tool.href} style={{ display: 'block', padding: '1.25rem', border: '1px solid var(--border-light)', borderRadius: '6px', background: 'var(--bg-surface)', textDecoration: 'none' }}>
                 <div style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontWeight: 700, fontSize: '.95rem', color: 'var(--text-primary)', marginBottom: '.3rem' }}>{tool.title}</div>
