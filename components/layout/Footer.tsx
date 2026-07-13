@@ -60,7 +60,9 @@ export default async function Footer({ locale }: FooterProps) {
           {/* Comparer */}
           <div>
             <div style={{ fontSize: '.72rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '.75rem' }}>
-              Comparer
+              <Link href={`${base}/comparer`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                Comparer
+              </Link>
             </div>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '.4rem' }}>
               {categories.map(cat => (
@@ -76,7 +78,9 @@ export default async function Footer({ locale }: FooterProps) {
           {/* Guides */}
           <div>
             <div style={{ fontSize: '.72rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '.75rem' }}>
-              Guides
+              <Link href={`${base}/choisir`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                Guides
+              </Link>
             </div>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '.4rem' }}>
               {categories.slice(0, 4).map(cat => (
@@ -96,8 +100,9 @@ export default async function Footer({ locale }: FooterProps) {
             </div>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '.4rem' }}>
               {[
+                { href: `${base}/classement`,       label: 'Classement aspirateurs' },
                 { href: `${base}/quiz`,             label: 'Quiz aspirateur' },
-                { href: `${base}/deals`,            label: 'Deals & Promos' },
+                { href: `${base}/simulateur`,       label: 'Quand acheter ?' },
                 { href: `${base}/marques`,          label: 'Toutes les marques' },
                 { href: `${base}/blog`,             label: 'Blog' },
                 { href: `${base}/auteurs/thomas-v`, label: "L'auteur" },

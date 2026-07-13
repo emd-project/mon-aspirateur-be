@@ -56,6 +56,7 @@ export default function Header() {
   }, [handleScroll])
 
   const base = `/${locale}`
+  const allLabel = locale === 'en' ? 'All categories' : 'Toutes les catégories'
 
   const categoryLabels: Record<string, string> = {
     balai:       t('categories.balai'),
@@ -68,21 +69,27 @@ export default function Header() {
   const navLinks: NavItem[] = [
     {
       label: t('comparer'),
-      children: categoryOrder.map(cat => ({
-        href:  `${base}/comparer/${cat}`,
-        label: categoryLabels[cat] ?? cat,
-      })),
+      children: [
+        { href: `${base}/comparer`, label: allLabel },
+        ...categoryOrder.map(cat => ({
+          href:  `${base}/comparer/${cat}`,
+          label: categoryLabels[cat] ?? cat,
+        })),
+      ],
     },
     {
       label: t('choisir'),
-      children: categoryOrder.slice(0, 4).map(cat => ({
-        href:  `${base}/choisir/${cat}`,
-        label: categoryLabels[cat] ?? cat,
-      })),
+      children: [
+        { href: `${base}/choisir`, label: allLabel },
+        ...categoryOrder.slice(0, 4).map(cat => ({
+          href:  `${base}/choisir/${cat}`,
+          label: categoryLabels[cat] ?? cat,
+        })),
+      ],
     },
-    { href: `${base}/marques`, label: t('marques') },
-    { href: `${base}/deals`,   label: t('deals') },
-    { href: `${base}/blog`,    label: t('blog') },
+    { href: `${base}/classement`, label: t('classement') },
+    { href: `${base}/marques`,    label: t('marques') },
+    { href: `${base}/blog`,       label: t('blog') },
   ]
 
   return (
@@ -169,7 +176,7 @@ export default function Header() {
                           zIndex: 20,
                         }}
                       >
-                        {item.children.map(child => (
+                        {item.children.map((child, i) => (
                           <Link
                             key={child.href}
                             href={child.href}
@@ -179,8 +186,11 @@ export default function Header() {
                               padding: '.5rem .75rem',
                               borderRadius: 'var(--radius-sm)',
                               fontSize: '.875rem',
-                              color: 'var(--text-secondary)',
+                              fontWeight: i === 0 ? 600 : 400,
+                              color: i === 0 ? 'var(--text-primary)' : 'var(--text-secondary)',
                               textDecoration: 'none',
+                              borderBottom: i === 0 ? '1px solid var(--border-light)' : 'none',
+                              marginBottom: i === 0 ? '.25rem' : 0,
                             }}
                           >
                             {child.label}
