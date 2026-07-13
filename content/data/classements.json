@@ -1,0 +1,244 @@
+{
+  "meilleurs-aspirateurs": {
+    "slug": "meilleurs-aspirateurs",
+    "label": "Aspirateurs",
+    "title": "Les meilleurs aspirateurs en Belgique",
+    "updated": "2026-07-13",
+    "intro": "Notre classement toutes catégories confondues : robot, balai, laveur. Chaque modèle listé ici a une fiche produit chez nous, un prix relevé et un lien marchand vérifiable. Pas de « modèle A/B/C », pas de prix inventé.",
+    "tldr": [
+      "Meilleur choix global, toutes catégories : Roborock S8 MaxV Ultra.",
+      "Le meilleur laveur de sol du marché : Tineco Floor One S7 Pro.",
+      "Le balai au meilleur rapport qualité/prix : Dreame T30 Neo.",
+      "Le robot le moins cher qui tient ses promesses : Rowenta X-Plorer Serie 85+.",
+      "Pour durer 15 ans sans compromis : Miele Triflex HX2 Pro."
+    ],
+    "criteria": [
+      "Efficacité d'aspiration réelle",
+      "Autonomie annoncée vs constatée",
+      "Bruit (dB)",
+      "Entretien et coût des consommables",
+      "Prix relevé en Belgique"
+    ],
+    "methodology": "Classement établi sur nos fiches produit (content/products), avec le prix relevé chez le marchand belge ou sur le site officiel de la marque à la date indiquée. Les prix évoluent en permanence : le lien « Source » de chaque ligne renvoie à la page marchande qui fait foi. Aucun modèle n'est listé sans prix et sans URL vérifiable.",
+    "faq": [
+      {
+        "q": "Quel est le meilleur aspirateur en 2026 ?",
+        "a": "Il n'y a pas de gagnant universel. Le Roborock S8 MaxV Ultra est le meilleur appareil toutes catégories si le budget suit (1199 €). Pour un usage quotidien rapide, un balai comme le Dreame T30 Neo (399 €) fait 90 % du travail pour un tiers du prix."
+      },
+      {
+        "q": "Robot, balai ou traîneau : que choisir ?",
+        "a": "Robot si vous voulez un sol propre sans y penser et des sols majoritairement durs. Balai si vous aspirez souvent et vite, sur moins de 120 m². Traîneau si vous avez des moquettes épaisses ou une grande surface."
+      },
+      {
+        "q": "Les prix affichés sont-ils à jour ?",
+        "a": "Ils sont relevés à la date indiquée en haut de page, chez le marchand belge ou sur le site officiel de la marque. Le prix qui fait foi est celui de la page marchande liée sur chaque ligne."
+      }
+    ],
+    "items": [
+      {
+        "rank": 1,
+        "productSlug": "roborock-s8-maxv-ultra",
+        "badge": "Choix n°1",
+        "bestFor": "Le meilleur, tout court",
+        "verdict": "Caméra AI, bras latéral pour les coins, station 4-en-1 : c'est l'appareil le plus complet du marché. Le prix est indécent, mais rien ne fait mieux."
+      },
+      {
+        "rank": 2,
+        "productSlug": "tineco-floor-one-s7-pro",
+        "badge": "Meilleur laveur",
+        "bestFor": "Sols durs à laver",
+        "verdict": "Le capteur iLoop ajuste la puissance à la saleté réelle et la cuve se vide toute seule. C'est le seul laveur qu'on recommande sans réserve — les autres sentent mauvais si vous oubliez de les vider."
+      },
+      {
+        "rank": 3,
+        "productSlug": "dreame-t30-neo",
+        "badge": "Meilleur rapport qualité/prix",
+        "bestFor": "Usage quotidien",
+        "verdict": "90 min d'autonomie réelle et une brosse anti-emmêlement qui avale les poils de chat. Il fait 90 % du boulot d'un Dyson à 699 € pour 399 €."
+      },
+      {
+        "rank": 4,
+        "productSlug": "x-plorer-85-plus",
+        "badge": "Meilleur robot pas cher",
+        "bestFor": "Petit budget robot",
+        "verdict": "LiDAR 360°, station de vidage 60 jours et 270 min d'autonomie à 333 € : à ce prix, aucun concurrent n'aligne la même fiche. La serpillière ne s'auto-nettoie pas, c'est le compromis."
+      },
+      {
+        "rank": 5,
+        "productSlug": "miele-triflex-hx2-pro",
+        "badge": "Le plus durable",
+        "bestFor": "Garder 15 ans",
+        "verdict": "Batterie remplaçable en un clic, 3 configurations, 60 dB. Lourd et cher pour un balai, mais c'est le seul qu'on voit encore tourner dans dix ans."
+      }
+    ]
+  },
+  "meilleurs-robots-aspirateurs": {
+    "slug": "meilleurs-robots-aspirateurs",
+    "label": "Robots aspirateurs",
+    "category": "robot",
+    "title": "Les meilleurs robots aspirateurs en Belgique",
+    "updated": "2026-07-13",
+    "intro": "Le robot est la catégorie où l'écart entre le marketing et le réel est le plus grand. Ce classement ne retient que des modèles dont on a la fiche, le prix et le lien marchand. Le critère qui compte vraiment : la navigation, pas les Pa.",
+    "tldr": [
+      "Meilleur robot toutes catégories : Roborock S8 MaxV Ultra.",
+      "Vraiment autonome (auto-lavage des serpillères) : Dreame L20 Ultra Complete.",
+      "Le plus efficace dans les coins : Ecovacs Deebot X2 Omni.",
+      "Meilleur rapport qualité/prix haut de gamme : Roborock Q Revo MaxV.",
+      "Le moins cher avec station de vidage : Rowenta X-Plorer Serie 85+."
+    ],
+    "criteria": [
+      "Navigation (LiDAR, caméra, évitement d'obstacles)",
+      "Station (autovidage, auto-lavage des serpillères)",
+      "Aspiration réelle sur tapis",
+      "Autonomie",
+      "Prix relevé en Belgique"
+    ],
+    "methodology": "Chaque robot listé provient de nos fiches produit, avec un prix relevé chez le marchand belge à la date indiquée. Le classement privilégie la qualité de navigation et l'autonomie réelle de la station sur la puissance brute en Pa, qui est le chiffre le plus manipulé du secteur.",
+    "faq": [
+      {
+        "q": "Faut-il absolument un robot avec LiDAR ?",
+        "a": "Oui. Un robot à navigation aléatoire fait des allers-retours inutiles et rate des zones, quelle que soit sa puissance. Le LiDAR est le seul critère non négociable, même sur un modèle d'entrée de gamme."
+      },
+      {
+        "q": "La station d'autovidage vaut-elle son surcoût ?",
+        "a": "Si vous avez des animaux ou des allergies, oui : vous ne touchez plus la poussière pendant 60 jours. Sans animaux, dans un appartement, c'est un confort — pas une nécessité."
+      },
+      {
+        "q": "Les 10 000 Pa annoncés changent-ils quelque chose ?",
+        "a": "Peu, sur sols durs. L'écart se voit uniquement sur tapis à poils moyens. Entre 4000 et 10000 Pa, la navigation et la brosse font plus de différence que la puissance."
+      }
+    ],
+    "items": [
+      {
+        "rank": 1,
+        "productSlug": "roborock-s8-maxv-ultra",
+        "badge": "Choix n°1",
+        "bestFor": "Le haut du panier",
+        "verdict": "Le seul robot avec un bras latéral qui va réellement chercher dans les coins, doublé d'une caméra AI qui évite les câbles. Station 4-en-1 complète. Cher, mais imbattable."
+      },
+      {
+        "rank": 2,
+        "productSlug": "dreame-l20-ultra-complete",
+        "badge": "Le plus autonome",
+        "bestFor": "Ne plus jamais y toucher",
+        "verdict": "La station lave ET sèche les serpillères toute seule : c'est ce qui sépare un robot vraiment autonome d'un robot qui sent le moisi au bout de trois semaines. Navigation 3D très fiable."
+      },
+      {
+        "rank": 3,
+        "productSlug": "deebot-x2-omni",
+        "badge": "Meilleur dans les coins",
+        "bestFor": "Appartements anguleux",
+        "verdict": "Le châssis carré change tout : il rentre dans les angles là où les robots ronds tournent autour. Station 4-en-1 et 8000 Pa. Son seul défaut est son gabarit."
+      },
+      {
+        "rank": 4,
+        "productSlug": "roborock-q-revo-maxv",
+        "badge": "Meilleur rapport qualité/prix",
+        "bestFor": "Sols mixtes tapis + parquet",
+        "verdict": "La serpillère rotative se lève sur les tapis : vous n'avez plus à choisir entre aspirer et laver. Pour 400 € de moins que le S8 MaxV Ultra, c'est le choix rationnel."
+      },
+      {
+        "rank": 5,
+        "productSlug": "roomba-combo-j9-plus",
+        "badge": "Le plus fiable",
+        "bestFor": "Éviter les mauvaises surprises",
+        "verdict": "iRobot reste la référence sur l'évitement d'obstacles et le SAV. La serpillère se rétracte sur le toit au lieu de se lever : plus radical, aucune trace d'eau sur les tapis."
+      },
+      {
+        "rank": 6,
+        "productSlug": "x-plorer-85-plus",
+        "badge": "Meilleur petit prix",
+        "bestFor": "Premier robot",
+        "verdict": "333 € pour du LiDAR 360°, 270 min d'autonomie et une station de vidage 60 jours : la fiche est celle d'un modèle à 600 €. La serpillière ne s'auto-nettoie pas, à vous de la rincer."
+      },
+      {
+        "rank": 7,
+        "productSlug": "xiaomi-robot-vacuum-x10-plus",
+        "badge": "Entrée de gamme sérieuse",
+        "bestFor": "Sous les 500 €",
+        "verdict": "LiDAR + autovidage sous 500 €, c'est difficile à battre. La serpillère est basique et l'app Mi Home rame parfois, mais la navigation est propre."
+      }
+    ]
+  },
+  "meilleurs-aspirateurs-balai": {
+    "slug": "meilleurs-aspirateurs-balai",
+    "label": "Aspirateurs balai",
+    "category": "balai",
+    "title": "Les meilleurs aspirateurs balai en Belgique",
+    "updated": "2026-07-13",
+    "intro": "Le balai sans fil est l'aspirateur qu'on sort vraiment — celui qui reste au mur et qu'on attrape en 5 secondes. Ce qui compte : l'autonomie réelle, le poids en main, et une brosse qui ne s'emmêle pas. Le reste est du marketing.",
+    "tldr": [
+      "Meilleur rapport qualité/prix : Dreame T30 Neo (399 €).",
+      "Le plus complet pour les animaux : Rowenta X-Force Flex 16.60 Animal.",
+      "Le plus durable, batterie remplaçable : Miele Triflex HX2 Pro.",
+      "Le meilleur Rowenta sous les 350 € : X-Force Flex 14.60.",
+      "Le moins cher qui tient la route : Xiaomi G10 Plus (199 €)."
+    ],
+    "criteria": [
+      "Autonomie réelle (min)",
+      "Poids en main",
+      "Brosse anti-emmêlement",
+      "Bruit (dB)",
+      "Prix relevé en Belgique"
+    ],
+    "methodology": "Classement établi sur nos fiches produit, avec prix relevé chez le marchand belge ou sur le site officiel de la marque à la date indiquée. On retient l'autonomie annoncée en mode standard, pas en mode Boost — c'est le chiffre honnête.",
+    "faq": [
+      {
+        "q": "Un Dyson vaut-il vraiment le double d'un Dreame ?",
+        "a": "Non, sauf cas précis. Un Dreame T30 Neo à 399 € fait 90 % du travail d'un Dyson V15 à 699 €. L'écart se voit sur tapis épais, pas sur parquet ni carrelage."
+      },
+      {
+        "q": "Quelle autonomie faut-il viser ?",
+        "a": "Comptez 8 à 10 minutes par pièce en mode standard. Pour un appartement de 3 pièces, 60 min suffisent largement. Au-delà de 90 min, vous payez pour de la batterie que vous n'userez jamais."
+      },
+      {
+        "q": "La brosse anti-emmêlement, c'est du marketing ?",
+        "a": "Non, c'est le vrai progrès des trois dernières années. Avec des cheveux longs ou un chat, une brosse classique demande un démêlage aux ciseaux toutes les deux semaines."
+      }
+    ],
+    "items": [
+      {
+        "rank": 1,
+        "productSlug": "dreame-t30-neo",
+        "badge": "Choix n°1",
+        "bestFor": "Le meilleur achat",
+        "verdict": "90 min d'autonomie réelle, 1,65 kg en main, brosse anti-emmêlement efficace. À 399 €, c'est le balai qu'on conseille par défaut à tout le monde."
+      },
+      {
+        "rank": 2,
+        "productSlug": "x-force-flex-16-60-animal",
+        "badge": "Meilleur pour les animaux",
+        "bestFor": "Chats et chiens",
+        "verdict": "315 AirWatts en Boost, mini-brosse motorisée LED dédiée aux poils, jusqu'à 2 h d'autonomie. Le tube Flex passe sous les meubles sans se casser le dos. Bruyant en Boost (86 dB)."
+      },
+      {
+        "rank": 3,
+        "productSlug": "miele-triflex-hx2-pro",
+        "badge": "Le plus durable",
+        "bestFor": "Garder 15 ans",
+        "verdict": "Batterie remplaçable en un clic — c'est ce qui décide de la durée de vie réelle d'un balai. 60 dB seulement, trois configurations. Lourd (3,8 kg), c'est le prix de la robustesse."
+      },
+      {
+        "rank": 4,
+        "productSlug": "x-force-flex-14-60",
+        "badge": "Meilleur Rowenta abordable",
+        "bestFor": "Rapport prix / SAV européen",
+        "verdict": "200 AirWatts, 70 min, filtration 99,9 % et écran digital à 319 €. Le compromis Rowenta le plus équilibré si vous voulez du SAV européen sans payer 500 €."
+      },
+      {
+        "rank": 5,
+        "productSlug": "dyson-v15-detect-absolute",
+        "badge": "Le plus technologique",
+        "bestFor": "Parquet et maniaques",
+        "verdict": "Le laser qui révèle la poussière invisible est bluffant sur parquet — et un peu déprimant. Mais 699 € pour 60 min d'autonomie, c'est cher payé le gadget."
+      },
+      {
+        "rank": 6,
+        "productSlug": "xiaomi-vacuum-cleaner-g10-plus",
+        "badge": "Le moins cher",
+        "bestFor": "Studio, petit budget",
+        "verdict": "199 €, 1,45 kg, vrai filtre HEPA. Les finitions sont en plastique basique et l'autonomie plafonne à 60 min, mais pour un studio, il fait le job sans discuter."
+      }
+    ]
+  }
+}
